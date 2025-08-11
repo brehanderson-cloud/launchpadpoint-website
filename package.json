@@ -14,3 +14,11 @@
     "lucide-react": "^0.263.1"
   }
 }
+export default function Home() {
+  return (
+    <main>
+      <h1>Welcome to LaunchpadPoint!</h1>
+      <p>Your Next.js app is running.</p>
+    </main>
+  );
+}
