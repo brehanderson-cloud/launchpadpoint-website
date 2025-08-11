@@ -1,5 +1,3 @@
-pages/_app.js:import '../styles/globals.css'
-
 function LaunchpadPointApp({ Component, pageProps }) {
   return <Component {...pageProps} />
 }
