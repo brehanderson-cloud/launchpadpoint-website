@@ -1,0 +1,73 @@
+function App() {
+  return (
+    <div style={{
+      padding: '40px',
+      textAlign: 'center',
+      fontFamily: 'Arial, sans-serif',
+      backgroundColor: '#f0f9ff',
+      minHeight: '100vh'
+    }}>
+      <h1 style={{
+        color: '#059669',
+        fontSize: '48px',
+        marginBottom: '20px'
+      }}>
+        🚀 LAUNCHPADPOINT
+      </h1>
+      
+      <p style={{
+        fontSize: '24px',
+        color: '#374151',
+        marginBottom: '30px'
+      }}>
+        The Launchpad for Your Career
+      </p>
+      
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        gap: '20px',
+        flexWrap: 'wrap',
+        marginTop: '40px'
+      }}>
+        <div style={{
+          backgroundColor: 'white',
+          padding: '20px',
+          borderRadius: '8px',
+          border: '2px solid #e5e7eb',
+          width: '200px'
+        }}>
+          <h3>Better</h3>
+          <p style={{ fontSize: '32px', fontWeight: 'bold' }}>FREE</p>
+          <p>Basic resume builder</p>
+        </div>
+        
+        <div style={{
+          backgroundColor: 'white',
+          padding: '20px',
+          borderRadius: '8px',
+          border: '2px solid #059669',
+          width: '200px'
+        }}>
+          <h3>Best</h3>
+          <p style={{ fontSize: '32px', fontWeight: 'bold' }}>$19/mo</p>
+          <p>AI-powered features</p>
+        </div>
+        
+        <div style={{
+          backgroundColor: 'white',
+          padding: '20px',
+          borderRadius: '8px',
+          border: '2px solid #f59e0b',
+          width: '200px'
+        }}>
+          <h3>Immaculate</h3>
+          <p style={{ fontSize: '32px', fontWeight: 'bold' }}>$49/mo</p>
+          <p>Full business suite</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default App;
