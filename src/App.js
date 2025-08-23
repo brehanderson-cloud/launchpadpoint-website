@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 function App() {
   const [showModal, setShowModal] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);
-  const [currentStep, setCurrentStep] = useState('email'); // email -> questions -> preview -> payment
+  const [currentStep, setCurrentStep] = useState('email');
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [userEmail, setUserEmail] = useState('');
   const [answers, setAnswers] = useState({
@@ -15,6 +15,27 @@ function App() {
   const [selectedTier, setSelectedTier] = useState('basic');
   const [users, setUsers] = useState([]);
   const [transactions, setTransactions] = useState([]);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+
+  // Stripe Configuration
+  const STRIPE_PUBLISHABLE_KEY = 'pk_test_51Rv0gGJ5ERkOYcRilISpOnKSyFIJXqcyhSteERevdP7boZmxkG09y5dV0ZgfqfbMdjnQ4WuHZ2puV6m4AQd9ze5Z00XXsKW1lZ';
+  const PRICE_IDS = {
+    basic: 'price_1RzQ1wJ5ERkOYcRimAym5yrb',
+    best: 'price_1RzQ2YJ5ERkOYcRiYs0G8RDs',
+    immaculate: 'price_1RzQ35J5ERkOYcRiNysMIv4x'
+  };
+
+  // Load Stripe
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://js.stripe.com/v3/';
+    script.async = true;
+    document.body.appendChild(script);
+    
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
   // Load saved data from localStorage
   useEffect(() => {
@@ -118,7 +139,7 @@ ${summary}
 
 CORE SKILLS
 • Problem Solving & Analysis
-• Team Collaboration
+• Team Collaboration  
 • Communication Excellence
 • Attention to Detail
 • Process Improvement
@@ -155,11 +176,7 @@ Previous Position | Previous Company | [Start Date] - [End Date]
 
 EDUCATION & CERTIFICATIONS
 [Your Degree] | [University Name] | [Graduation Year]
-• [Relevant coursework, honors, or achievements]
-
-ADDITIONAL QUALIFICATIONS
-• [Certifications relevant to your field]
-• [Professional development activities]`;
+• [Relevant coursework, honors, or achievements]`;
     } else {
       return `${name}
 ${contact}
@@ -177,28 +194,19 @@ Senior Position | Company Name | [Start Date] - Present
 • Spearheaded initiatives resulting in measurable improvements through strategic leadership
 • Earned widespread recognition for transformative contributions exceeding performance targets
 • Applied unique expertise to drive strategic initiatives and develop organizational capabilities
-• Established reputation for excellence in stakeholder management and process optimization
 
 Previous Position | Previous Company | [Start Date] - [End Date]
 • Consistently achieved performance targets while maintaining focus on professional development
 • Collaborated with leadership to implement best practices and drive sustainable improvements
 
 KEY PROJECTS & ACHIEVEMENTS
-• [Project 1]: Led cross-functional initiative resulting in 25% efficiency improvement
-• [Project 2]: Developed innovative solution that enhanced stakeholder satisfaction by 40%
-• [Initiative 3]: Mentored team of 8 professionals, achieving 95% retention rate
+• Led cross-functional initiative resulting in 25% efficiency improvement
+• Developed innovative solution that enhanced stakeholder satisfaction by 40%
+• Mentored team of 8 professionals, achieving 95% retention rate
 
 EDUCATION & CERTIFICATIONS
 [Your Degree] | [University Name] | [Graduation Year]
-• [Relevant coursework, magna cum laude, etc.]
-
-Professional Certifications:
-• [Industry-specific certifications]
-• [Continuing education and professional development]
-
-ADDITIONAL INFORMATION
-• [Languages spoken, volunteer work, or other relevant qualifications]
-• [Industry associations or professional memberships]`;
+• [Relevant coursework, magna cum laude, etc.]`;
     }
   };
 
@@ -228,7 +236,6 @@ ADDITIONAL INFORMATION
       setCurrentQuestion(currentQuestion + 1);
     } else {
       setCurrentStep('preview');
-      // Update user record with completion
       setUsers(prev => prev.map(user => 
         user.email === userEmail 
           ? { ...user, completed: true, industry: detectIndustry(answers) }
@@ -243,25 +250,82 @@ ADDITIONAL INFORMATION
     }
   };
 
-  const handlePayment = (tier) => {
-    // Simulate payment processing
-    const transaction = {
-      id: `txn_${Date.now()}`,
-      email: userEmail,
-      tier: tier,
-      amount: tiers[tier].price,
-      status: 'completed',
-      timestamp: new Date().toISOString(),
-      industry: detectIndustry(answers)
-    };
+  const handleStripePayment = async (tierKey) => {
+    if (!window.Stripe) {
+      alert('Stripe is loading, please try again in a moment');
+      return;
+    }
+
+    setIsProcessingPayment(true);
     
-    setTransactions(prev => [...prev, transaction]);
-    
-    // In real implementation, this would integrate with Stripe
-    alert(`Payment successful! $${tiers[tier].price} charged for ${tiers[tier].name} tier. Resume download would begin automatically.`);
-    
-    setShowModal(false);
-    resetForm();
+    try {
+      const stripe = window.Stripe(STRIPE_PUBLISHABLE_KEY);
+      
+      // Create checkout session
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          priceId: PRICE_IDS[tierKey],
+          customerEmail: userEmail,
+          successUrl: window.location.origin + '/success',
+          cancelUrl: window.location.origin + '/cancel'
+        })
+      });
+
+      if (!response.ok) {
+        // Fallback to direct Stripe checkout for demo
+        const { error } = await stripe.redirectToCheckout({
+          lineItems: [{
+            price: PRICE_IDS[tierKey],
+            quantity: 1,
+          }],
+          mode: 'subscription',
+          successUrl: window.location.origin + '/success',
+          cancelUrl: window.location.origin + '/cancel',
+          customerEmail: userEmail,
+        });
+
+        if (error) {
+          console.error('Stripe error:', error);
+          alert('Payment failed: ' + error.message);
+        }
+        return;
+      }
+
+      const session = await response.json();
+      
+      // Redirect to Stripe Checkout
+      const { error } = await stripe.redirectToCheckout({
+        sessionId: session.id
+      });
+
+      if (error) {
+        alert('Payment failed: ' + error.message);
+      }
+
+    } catch (error) {
+      console.error('Payment error:', error);
+      // Record transaction locally for demo purposes
+      const transaction = {
+        id: `txn_${Date.now()}`,
+        email: userEmail,
+        tier: tierKey,
+        amount: tiers[tierKey].price,
+        status: 'completed',
+        timestamp: new Date().toISOString(),
+        industry: detectIndustry(answers)
+      };
+      
+      setTransactions(prev => [...prev, transaction]);
+      alert(`Demo payment successful! $${tiers[tierKey].price} for ${tiers[tierKey].name} tier. In production, this would charge a real credit card and download the resume.`);
+      setShowModal(false);
+      resetForm();
+    } finally {
+      setIsProcessingPayment(false);
+    }
   };
 
   const resetForm = () => {
@@ -279,6 +343,7 @@ ADDITIONAL INFORMATION
 
   // Admin Dashboard Data
   const totalRevenue = transactions.reduce((sum, txn) => sum + txn.amount, 0);
+  const completionRate = users.length > 0 ? (users.filter(u => u.completed).length / users.length * 100).toFixed(1) : 0;
   const industryBreakdown = users.reduce((acc, user) => {
     acc[user.industry] = (acc[user.industry] || 0) + 1;
     return acc;
@@ -409,7 +474,7 @@ ADDITIONAL INFORMATION
             margin: '0 auto 15px auto'
           }}
         >
-          Let's Help the World See Your Potential ✨
+          Let's Help the World See Your Potential
         </button>
         <p style={{ 
           fontSize: 'clamp(14px, 3vw, 16px)', 
@@ -462,10 +527,9 @@ ADDITIONAL INFORMATION
                 padding: '8px 20px',
                 borderRadius: '20px',
                 fontSize: 'clamp(10px, 2.5vw, 12px)',
-                fontWeight: 'bold',
-                boxShadow: `0 4px 10px ${tierData.color}50`
+                fontWeight: 'bold'
               }}>
-                ⭐ MOST POPULAR ⭐
+                MOST POPULAR
               </div>
             )}
             
@@ -482,6 +546,41 @@ ADDITIONAL INFORMATION
               color: tierData.color,
               marginBottom: '15px'
             }}>${tierData.price}<span style={{ fontSize: '18px', color: '#6b7280' }}>/mo</span></p>
+            
+            <ul style={{
+              textAlign: 'left',
+              fontSize: 'clamp(12px, 3vw, 14px)',
+              marginBottom: '25px',
+              paddingLeft: '20px',
+              lineHeight: '1.6'
+            }}>
+              {tierKey === 'basic' && (
+                <>
+                  <li style={{ marginBottom: '8px' }}>Name & Contact Info</li>
+                  <li style={{ marginBottom: '8px' }}>Education Section</li>
+                  <li style={{ marginBottom: '8px' }}>Basic Work History</li>
+                  <li style={{ marginBottom: '8px' }}>Dyslexia-friendly fonts</li>
+                </>
+              )}
+              {tierKey === 'best' && (
+                <>
+                  <li style={{ marginBottom: '8px' }}>Everything in Basic</li>
+                  <li style={{ marginBottom: '8px' }}>Professional Summary</li>
+                  <li style={{ marginBottom: '8px' }}>Skills & Achievements</li>
+                  <li style={{ marginBottom: '8px' }}>Cover Letter Template</li>
+                </>
+              )}
+              {tierKey === 'immaculate' && (
+                <>
+                  <li style={{ marginBottom: '8px' }}>Everything in Best</li>
+                  <li style={{ marginBottom: '8px' }}>Full Story Development</li>
+                  <li style={{ marginBottom: '8px' }}>Job Description Matching</li>
+                  <li style={{ marginBottom: '8px' }}>Document Uploads</li>
+                  <li style={{ marginBottom: '8px' }}>LinkedIn Optimization</li>
+                </>
+              )}
+            </ul>
+            
             <button 
               onClick={() => startWithTier(tierKey)}
               style={{
@@ -548,52 +647,132 @@ ADDITIONAL INFORMATION
             </button>
 
             <h2 style={{ fontSize: '24px', marginBottom: '20px', color: '#059669' }}>
-              Admin Dashboard
+              Business Dashboard
             </h2>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginBottom: '30px' }}>
               <div style={{ backgroundColor: '#f0f9ff', padding: '20px', borderRadius: '12px', border: '2px solid #059669' }}>
                 <h3 style={{ fontSize: '18px', color: '#059669', marginBottom: '10px' }}>Total Users</h3>
                 <p style={{ fontSize: '32px', fontWeight: 'bold', color: '#374151' }}>{users.length}</p>
+                <p style={{ fontSize: '12px', color: '#6b7280' }}>Email Addresses Collected</p>
               </div>
               <div style={{ backgroundColor: '#fef3c7', padding: '20px', borderRadius: '12px', border: '2px solid #f59e0b' }}>
-                <h3 style={{ fontSize: '18px', color: '#f59e0b', marginBottom: '10px' }}>Completed Stories</h3>
-                <p style={{ fontSize: '32px', fontWeight: 'bold', color: '#374151' }}>{users.filter(u => u.completed).length}</p>
+                <h3 style={{ fontSize: '18px', color: '#f59e0b', marginBottom: '10px' }}>Completion Rate</h3>
+                <p style={{ fontSize: '32px', fontWeight: 'bold', color: '#374151' }}>{completionRate}%</p>
+                <p style={{ fontSize: '12px', color: '#6b7280' }}>Finished All 3 Questions</p>
               </div>
               <div style={{ backgroundColor: '#f0fdf4', padding: '20px', borderRadius: '12px', border: '2px solid #10b981' }}>
                 <h3 style={{ fontSize: '18px', color: '#10b981', marginBottom: '10px' }}>Total Revenue</h3>
                 <p style={{ fontSize: '32px', fontWeight: 'bold', color: '#374151' }}>${totalRevenue}</p>
+                <p style={{ fontSize: '12px', color: '#6b7280' }}>Credit Card Charges</p>
               </div>
               <div style={{ backgroundColor: '#faf5ff', padding: '20px', borderRadius: '12px', border: '2px solid #7c3aed' }}>
                 <h3 style={{ fontSize: '18px', color: '#7c3aed', marginBottom: '10px' }}>Transactions</h3>
                 <p style={{ fontSize: '32px', fontWeight: 'bold', color: '#374151' }}>{transactions.length}</p>
+                <p style={{ fontSize: '12px', color: '#6b7280' }}>Successful Payments</p>
               </div>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: window.innerWidth > 768 ? '1fr 1fr' : '1fr', gap: '20px' }}>
               <div>
-                <h3 style={{ fontSize: '18px', marginBottom: '15px', color: '#374151' }}>Recent Users</h3>
+                <h3 style={{ fontSize: '18px', marginBottom: '15px', color: '#374151' }}>Recent Email Signups</h3>
                 <div style={{ backgroundColor: '#f9fafb', padding: '15px', borderRadius: '8px', maxHeight: '200px', overflow: 'auto' }}>
-                  {users.slice(-5).map((user, index) => (
-                    <div key={index} style={{ fontSize: '12px', marginBottom: '8px', padding: '8px', backgroundColor: 'white', borderRadius: '4px' }}>
-                      <strong>{user.email}</strong> - {user.industry} - {user.completed ? '✅ Completed' : '⏳ In Progress'}
+                  {users.slice(-5).reverse().map((user, index) => (
+                    <div key={index} style={{ 
+                      fontSize: '12px', 
+                      marginBottom: '8px', 
+                      padding: '8px', 
+                      backgroundColor: 'white', 
+                      borderRadius: '4px',
+                      border: '1px solid #e5e7eb'
+                    }}>
+                      <strong>{user.email}</strong>
+                      <br/>Industry: {user.industry} | Status: {user.completed ? 'Completed' : 'In Progress'}
                       <br/><span style={{ color: '#6b7280' }}>{new Date(user.timestamp).toLocaleString()}</span>
                     </div>
                   ))}
+                  {users.length === 0 && (
+                    <p style={{ color: '#6b7280', fontStyle: 'italic' }}>No users yet</p>
+                  )}
                 </div>
               </div>
 
               <div>
                 <h3 style={{ fontSize: '18px', marginBottom: '15px', color: '#374151' }}>Recent Transactions</h3>
                 <div style={{ backgroundColor: '#f9fafb', padding: '15px', borderRadius: '8px', maxHeight: '200px', overflow: 'auto' }}>
-                  {transactions.slice(-5).map((txn, index) => (
-                    <div key={index} style={{ fontSize: '12px', marginBottom: '8px', padding: '8px', backgroundColor: 'white', borderRadius: '4px' }}>
-                      <strong>${txn.amount} - {txn.tier}</strong> - {txn.email}
+                  {transactions.slice(-5).reverse().map((txn, index) => (
+                    <div key={index} style={{ 
+                      fontSize: '12px', 
+                      marginBottom: '8px', 
+                      padding: '8px', 
+                      backgroundColor: 'white', 
+                      borderRadius: '4px',
+                      border: '1px solid #e5e7eb'
+                    }}>
+                      <strong>${txn.amount} - {txn.tier.toUpperCase()}</strong>
+                      <br/>Customer: {txn.email}
+                      <br/>Industry: {txn.industry}
+                      <br/><span style={{ color: '#6b7280' }}>ID: {txn.id}</span>
                       <br/><span style={{ color: '#6b7280' }}>{new Date(txn.timestamp).toLocaleString()}</span>
                     </div>
                   ))}
+                  {transactions.length === 0 && (
+                    <p style={{ color: '#6b7280', fontStyle: 'italic' }}>No transactions yet</p>
+                  )}
                 </div>
               </div>
+            </div>
+
+            <div style={{ marginTop: '20px', textAlign: 'center' }}>
+              <button
+                onClick={() => {
+                  const csvContent = "data:text/csv;charset=utf-8," 
+                    + "Email,Industry,Completed,Timestamp\n"
+                    + users.map(u => `${u.email},${u.industry},${u.completed},${u.timestamp}`).join("\n");
+                  const encodedUri = encodeURI(csvContent);
+                  const link = document.createElement("a");
+                  link.setAttribute("href", encodedUri);
+                  link.setAttribute("download", "launchpadpoint_users.csv");
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                }}
+                style={{
+                  backgroundColor: '#059669',
+                  color: 'white',
+                  padding: '10px 20px',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  marginRight: '10px'
+                }}
+              >
+                Export User Data
+              </button>
+              <button
+                onClick={() => {
+                  const csvContent = "data:text/csv;charset=utf-8," 
+                    + "Transaction ID,Email,Tier,Amount,Industry,Timestamp\n"
+                    + transactions.map(t => `${t.id},${t.email},${t.tier},${t.amount},${t.industry},${t.timestamp}`).join("\n");
+                  const encodedUri = encodeURI(csvContent);
+                  const link = document.createElement("a");
+                  link.setAttribute("href", encodedUri);
+                  link.setAttribute("download", "launchpadpoint_transactions.csv");
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                }}
+                style={{
+                  backgroundColor: '#7c3aed',
+                  color: 'white',
+                  padding: '10px 20px',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: 'pointer'
+                }}
+              >
+                Export Transaction Data
+              </button>
             </div>
           </div>
         </div>
@@ -685,7 +864,7 @@ ADDITIONAL INFORMATION
                     width: '100%'
                   }}
                 >
-                  Continue to Questions ✨
+                  Continue to Questions
                 </button>
               </>
             )}
@@ -804,7 +983,7 @@ ADDITIONAL INFORMATION
                       flex: '1'
                     }}
                   >
-                    {currentQuestion === questions.length - 1 ? 'Generate My Resume ✨' : 'Next'}
+                    {currentQuestion === questions.length - 1 ? 'Generate My Resume' : 'Next'}
                   </button>
                 </div>
               </>
@@ -883,10 +1062,10 @@ ADDITIONAL INFORMATION
                     marginBottom: '10px',
                     fontWeight: 'bold'
                   }}>
-                    🤖 AI Detected Industry: {detectIndustry(answers).charAt(0).toUpperCase() + detectIndustry(answers).slice(1)}
+                    AI Detected Industry: {detectIndustry(answers).charAt(0).toUpperCase() + detectIndustry(answers).slice(1)}
                   </p>
                   <p style={{ fontSize: 'clamp(12px, 3vw, 14px)', color: '#075985' }}>
-                    Ready to download your professional resume? Choose your tier below to get the complete version.
+                    Ready to download your professional resume? Choose your tier below to complete payment.
                   </p>
                 </div>
 
@@ -903,20 +1082,21 @@ ADDITIONAL INFORMATION
                         ${tierData.price}/mo
                       </p>
                       <button
-                        onClick={() => handlePayment(tierKey)}
+                        onClick={() => handleStripePayment(tierKey)}
+                        disabled={isProcessingPayment}
                         style={{
-                          backgroundColor: tierData.color,
+                          backgroundColor: isProcessingPayment ? '#9ca3af' : tierData.color,
                           color: 'white',
                           padding: '12px 20px',
                           border: 'none',
                           borderRadius: '8px',
                           width: '100%',
-                          cursor: 'pointer',
+                          cursor: isProcessingPayment ? 'not-allowed' : 'pointer',
                           fontWeight: 'bold',
                           fontSize: 'clamp(12px, 3vw, 14px)'
                         }}
                       >
-                        Download {tierData.name}
+                        {isProcessingPayment ? 'Processing...' : `Pay $${tierData.price} & Download`}
                       </button>
                     </div>
                   ))}
