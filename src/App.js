@@ -2,29 +2,37 @@ import React, { useState, useEffect } from 'react';
 
 function App() {
   const [showModal, setShowModal] = useState(false);
+  const [showAdmin, setShowAdmin] = useState(false);
+  const [currentStep, setCurrentStep] = useState('email'); // email -> questions -> preview -> payment
   const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [userEmail, setUserEmail] = useState('');
   const [answers, setAnswers] = useState({
     moment: '',
     approach: '',
     uniqueness: ''
   });
-  const [showPreview, setShowPreview] = useState(false);
   const [dyslexiaFont, setDyslexiaFont] = useState(false);
   const [selectedTier, setSelectedTier] = useState('basic');
-  const [showDownload, setShowDownload] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [transactions, setTransactions] = useState([]);
 
-  // Load saved answers from localStorage
+  // Load saved data from localStorage
   useEffect(() => {
-    const saved = localStorage.getItem('launchpadAnswers');
-    if (saved) {
-      setAnswers(JSON.parse(saved));
-    }
+    const savedAnswers = localStorage.getItem('launchpadAnswers');
+    const savedUsers = localStorage.getItem('launchpadUsers');
+    const savedTransactions = localStorage.getItem('launchpadTransactions');
+    
+    if (savedAnswers) setAnswers(JSON.parse(savedAnswers));
+    if (savedUsers) setUsers(JSON.parse(savedUsers));
+    if (savedTransactions) setTransactions(JSON.parse(savedTransactions));
   }, []);
 
-  // Save answers to localStorage
+  // Save data to localStorage
   useEffect(() => {
     localStorage.setItem('launchpadAnswers', JSON.stringify(answers));
-  }, [answers]);
+    localStorage.setItem('launchpadUsers', JSON.stringify(users));
+    localStorage.setItem('launchpadTransactions', JSON.stringify(transactions));
+  }, [answers, users, transactions]);
 
   const questions = [
     {
@@ -43,6 +51,12 @@ function App() {
       placeholder: "What unique qualities or perspective did you bring?"
     }
   ];
+
+  const tiers = {
+    basic: { name: 'Basic', price: 19, color: '#059669' },
+    best: { name: 'Best', price: 39, color: '#f59e0b' },
+    immaculate: { name: 'Immaculate', price: 49, color: '#7c3aed' }
+  };
 
   // AI Resume Generation Functions
   const detectIndustry = (answers) => {
@@ -84,69 +98,16 @@ function App() {
     } else if (tier === 'best') {
       return `Results-driven professional with proven track record of making significant impact through ${approach && approach.length > 10 ? approach.toLowerCase() : 'innovative approaches'}. Recognized for ability to ${moment && moment.length > 20 ? 'deliver exceptional outcomes that exceed expectations' : 'create positive change in challenging environments'}. Specializes in ${keywords} with focus on ${uniqueness && uniqueness.length > 10 ? uniqueness.toLowerCase() : 'collaborative problem-solving and continuous improvement'}.`;
     } else {
-      return `Highly accomplished professional with extensive experience driving ${keywords}. Distinguished by ${uniqueness && uniqueness.length > 15 ? uniqueness.toLowerCase() : 'unique perspective and innovative problem-solving approach'}. Proven ability to ${moment && moment.length > 25 ? 'consistently deliver transformative results that create lasting positive impact' : 'exceed performance expectations while building strong stakeholder relationships'}. Expert in leveraging ${approach && approach.length > 15 ? approach.toLowerCase() : 'strategic thinking and collaborative leadership'} to achieve organizational objectives and foster sustainable growth.`;
-    }
-  };
-
-  const generateSkills = (answers, industry, tier) => {
-    const industrySkills = {
-      healthcare: ['Patient Care', 'Medical Documentation', 'Healthcare Compliance', 'Clinical Analysis', 'Quality Improvement'],
-      recruiting: ['Full-Cycle Recruiting', 'Candidate Assessment', 'Interview Techniques', 'ATS Systems', 'Talent Pipeline Development'],
-      aviation: ['Airport Operations', 'Regulatory Compliance', 'Safety Management', 'Emergency Response', 'Risk Assessment'],
-      education: ['Curriculum Development', 'Student Assessment', 'Educational Technology', 'Classroom Management', 'Learning Analytics'],
-      sales: ['Revenue Generation', 'Client Relationship Management', 'Market Analysis', 'Negotiation', 'Sales Strategy'],
-      technology: ['Software Development', 'Technical Analysis', 'System Integration', 'User Experience', 'Project Management'],
-      general: ['Project Management', 'Process Improvement', 'Team Leadership', 'Data Analysis', 'Strategic Planning']
-    };
-
-    const baseSkills = ['Communication', 'Problem Solving', 'Team Collaboration', 'Attention to Detail', 'Adaptability'];
-    const specificSkills = industrySkills[industry] || industrySkills.general;
-
-    if (tier === 'basic' || tier === 'preview') {
-      return [...specificSkills.slice(0, 3), ...baseSkills.slice(0, 2)];
-    } else if (tier === 'best') {
-      return [...specificSkills, ...baseSkills.slice(0, 3)];
-    } else {
-      return [...specificSkills, ...baseSkills, 'Strategic Thinking', 'Mentoring', 'Innovation'];
-    }
-  };
-
-  const generateExperience = (answers, industry, tier) => {
-    const { moment, approach, uniqueness } = answers;
-
-    if (tier === 'basic' || tier === 'preview') {
-      return [
-        `• Contributed to positive outcomes through ${approach && approach.length > 10 ? approach.toLowerCase() : 'dedicated effort and attention to detail'}`,
-        `• Recognized for ability to ${moment && moment.length > 15 ? 'make meaningful impact on team and organizational success' : 'deliver consistent results'}`,
-        `• Applied ${uniqueness && uniqueness.length > 10 ? uniqueness.toLowerCase() : 'unique perspective and skills'} to support team objectives`
-      ];
-    } else if (tier === 'best') {
-      return [
-        `• Successfully delivered exceptional results through ${approach && approach.length > 10 ? approach.toLowerCase() + ', resulting in enhanced team performance and stakeholder satisfaction' : 'innovative problem-solving and collaborative leadership'}`,
-        `• Gained recognition for ${moment && moment.length > 20 ? 'consistently exceeding expectations and creating positive impact across multiple stakeholder groups' : 'outstanding contribution to organizational success'}`,
-        `• Leveraged ${uniqueness && uniqueness.length > 15 ? uniqueness.toLowerCase() + ' to drive process improvements and mentor colleagues' : 'distinctive skills and perspective to optimize operations and support professional development initiatives'}`,
-        `• Maintained focus on continuous improvement while building strong professional relationships`
-      ];
-    } else {
-      return [
-        `• Spearheaded initiatives that resulted in measurable improvements through ${approach && approach.length > 15 ? approach.toLowerCase() + ', leading to enhanced operational efficiency and stakeholder satisfaction' : 'strategic thinking and collaborative leadership approaches'}`,
-        `• Earned widespread recognition for ${moment && moment.length > 25 ? 'transformative contributions that consistently exceeded performance targets and created lasting organizational value' : 'exceptional ability to deliver results while building strong cross-functional partnerships'}`,
-        `• Applied ${uniqueness && uniqueness.length > 20 ? uniqueness.toLowerCase() + ' to identify innovative solutions and mentor high-performing teams' : 'unique expertise and perspective to drive strategic initiatives and develop organizational capabilities'}`,
-        `• Established reputation for excellence in stakeholder management, process optimization, and knowledge transfer`,
-        `• Consistently achieved performance targets while maintaining focus on professional development and team growth`,
-        `• Collaborated with leadership to implement best practices and drive sustainable organizational improvements`
-      ];
+      return `Highly accomplished professional with extensive experience driving ${keywords}. Distinguished by ${uniqueness && uniqueness.length > 15 ? uniqueness.toLowerCase() : 'unique perspective and innovative problem-solving approach'}. Proven ability to ${moment && moment.length > 25 ? 'consistently deliver transformative results that create lasting positive impact' : 'exceed performance expectations while building strong stakeholder relationships'}.`;
     }
   };
 
   const generateFullResume = (tier) => {
     const industry = detectIndustry(answers);
     const summary = generateProfessionalSummary(answers, industry, tier);
-    const skills = generateSkills(answers, industry, tier);
-    const experience = generateExperience(answers, industry, tier);
-
-    const name = "Your Name";
-    const contact = "Your City, State | (555) 123-4567 | your.email@example.com";
+    
+    const name = userEmail ? userEmail.split('@')[0].replace(/[^a-zA-Z]/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : "Your Name";
+    const contact = `${name} | ${userEmail || 'your.email@example.com'} | (555) 123-4567`;
 
     if (tier === 'basic' || tier === 'preview') {
       return `${name}
@@ -156,11 +117,17 @@ PROFESSIONAL SUMMARY
 ${summary}
 
 CORE SKILLS
-${skills.map(skill => `• ${skill}`).join('\n')}
+• Problem Solving & Analysis
+• Team Collaboration
+• Communication Excellence
+• Attention to Detail
+• Process Improvement
 
 EXPERIENCE
 Recent Position | Company Name
-${experience.join('\n')}
+• Successfully contributed to team objectives and organizational goals
+• Recognized for professional excellence and positive impact
+• Applied unique skills to support project success
 
 EDUCATION
 [Your Degree] | [University Name]
@@ -173,21 +140,22 @@ PROFESSIONAL SUMMARY
 ${summary}
 
 CORE COMPETENCIES
-${skills.slice(0, 5).map(skill => `• ${skill}`).join('\n')}
-
-TECHNICAL SKILLS
-${skills.slice(5).map(skill => `• ${skill}`).join('\n')}
+• Strategic Problem Solving  • Team Leadership  • Process Optimization
+• Communication Excellence  • Data Analysis  • Project Management
 
 PROFESSIONAL EXPERIENCE
 Recent Position | Company Name | [Start Date] - Present
-${experience.join('\n')}
+• Successfully delivered exceptional results through innovative problem-solving
+• Gained recognition for outstanding contribution to organizational success
+• Leveraged distinctive skills to optimize operations and support development
+• Maintained focus on continuous improvement and professional relationships
 
 Previous Position | Previous Company | [Start Date] - [End Date]
 • [Additional experience details would be added based on your background]
 
-EDUCATION
+EDUCATION & CERTIFICATIONS
 [Your Degree] | [University Name] | [Graduation Year]
-[Relevant coursework, honors, or achievements]
+• [Relevant coursework, honors, or achievements]
 
 ADDITIONAL QUALIFICATIONS
 • [Certifications relevant to your field]
@@ -202,25 +170,23 @@ ${summary}
 
 CORE COMPETENCIES
 Technical Excellence        Process Optimization        Strategic Leadership
-${skills.slice(0, 3).map(skill => skill).join('                    ')}
-
-Professional Skills         Industry Expertise          Leadership Capabilities  
-${skills.slice(3, 6).map(skill => skill).join('                    ')}
+Problem Solving            Team Collaboration          Innovation Management
 
 PROFESSIONAL EXPERIENCE
 Senior Position | Company Name | [Start Date] - Present
-${experience.slice(0, 3).join('\n')}
+• Spearheaded initiatives resulting in measurable improvements through strategic leadership
+• Earned widespread recognition for transformative contributions exceeding performance targets
+• Applied unique expertise to drive strategic initiatives and develop organizational capabilities
+• Established reputation for excellence in stakeholder management and process optimization
 
 Previous Position | Previous Company | [Start Date] - [End Date]
-${experience.slice(3).join('\n')}
-
-Earlier Position | Earlier Company | [Start Date] - [End Date]
-• [Additional experience details customized to your background]
+• Consistently achieved performance targets while maintaining focus on professional development
+• Collaborated with leadership to implement best practices and drive sustainable improvements
 
 KEY PROJECTS & ACHIEVEMENTS
-• [Project 1]: [Impact and results achieved]
-• [Project 2]: [Quantifiable outcomes and stakeholder value]
-• [Initiative 3]: [Process improvements and team development]
+• [Project 1]: Led cross-functional initiative resulting in 25% efficiency improvement
+• [Project 2]: Developed innovative solution that enhanced stakeholder satisfaction by 40%
+• [Initiative 3]: Mentored team of 8 professionals, achieving 95% retention rate
 
 EDUCATION & CERTIFICATIONS
 [Your Degree] | [University Name] | [Graduation Year]
@@ -236,6 +202,20 @@ ADDITIONAL INFORMATION
     }
   };
 
+  const handleEmailSubmit = () => {
+    if (userEmail && userEmail.includes('@')) {
+      const newUser = {
+        email: userEmail,
+        timestamp: new Date().toISOString(),
+        industry: 'unknown',
+        completed: false,
+        tier: selectedTier
+      };
+      setUsers(prev => [...prev, newUser]);
+      setCurrentStep('questions');
+    }
+  };
+
   const handleAnswerChange = (questionId, value) => {
     setAnswers(prev => ({
       ...prev,
@@ -247,7 +227,13 @@ ADDITIONAL INFORMATION
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      setShowPreview(true);
+      setCurrentStep('preview');
+      // Update user record with completion
+      setUsers(prev => prev.map(user => 
+        user.email === userEmail 
+          ? { ...user, completed: true, industry: detectIndustry(answers) }
+          : user
+      ));
     }
   };
 
@@ -257,22 +243,46 @@ ADDITIONAL INFORMATION
     }
   };
 
-  const resetQuestions = () => {
+  const handlePayment = (tier) => {
+    // Simulate payment processing
+    const transaction = {
+      id: `txn_${Date.now()}`,
+      email: userEmail,
+      tier: tier,
+      amount: tiers[tier].price,
+      status: 'completed',
+      timestamp: new Date().toISOString(),
+      industry: detectIndustry(answers)
+    };
+    
+    setTransactions(prev => [...prev, transaction]);
+    
+    // In real implementation, this would integrate with Stripe
+    alert(`Payment successful! $${tiers[tier].price} charged for ${tiers[tier].name} tier. Resume download would begin automatically.`);
+    
+    setShowModal(false);
+    resetForm();
+  };
+
+  const resetForm = () => {
+    setCurrentStep('email');
     setCurrentQuestion(0);
-    setShowPreview(false);
-    setShowDownload(false);
+    setUserEmail('');
     setAnswers({ moment: '', approach: '', uniqueness: '' });
   };
 
   const startWithTier = (tier) => {
     setSelectedTier(tier);
     setShowModal(true);
+    setCurrentStep('email');
   };
 
-  const handleUpgrade = () => {
-    setShowModal(false);
-    setShowDownload(true);
-  };
+  // Admin Dashboard Data
+  const totalRevenue = transactions.reduce((sum, txn) => sum + txn.amount, 0);
+  const industryBreakdown = users.reduce((acc, user) => {
+    acc[user.industry] = (acc[user.industry] || 0) + 1;
+    return acc;
+  }, {});
 
   return (
     <div style={{
@@ -286,6 +296,27 @@ ADDITIONAL INFORMATION
       overflow: 'hidden',
       boxSizing: 'border-box'
     }}>
+      {/* Admin Access Button */}
+      <button
+        onClick={() => setShowAdmin(true)}
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '20px',
+          background: '#374151',
+          color: 'white',
+          border: 'none',
+          borderRadius: '50%',
+          width: '50px',
+          height: '50px',
+          cursor: 'pointer',
+          fontSize: '20px',
+          zIndex: 999
+        }}
+      >
+        📊
+      </button>
+
       {/* Animated Header */}
       <div style={{
         background: 'linear-gradient(45deg, #059669, #10b981, #34d399)',
@@ -329,7 +360,6 @@ ADDITIONAL INFORMATION
           `}
         </style>
         
-        {/* Decorative sparkles */}
         <div className="sparkle" style={{ top: '20px', left: '10%', fontSize: '20px' }}>✨</div>
         <div className="sparkle" style={{ top: '15px', right: '15%', fontSize: '16px', animationDelay: '0.5s' }}>⭐</div>
         <div className="sparkle" style={{ bottom: '20px', left: '20%', fontSize: '18px', animationDelay: '1s' }}>💫</div>
@@ -378,16 +408,8 @@ ADDITIONAL INFORMATION
             display: 'block',
             margin: '0 auto 15px auto'
           }}
-          onMouseOver={(e) => {
-            e.target.style.transform = 'translateY(-3px)';
-            e.target.style.boxShadow = '0 12px 25px rgba(5, 150, 105, 0.5)';
-          }}
-          onMouseOut={(e) => {
-            e.target.style.transform = 'translateY(0)';
-            e.target.style.boxShadow = '0 8px 20px rgba(5, 150, 105, 0.4)';
-          }}
         >
-          Let's Help the World See Your Potential
+          Let's Help the World See Your Potential ✨
         </button>
         <p style={{ 
           fontSize: 'clamp(14px, 3vw, 16px)', 
@@ -399,7 +421,7 @@ ADDITIONAL INFORMATION
         </p>
       </div>
 
-      {/* Mobile-Friendly Pricing Tiers */}
+      {/* Pricing Tiers */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
@@ -408,198 +430,81 @@ ADDITIONAL INFORMATION
         margin: '0 auto',
         padding: '0 10px'
       }}>
-        {/* Basic Tier */}
-        <div style={{
-          backgroundColor: 'white',
-          padding: '25px 20px',
-          borderRadius: '15px',
-          border: '3px solid #059669',
-          boxShadow: '0 8px 25px rgba(0, 0, 0, 0.1)',
-          transition: 'all 0.3s ease',
-          position: 'relative',
-          overflow: 'hidden'
-        }}>
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            height: '4px',
-            background: 'linear-gradient(90deg, #059669, #10b981)'
-          }} />
-          
-          <h3 style={{
-            fontSize: 'clamp(24px, 5vw, 32px)',
-            fontWeight: 'bold',
-            marginBottom: '10px',
-            color: '#374151'
-          }}>Basic</h3>
-          <p style={{
-            fontSize: 'clamp(28px, 6vw, 36px)',
-            fontWeight: 'bold',
-            color: '#059669',
-            marginBottom: '15px'
-          }}>$19<span style={{ fontSize: '18px', color: '#6b7280' }}>/mo</span></p>
-          <p style={{
-            fontSize: 'clamp(14px, 3vw, 16px)',
-            color: '#6b7280',
-            marginBottom: '20px',
-            lineHeight: '1.5'
-          }}>Essential resume foundation</p>
-          <button 
-            onClick={() => startWithTier('basic')}
-            style={{
-              background: 'linear-gradient(45deg, #059669, #10b981)',
-              color: 'white',
-              padding: '15px 20px',
-              border: 'none',
-              borderRadius: '10px',
-              fontSize: 'clamp(14px, 3vw, 16px)',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              width: '100%',
-              transition: 'all 0.3s ease'
-            }}
-          >
-            Start Your Story
-          </button>
-        </div>
-
-        {/* Best Tier */}
-        <div style={{
-          backgroundColor: 'white',
-          padding: '25px 20px',
-          borderRadius: '15px',
-          border: '3px solid #f59e0b',
-          boxShadow: '0 12px 35px rgba(245, 158, 11, 0.2)',
-          position: 'relative',
-          transform: 'scale(1.02)',
-          transition: 'all 0.3s ease',
-          overflow: 'hidden'
-        }}>
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            height: '4px',
-            background: 'linear-gradient(90deg, #f59e0b, #fbbf24)'
-          }} />
-          
-          <div style={{
-            position: 'absolute',
-            top: '-12px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            background: 'linear-gradient(45deg, #f59e0b, #fbbf24)',
-            color: 'white',
-            padding: '8px 20px',
-            borderRadius: '20px',
-            fontSize: 'clamp(10px, 2.5vw, 12px)',
-            fontWeight: 'bold',
-            boxShadow: '0 4px 10px rgba(245, 158, 11, 0.3)'
+        {Object.entries(tiers).map(([tierKey, tierData]) => (
+          <div key={tierKey} style={{
+            backgroundColor: 'white',
+            padding: '25px 20px',
+            borderRadius: '15px',
+            border: `3px solid ${tierData.color}`,
+            boxShadow: '0 8px 25px rgba(0, 0, 0, 0.1)',
+            transition: 'all 0.3s ease',
+            position: 'relative',
+            overflow: 'hidden',
+            transform: tierKey === 'best' ? 'scale(1.02)' : 'scale(1)'
           }}>
-            MOST POPULAR
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: '4px',
+              background: `linear-gradient(90deg, ${tierData.color}, ${tierData.color}90)`
+            }} />
+            
+            {tierKey === 'best' && (
+              <div style={{
+                position: 'absolute',
+                top: '-12px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                background: `linear-gradient(45deg, ${tierData.color}, ${tierData.color}90)`,
+                color: 'white',
+                padding: '8px 20px',
+                borderRadius: '20px',
+                fontSize: 'clamp(10px, 2.5vw, 12px)',
+                fontWeight: 'bold',
+                boxShadow: `0 4px 10px ${tierData.color}50`
+              }}>
+                ⭐ MOST POPULAR ⭐
+              </div>
+            )}
+            
+            <h3 style={{
+              fontSize: 'clamp(24px, 5vw, 32px)',
+              fontWeight: 'bold',
+              marginBottom: '10px',
+              color: '#374151',
+              marginTop: tierKey === 'best' ? '15px' : '0'
+            }}>{tierData.name}</h3>
+            <p style={{
+              fontSize: 'clamp(28px, 6vw, 36px)',
+              fontWeight: 'bold',
+              color: tierData.color,
+              marginBottom: '15px'
+            }}>${tierData.price}<span style={{ fontSize: '18px', color: '#6b7280' }}>/mo</span></p>
+            <button 
+              onClick={() => startWithTier(tierKey)}
+              style={{
+                background: `linear-gradient(45deg, ${tierData.color}, ${tierData.color}90)`,
+                color: 'white',
+                padding: '15px 20px',
+                border: 'none',
+                borderRadius: '10px',
+                fontSize: 'clamp(14px, 3vw, 16px)',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                width: '100%',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              Start Your Story
+            </button>
           </div>
-          
-          <h3 style={{
-            fontSize: 'clamp(24px, 5vw, 32px)',
-            fontWeight: 'bold',
-            marginBottom: '10px',
-            color: '#374151',
-            marginTop: '15px'
-          }}>Best</h3>
-          <p style={{
-            fontSize: 'clamp(28px, 6vw, 36px)',
-            fontWeight: 'bold',
-            color: '#f59e0b',
-            marginBottom: '15px'
-          }}>$39<span style={{ fontSize: '18px', color: '#6b7280' }}>/mo</span></p>
-          <p style={{
-            fontSize: 'clamp(14px, 3vw, 16px)',
-            color: '#6b7280',
-            marginBottom: '20px',
-            lineHeight: '1.5'
-          }}>Your story with summary</p>
-          <button 
-            onClick={() => startWithTier('best')}
-            style={{
-              background: 'linear-gradient(45deg, #f59e0b, #fbbf24)',
-              color: 'white',
-              padding: '15px 20px',
-              border: 'none',
-              borderRadius: '10px',
-              fontSize: 'clamp(14px, 3vw, 16px)',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              width: '100%',
-              transition: 'all 0.3s ease'
-            }}
-          >
-            Tell Your Story
-          </button>
-        </div>
-
-        {/* Immaculate Tier */}
-        <div style={{
-          backgroundColor: 'white',
-          padding: '25px 20px',
-          borderRadius: '15px',
-          border: '3px solid #7c3aed',
-          boxShadow: '0 8px 25px rgba(124, 58, 237, 0.1)',
-          transition: 'all 0.3s ease',
-          position: 'relative',
-          overflow: 'hidden'
-        }}>
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            height: '4px',
-            background: 'linear-gradient(90deg, #7c3aed, #a855f7)'
-          }} />
-          
-          <h3 style={{
-            fontSize: 'clamp(24px, 5vw, 32px)',
-            fontWeight: 'bold',
-            marginBottom: '10px',
-            color: '#374151'
-          }}>Immaculate</h3>
-          <p style={{
-            fontSize: 'clamp(28px, 6vw, 36px)',
-            fontWeight: 'bold',
-            color: '#7c3aed',
-            marginBottom: '15px'
-          }}>$49<span style={{ fontSize: '18px', color: '#6b7280' }}>/mo</span></p>
-          <p style={{
-            fontSize: 'clamp(14px, 3vw, 16px)',
-            color: '#6b7280',
-            marginBottom: '20px',
-            lineHeight: '1.5'
-          }}>Complete career narrative</p>
-          <button 
-            onClick={() => startWithTier('immaculate')}
-            style={{
-              background: 'linear-gradient(45deg, #7c3aed, #a855f7)',
-              color: 'white',
-              padding: '15px 20px',
-              border: 'none',
-              borderRadius: '10px',
-              fontSize: 'clamp(14px, 3vw, 16px)',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              width: '100%',
-              transition: 'all 0.3s ease'
-            }}
-          >
-            Master Your Story
-          </button>
-        </div>
+        ))}
       </div>
 
-      {/* Download Modal */}
-      {showDownload && (
+      {/* Admin Dashboard Modal */}
+      {showAdmin && (
         <div style={{
           position: 'fixed',
           top: 0,
@@ -616,79 +521,85 @@ ADDITIONAL INFORMATION
           <div style={{
             backgroundColor: 'white',
             borderRadius: '20px',
-            padding: 'clamp(20px, 5vw, 40px)',
+            padding: '30px',
             maxWidth: '95vw',
             width: '100%',
             maxHeight: '95vh',
             overflow: 'auto',
-            position: 'relative',
-            boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
+            position: 'relative'
           }}>
             <button
-              onClick={() => setShowDownload(false)}
+              onClick={() => setShowAdmin(false)}
               style={{
                 position: 'absolute',
                 top: '15px',
                 right: '15px',
-                background: 'linear-gradient(45deg, #ef4444, #f87171)',
+                background: '#ef4444',
                 border: 'none',
                 borderRadius: '50%',
                 width: '40px',
                 height: '40px',
                 fontSize: '20px',
                 cursor: 'pointer',
-                color: 'white',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
+                color: 'white'
               }}
             >
               ×
             </button>
 
-            <h2 style={{ fontSize: 'clamp(20px, 5vw, 28px)', marginBottom: '20px', color: '#059669' }}>
-              Choose Your Tier to Download
+            <h2 style={{ fontSize: '24px', marginBottom: '20px', color: '#059669' }}>
+              Admin Dashboard
             </h2>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
-              {[
-                { tier: 'basic', price: 19, color: '#059669' },
-                { tier: 'best', price: 39, color: '#f59e0b' },
-                { tier: 'immaculate', price: 49, color: '#7c3aed' }
-              ].map(({ tier, price, color }) => (
-                <div key={tier} style={{
-                  border: `2px solid ${color}`,
-                  borderRadius: '12px',
-                  padding: '20px',
-                  backgroundColor: tier === 'best' ? '#fef3c7' : 'white'
-                }}>
-                  <h3 style={{ fontSize: '20px', marginBottom: '10px', textTransform: 'capitalize' }}>{tier}</h3>
-                  <p style={{ fontSize: '24px', fontWeight: 'bold', color: color, marginBottom: '15px' }}>
-                    ${price}/mo
-                  </p>
-                  <button
-                    onClick={() => alert(`Processing ${tier} tier payment... This would connect to Stripe/payment system.`)}
-                    style={{
-                      backgroundColor: color,
-                      color: 'white',
-                      padding: '12px 20px',
-                      border: 'none',
-                      borderRadius: '8px',
-                      width: '100%',
-                      cursor: 'pointer',
-                      fontWeight: 'bold'
-                    }}
-                  >
-                    Download {tier.charAt(0).toUpperCase() + tier.slice(1)} Resume
-                  </button>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginBottom: '30px' }}>
+              <div style={{ backgroundColor: '#f0f9ff', padding: '20px', borderRadius: '12px', border: '2px solid #059669' }}>
+                <h3 style={{ fontSize: '18px', color: '#059669', marginBottom: '10px' }}>Total Users</h3>
+                <p style={{ fontSize: '32px', fontWeight: 'bold', color: '#374151' }}>{users.length}</p>
+              </div>
+              <div style={{ backgroundColor: '#fef3c7', padding: '20px', borderRadius: '12px', border: '2px solid #f59e0b' }}>
+                <h3 style={{ fontSize: '18px', color: '#f59e0b', marginBottom: '10px' }}>Completed Stories</h3>
+                <p style={{ fontSize: '32px', fontWeight: 'bold', color: '#374151' }}>{users.filter(u => u.completed).length}</p>
+              </div>
+              <div style={{ backgroundColor: '#f0fdf4', padding: '20px', borderRadius: '12px', border: '2px solid #10b981' }}>
+                <h3 style={{ fontSize: '18px', color: '#10b981', marginBottom: '10px' }}>Total Revenue</h3>
+                <p style={{ fontSize: '32px', fontWeight: 'bold', color: '#374151' }}>${totalRevenue}</p>
+              </div>
+              <div style={{ backgroundColor: '#faf5ff', padding: '20px', borderRadius: '12px', border: '2px solid #7c3aed' }}>
+                <h3 style={{ fontSize: '18px', color: '#7c3aed', marginBottom: '10px' }}>Transactions</h3>
+                <p style={{ fontSize: '32px', fontWeight: 'bold', color: '#374151' }}>{transactions.length}</p>
+              </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: window.innerWidth > 768 ? '1fr 1fr' : '1fr', gap: '20px' }}>
+              <div>
+                <h3 style={{ fontSize: '18px', marginBottom: '15px', color: '#374151' }}>Recent Users</h3>
+                <div style={{ backgroundColor: '#f9fafb', padding: '15px', borderRadius: '8px', maxHeight: '200px', overflow: 'auto' }}>
+                  {users.slice(-5).map((user, index) => (
+                    <div key={index} style={{ fontSize: '12px', marginBottom: '8px', padding: '8px', backgroundColor: 'white', borderRadius: '4px' }}>
+                      <strong>{user.email}</strong> - {user.industry} - {user.completed ? '✅ Completed' : '⏳ In Progress'}
+                      <br/><span style={{ color: '#6b7280' }}>{new Date(user.timestamp).toLocaleString()}</span>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
+
+              <div>
+                <h3 style={{ fontSize: '18px', marginBottom: '15px', color: '#374151' }}>Recent Transactions</h3>
+                <div style={{ backgroundColor: '#f9fafb', padding: '15px', borderRadius: '8px', maxHeight: '200px', overflow: 'auto' }}>
+                  {transactions.slice(-5).map((txn, index) => (
+                    <div key={index} style={{ fontSize: '12px', marginBottom: '8px', padding: '8px', backgroundColor: 'white', borderRadius: '4px' }}>
+                      <strong>${txn.amount} - {txn.tier}</strong> - {txn.email}
+                      <br/><span style={{ color: '#6b7280' }}>{new Date(txn.timestamp).toLocaleString()}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Main Question Modal */}
+      {/* Main Modal */}
       {showModal && (
         <div style={{
           position: 'fixed',
@@ -714,7 +625,6 @@ ADDITIONAL INFORMATION
             position: 'relative',
             boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
           }}>
-            {/* Close button */}
             <button
               onClick={() => setShowModal(false)}
               style={{
@@ -731,16 +641,57 @@ ADDITIONAL INFORMATION
                 color: 'white',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 4px 10px rgba(239, 68, 68, 0.3)'
+                justifyContent: 'center'
               }}
             >
               ×
             </button>
 
-            {!showPreview ? (
+            {currentStep === 'email' && (
               <>
-                {/* Question Progress */}
+                <h2 style={{ fontSize: 'clamp(20px, 5vw, 28px)', marginBottom: '20px', color: '#059669' }}>
+                  Let's Start Your Journey
+                </h2>
+                <p style={{ fontSize: 'clamp(14px, 3vw, 16px)', color: '#6b7280', marginBottom: '30px' }}>
+                  Enter your email to begin creating your personalized resume
+                </p>
+                <input
+                  type="email"
+                  value={userEmail}
+                  onChange={(e) => setUserEmail(e.target.value)}
+                  placeholder="your.email@example.com"
+                  style={{
+                    width: '100%',
+                    padding: '15px',
+                    fontSize: 'clamp(14px, 3vw, 16px)',
+                    border: '2px solid #e5e7eb',
+                    borderRadius: '12px',
+                    marginBottom: '20px',
+                    boxSizing: 'border-box'
+                  }}
+                />
+                <button
+                  onClick={handleEmailSubmit}
+                  disabled={!userEmail.includes('@')}
+                  style={{
+                    background: userEmail.includes('@') ? 'linear-gradient(45deg, #059669, #10b981)' : '#f3f4f6',
+                    color: userEmail.includes('@') ? 'white' : '#9ca3af',
+                    padding: '15px 30px',
+                    border: 'none',
+                    borderRadius: '10px',
+                    fontSize: 'clamp(14px, 3vw, 16px)',
+                    fontWeight: 'bold',
+                    cursor: userEmail.includes('@') ? 'pointer' : 'not-allowed',
+                    width: '100%'
+                  }}
+                >
+                  Continue to Questions ✨
+                </button>
+              </>
+            )}
+
+            {currentStep === 'questions' && (
+              <>
                 <div style={{ marginBottom: '30px' }}>
                   <div style={{
                     display: 'flex',
@@ -792,15 +743,10 @@ ADDITIONAL INFORMATION
                     backgroundColor: dyslexiaFont ? '#fffef7' : 'white',
                     lineHeight: dyslexiaFont ? '1.8' : '1.5',
                     letterSpacing: dyslexiaFont ? '0.5px' : 'normal',
-                    boxSizing: 'border-box',
-                    outline: 'none',
-                    transition: 'border-color 0.3s ease'
+                    boxSizing: 'border-box'
                   }}
-                  onFocus={(e) => e.target.style.borderColor = '#059669'}
-                  onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
                 />
 
-                {/* Dyslexia Font Toggle */}
                 <div style={{ margin: '20px 0', textAlign: 'left' }}>
                   <label style={{ 
                     display: 'flex', 
@@ -812,18 +758,12 @@ ADDITIONAL INFORMATION
                       type="checkbox"
                       checked={dyslexiaFont}
                       onChange={(e) => setDyslexiaFont(e.target.checked)}
-                      style={{ 
-                        marginRight: '10px',
-                        transform: 'scale(1.2)'
-                      }}
+                      style={{ marginRight: '10px', transform: 'scale(1.2)' }}
                     />
-                    <span style={{ color: '#6b7280' }}>
-                      Use dyslexia-friendly font
-                    </span>
+                    <span style={{ color: '#6b7280' }}>Use dyslexia-friendly font</span>
                   </label>
                 </div>
 
-                {/* Navigation */}
                 <div style={{
                   display: 'flex',
                   justifyContent: 'space-between',
@@ -864,13 +804,14 @@ ADDITIONAL INFORMATION
                       flex: '1'
                     }}
                   >
-                    {currentQuestion === questions.length - 1 ? 'Generate My Resume' : 'Next'}
+                    {currentQuestion === questions.length - 1 ? 'Generate My Resume ✨' : 'Next'}
                   </button>
                 </div>
               </>
-            ) : (
+            )}
+
+            {currentStep === 'preview' && (
               <>
-                {/* AI-Generated Resume Preview */}
                 <h2 style={{
                   fontSize: 'clamp(20px, 5vw, 28px)',
                   marginBottom: '20px',
@@ -886,13 +827,8 @@ ADDITIONAL INFORMATION
                   gap: '20px',
                   marginBottom: '30px'
                 }}>
-                  {/* Dyslexia friendly view */}
                   <div>
-                    <h3 style={{ 
-                      fontSize: 'clamp(14px, 3vw, 18px)', 
-                      marginBottom: '15px', 
-                      color: '#6b7280' 
-                    }}>
+                    <h3 style={{ fontSize: 'clamp(14px, 3vw, 18px)', marginBottom: '15px', color: '#6b7280' }}>
                       Dyslexia-Friendly View
                     </h3>
                     <div style={{
@@ -905,20 +841,15 @@ ADDITIONAL INFORMATION
                       lineHeight: '1.8',
                       letterSpacing: '0.5px',
                       whiteSpace: 'pre-line',
-                      maxHeight: '400px',
+                      maxHeight: '300px',
                       overflow: 'auto'
                     }}>
                       {generateFullResume('preview')}
                     </div>
                   </div>
 
-                  {/* Professional format */}
                   <div>
-                    <h3 style={{ 
-                      fontSize: 'clamp(14px, 3vw, 18px)', 
-                      marginBottom: '15px', 
-                      color: '#6b7280' 
-                    }}>
+                    <h3 style={{ fontSize: 'clamp(14px, 3vw, 18px)', marginBottom: '15px', color: '#6b7280' }}>
                       Professional Resume Preview
                     </h3>
                     <div style={{
@@ -930,7 +861,7 @@ ADDITIONAL INFORMATION
                       lineHeight: '1.4',
                       whiteSpace: 'pre-line',
                       fontFamily: 'Times, serif',
-                      maxHeight: '400px',
+                      maxHeight: '300px',
                       overflow: 'auto'
                     }}>
                       {generateFullResume(selectedTier)}
@@ -938,7 +869,6 @@ ADDITIONAL INFORMATION
                   </div>
                 </div>
 
-                {/* AI Analysis Box */}
                 <div style={{
                   background: 'linear-gradient(135deg, #e0f2fe, #f0f9ff)',
                   padding: '20px',
@@ -953,54 +883,59 @@ ADDITIONAL INFORMATION
                     marginBottom: '10px',
                     fontWeight: 'bold'
                   }}>
-                    AI Detected Industry: {detectIndustry(answers).charAt(0).toUpperCase() + detectIndustry(answers).slice(1)}
+                    🤖 AI Detected Industry: {detectIndustry(answers).charAt(0).toUpperCase() + detectIndustry(answers).slice(1)}
                   </p>
                   <p style={{ fontSize: 'clamp(12px, 3vw, 14px)', color: '#075985' }}>
-                    Your resume has been customized with industry-specific language and formatting. 
-                    {selectedTier === 'immaculate' ? ' Full version includes job description matching and LinkedIn optimization.' : 
-                     selectedTier === 'best' ? ' Upgrade to Immaculate for complete career narrative.' : 
-                     ' Upgrade for professional summary and enhanced formatting.'}
+                    Ready to download your professional resume? Choose your tier below to get the complete version.
                   </p>
                 </div>
 
-                {/* Action Buttons */}
-                <div style={{
-                  display: 'flex',
-                  flexDirection: window.innerWidth > 480 ? 'row' : 'column',
-                  gap: '15px',
-                  justifyContent: 'center'
-                }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
+                  {Object.entries(tiers).map(([tierKey, tierData]) => (
+                    <div key={tierKey} style={{
+                      border: `2px solid ${tierData.color}`,
+                      borderRadius: '12px',
+                      padding: '20px',
+                      backgroundColor: tierKey === 'best' ? '#fef3c7' : 'white'
+                    }}>
+                      <h3 style={{ fontSize: '18px', marginBottom: '10px' }}>{tierData.name}</h3>
+                      <p style={{ fontSize: '24px', fontWeight: 'bold', color: tierData.color, marginBottom: '15px' }}>
+                        ${tierData.price}/mo
+                      </p>
+                      <button
+                        onClick={() => handlePayment(tierKey)}
+                        style={{
+                          backgroundColor: tierData.color,
+                          color: 'white',
+                          padding: '12px 20px',
+                          border: 'none',
+                          borderRadius: '8px',
+                          width: '100%',
+                          cursor: 'pointer',
+                          fontWeight: 'bold',
+                          fontSize: 'clamp(12px, 3vw, 14px)'
+                        }}
+                      >
+                        Download {tierData.name}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{ marginTop: '20px', textAlign: 'center' }}>
                   <button
-                    onClick={resetQuestions}
+                    onClick={resetForm}
                     style={{
-                      padding: 'clamp(12px, 3vw, 15px) clamp(20px, 5vw, 30px)',
+                      padding: '10px 20px',
                       backgroundColor: '#6b7280',
                       color: 'white',
                       border: 'none',
-                      borderRadius: '10px',
+                      borderRadius: '8px',
                       cursor: 'pointer',
-                      fontSize: 'clamp(12px, 3vw, 14px)',
-                      flex: window.innerWidth > 480 ? '1' : 'none'
+                      fontSize: 'clamp(12px, 3vw, 14px)'
                     }}
                   >
                     Start Over
-                  </button>
-                  
-                  <button
-                    onClick={handleUpgrade}
-                    style={{
-                      padding: 'clamp(12px, 3vw, 15px) clamp(20px, 5vw, 30px)',
-                      background: 'linear-gradient(45deg, #059669, #10b981)',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '10px',
-                      cursor: 'pointer',
-                      fontSize: 'clamp(12px, 3vw, 16px)',
-                      fontWeight: 'bold',
-                      flex: window.innerWidth > 480 ? '2' : 'none'
-                    }}
-                  >
-                    Download My Resume
                   </button>
                 </div>
               </>
