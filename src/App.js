@@ -10,6 +10,8 @@ function App() {
   });
   const [showPreview, setShowPreview] = useState(false);
   const [dyslexiaFont, setDyslexiaFont] = useState(false);
+  const [selectedTier, setSelectedTier] = useState('basic');
+  const [showDownload, setShowDownload] = useState(false);
 
   // Load saved answers from localStorage
   useEffect(() => {
@@ -42,6 +44,198 @@ function App() {
     }
   ];
 
+  // AI Resume Generation Functions
+  const detectIndustry = (answers) => {
+    const combinedText = Object.values(answers).join(' ').toLowerCase();
+    
+    if (combinedText.includes('patient') || combinedText.includes('medical') || combinedText.includes('healthcare') || combinedText.includes('clinical')) {
+      return 'healthcare';
+    } else if (combinedText.includes('recruit') || combinedText.includes('hiring') || combinedText.includes('candidate') || combinedText.includes('hr')) {
+      return 'recruiting';
+    } else if (combinedText.includes('aviation') || combinedText.includes('airport') || combinedText.includes('aircraft') || combinedText.includes('flight')) {
+      return 'aviation';
+    } else if (combinedText.includes('teach') || combinedText.includes('student') || combinedText.includes('education') || combinedText.includes('classroom')) {
+      return 'education';
+    } else if (combinedText.includes('sales') || combinedText.includes('customer') || combinedText.includes('client') || combinedText.includes('revenue')) {
+      return 'sales';
+    } else if (combinedText.includes('software') || combinedText.includes('code') || combinedText.includes('developer') || combinedText.includes('technical')) {
+      return 'technology';
+    }
+    return 'general';
+  };
+
+  const generateProfessionalSummary = (answers, industry, tier) => {
+    const { moment, approach, uniqueness } = answers;
+    
+    const industryKeywords = {
+      healthcare: 'patient care excellence, clinical outcomes, healthcare delivery',
+      recruiting: 'talent acquisition, candidate experience, organizational growth',
+      aviation: 'operational safety, regulatory compliance, industry standards',
+      education: 'student success, learning outcomes, educational excellence',
+      sales: 'revenue generation, client relationships, market expansion',
+      technology: 'innovative solutions, technical excellence, user experience',
+      general: 'operational excellence, stakeholder satisfaction, process improvement'
+    };
+
+    const keywords = industryKeywords[industry] || industryKeywords.general;
+
+    if (tier === 'basic' || tier === 'preview') {
+      return `Professional with demonstrated ability to deliver meaningful results. Known for ${approach && approach.length > 10 ? approach.toLowerCase() : 'strong problem-solving skills'} and commitment to ${keywords.split(',')[0]}.`;
+    } else if (tier === 'best') {
+      return `Results-driven professional with proven track record of making significant impact through ${approach && approach.length > 10 ? approach.toLowerCase() : 'innovative approaches'}. Recognized for ability to ${moment && moment.length > 20 ? 'deliver exceptional outcomes that exceed expectations' : 'create positive change in challenging environments'}. Specializes in ${keywords} with focus on ${uniqueness && uniqueness.length > 10 ? uniqueness.toLowerCase() : 'collaborative problem-solving and continuous improvement'}.`;
+    } else {
+      return `Highly accomplished professional with extensive experience driving ${keywords}. Distinguished by ${uniqueness && uniqueness.length > 15 ? uniqueness.toLowerCase() : 'unique perspective and innovative problem-solving approach'}. Proven ability to ${moment && moment.length > 25 ? 'consistently deliver transformative results that create lasting positive impact' : 'exceed performance expectations while building strong stakeholder relationships'}. Expert in leveraging ${approach && approach.length > 15 ? approach.toLowerCase() : 'strategic thinking and collaborative leadership'} to achieve organizational objectives and foster sustainable growth.`;
+    }
+  };
+
+  const generateSkills = (answers, industry, tier) => {
+    const industrySkills = {
+      healthcare: ['Patient Care', 'Medical Documentation', 'Healthcare Compliance', 'Clinical Analysis', 'Quality Improvement'],
+      recruiting: ['Full-Cycle Recruiting', 'Candidate Assessment', 'Interview Techniques', 'ATS Systems', 'Talent Pipeline Development'],
+      aviation: ['Airport Operations', 'Regulatory Compliance', 'Safety Management', 'Emergency Response', 'Risk Assessment'],
+      education: ['Curriculum Development', 'Student Assessment', 'Educational Technology', 'Classroom Management', 'Learning Analytics'],
+      sales: ['Revenue Generation', 'Client Relationship Management', 'Market Analysis', 'Negotiation', 'Sales Strategy'],
+      technology: ['Software Development', 'Technical Analysis', 'System Integration', 'User Experience', 'Project Management'],
+      general: ['Project Management', 'Process Improvement', 'Team Leadership', 'Data Analysis', 'Strategic Planning']
+    };
+
+    const baseSkills = ['Communication', 'Problem Solving', 'Team Collaboration', 'Attention to Detail', 'Adaptability'];
+    const specificSkills = industrySkills[industry] || industrySkills.general;
+
+    if (tier === 'basic' || tier === 'preview') {
+      return [...specificSkills.slice(0, 3), ...baseSkills.slice(0, 2)];
+    } else if (tier === 'best') {
+      return [...specificSkills, ...baseSkills.slice(0, 3)];
+    } else {
+      return [...specificSkills, ...baseSkills, 'Strategic Thinking', 'Mentoring', 'Innovation'];
+    }
+  };
+
+  const generateExperience = (answers, industry, tier) => {
+    const { moment, approach, uniqueness } = answers;
+
+    if (tier === 'basic' || tier === 'preview') {
+      return [
+        `• Contributed to positive outcomes through ${approach && approach.length > 10 ? approach.toLowerCase() : 'dedicated effort and attention to detail'}`,
+        `• Recognized for ability to ${moment && moment.length > 15 ? 'make meaningful impact on team and organizational success' : 'deliver consistent results'}`,
+        `• Applied ${uniqueness && uniqueness.length > 10 ? uniqueness.toLowerCase() : 'unique perspective and skills'} to support team objectives`
+      ];
+    } else if (tier === 'best') {
+      return [
+        `• Successfully delivered exceptional results through ${approach && approach.length > 10 ? approach.toLowerCase() + ', resulting in enhanced team performance and stakeholder satisfaction' : 'innovative problem-solving and collaborative leadership'}`,
+        `• Gained recognition for ${moment && moment.length > 20 ? 'consistently exceeding expectations and creating positive impact across multiple stakeholder groups' : 'outstanding contribution to organizational success'}`,
+        `• Leveraged ${uniqueness && uniqueness.length > 15 ? uniqueness.toLowerCase() + ' to drive process improvements and mentor colleagues' : 'distinctive skills and perspective to optimize operations and support professional development initiatives'}`,
+        `• Maintained focus on continuous improvement while building strong professional relationships`
+      ];
+    } else {
+      return [
+        `• Spearheaded initiatives that resulted in measurable improvements through ${approach && approach.length > 15 ? approach.toLowerCase() + ', leading to enhanced operational efficiency and stakeholder satisfaction' : 'strategic thinking and collaborative leadership approaches'}`,
+        `• Earned widespread recognition for ${moment && moment.length > 25 ? 'transformative contributions that consistently exceeded performance targets and created lasting organizational value' : 'exceptional ability to deliver results while building strong cross-functional partnerships'}`,
+        `• Applied ${uniqueness && uniqueness.length > 20 ? uniqueness.toLowerCase() + ' to identify innovative solutions and mentor high-performing teams' : 'unique expertise and perspective to drive strategic initiatives and develop organizational capabilities'}`,
+        `• Established reputation for excellence in stakeholder management, process optimization, and knowledge transfer`,
+        `• Consistently achieved performance targets while maintaining focus on professional development and team growth`,
+        `• Collaborated with leadership to implement best practices and drive sustainable organizational improvements`
+      ];
+    }
+  };
+
+  const generateFullResume = (tier) => {
+    const industry = detectIndustry(answers);
+    const summary = generateProfessionalSummary(answers, industry, tier);
+    const skills = generateSkills(answers, industry, tier);
+    const experience = generateExperience(answers, industry, tier);
+
+    const name = "Your Name";
+    const contact = "Your City, State | (555) 123-4567 | your.email@example.com";
+
+    if (tier === 'basic' || tier === 'preview') {
+      return `${name}
+${contact}
+
+PROFESSIONAL SUMMARY
+${summary}
+
+CORE SKILLS
+${skills.map(skill => `• ${skill}`).join('\n')}
+
+EXPERIENCE
+Recent Position | Company Name
+${experience.join('\n')}
+
+EDUCATION
+[Your Degree] | [University Name]
+[Graduation Year]`;
+    } else if (tier === 'best') {
+      return `${name}
+${contact}
+
+PROFESSIONAL SUMMARY
+${summary}
+
+CORE COMPETENCIES
+${skills.slice(0, 5).map(skill => `• ${skill}`).join('\n')}
+
+TECHNICAL SKILLS
+${skills.slice(5).map(skill => `• ${skill}`).join('\n')}
+
+PROFESSIONAL EXPERIENCE
+Recent Position | Company Name | [Start Date] - Present
+${experience.join('\n')}
+
+Previous Position | Previous Company | [Start Date] - [End Date]
+• [Additional experience details would be added based on your background]
+
+EDUCATION
+[Your Degree] | [University Name] | [Graduation Year]
+[Relevant coursework, honors, or achievements]
+
+ADDITIONAL QUALIFICATIONS
+• [Certifications relevant to your field]
+• [Professional development activities]`;
+    } else {
+      return `${name}
+${contact}
+LinkedIn: [Your LinkedIn Profile] | Portfolio: [Your Website]
+
+PROFESSIONAL SUMMARY
+${summary}
+
+CORE COMPETENCIES
+Technical Excellence        Process Optimization        Strategic Leadership
+${skills.slice(0, 3).map(skill => skill).join('                    ')}
+
+Professional Skills         Industry Expertise          Leadership Capabilities  
+${skills.slice(3, 6).map(skill => skill).join('                    ')}
+
+PROFESSIONAL EXPERIENCE
+Senior Position | Company Name | [Start Date] - Present
+${experience.slice(0, 3).join('\n')}
+
+Previous Position | Previous Company | [Start Date] - [End Date]
+${experience.slice(3).join('\n')}
+
+Earlier Position | Earlier Company | [Start Date] - [End Date]
+• [Additional experience details customized to your background]
+
+KEY PROJECTS & ACHIEVEMENTS
+• [Project 1]: [Impact and results achieved]
+• [Project 2]: [Quantifiable outcomes and stakeholder value]
+• [Initiative 3]: [Process improvements and team development]
+
+EDUCATION & CERTIFICATIONS
+[Your Degree] | [University Name] | [Graduation Year]
+• [Relevant coursework, magna cum laude, etc.]
+
+Professional Certifications:
+• [Industry-specific certifications]
+• [Continuing education and professional development]
+
+ADDITIONAL INFORMATION
+• [Languages spoken, volunteer work, or other relevant qualifications]
+• [Industry associations or professional memberships]`;
+    }
+  };
+
   const handleAnswerChange = (questionId, value) => {
     setAnswers(prev => ({
       ...prev,
@@ -66,26 +260,18 @@ function App() {
   const resetQuestions = () => {
     setCurrentQuestion(0);
     setShowPreview(false);
+    setShowDownload(false);
     setAnswers({ moment: '', approach: '', uniqueness: '' });
   };
 
-  const generatePreview = () => {
-    const name = "Your Name";
-    
-    return `${name}
-Professional Summary
+  const startWithTier = (tier) => {
+    setSelectedTier(tier);
+    setShowModal(true);
+  };
 
-${answers.approach ? `I am known for my ${answers.approach.toLowerCase()}. ` : ''}${answers.moment ? `My colleagues value my ability to ${answers.moment.toLowerCase().includes('help') ? 'provide meaningful support' : 'make a positive impact'}. ` : ''}${answers.uniqueness ? `What sets me apart is ${answers.uniqueness.toLowerCase()}.` : ''}
-
-Experience
-• Successfully delivered impactful results in collaborative environments
-• Recognized for ${answers.approach || 'exceptional problem-solving abilities'}
-• Demonstrated unique ability to ${answers.uniqueness || 'connect with and support others'}
-
-Education
-• [Your Education Details]
-
-This is just the beginning of your story...`;
+  const handleUpgrade = () => {
+    setShowModal(false);
+    setShowDownload(true);
   };
 
   return (
@@ -174,7 +360,7 @@ This is just the beginning of your story...`;
       {/* Motivational CTA Button */}
       <div style={{ marginBottom: '40px', padding: '0 10px' }}>
         <button
-          onClick={() => setShowModal(true)}
+          onClick={() => startWithTier('preview')}
           style={{
             background: 'linear-gradient(45deg, #059669, #10b981)',
             color: 'white',
@@ -201,7 +387,7 @@ This is just the beginning of your story...`;
             e.target.style.boxShadow = '0 8px 20px rgba(5, 150, 105, 0.4)';
           }}
         >
-          Let's Help the World See Your Potential ✨
+          Let's Help the World See Your Potential
         </button>
         <p style={{ 
           fontSize: 'clamp(14px, 3vw, 16px)', 
@@ -232,16 +418,7 @@ This is just the beginning of your story...`;
           transition: 'all 0.3s ease',
           position: 'relative',
           overflow: 'hidden'
-        }}
-        onMouseOver={(e) => {
-          e.target.style.transform = 'translateY(-5px)';
-          e.target.style.boxShadow = '0 15px 35px rgba(0, 0, 0, 0.15)';
-        }}
-        onMouseOut={(e) => {
-          e.target.style.transform = 'translateY(0)';
-          e.target.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.1)';
-        }}
-        >
+        }}>
           <div style={{
             position: 'absolute',
             top: 0,
@@ -269,20 +446,8 @@ This is just the beginning of your story...`;
             marginBottom: '20px',
             lineHeight: '1.5'
           }}>Essential resume foundation</p>
-          <ul style={{
-            textAlign: 'left',
-            fontSize: 'clamp(12px, 3vw, 14px)',
-            marginBottom: '25px',
-            paddingLeft: '20px',
-            lineHeight: '1.6'
-          }}>
-            <li style={{ marginBottom: '8px' }}>✅ Name & Contact Info</li>
-            <li style={{ marginBottom: '8px' }}>✅ Education Section</li>
-            <li style={{ marginBottom: '8px' }}>✅ Basic Work History</li>
-            <li style={{ marginBottom: '8px' }}>✅ Dyslexia-friendly fonts</li>
-          </ul>
           <button 
-            onClick={() => setShowModal(true)}
+            onClick={() => startWithTier('basic')}
             style={{
               background: 'linear-gradient(45deg, #059669, #10b981)',
               color: 'white',
@@ -296,7 +461,7 @@ This is just the beginning of your story...`;
               transition: 'all 0.3s ease'
             }}
           >
-            Start Your Story 🌱
+            Start Your Story
           </button>
         </div>
 
@@ -311,16 +476,7 @@ This is just the beginning of your story...`;
           transform: 'scale(1.02)',
           transition: 'all 0.3s ease',
           overflow: 'hidden'
-        }}
-        onMouseOver={(e) => {
-          e.target.style.transform = 'scale(1.02) translateY(-5px)';
-          e.target.style.boxShadow = '0 20px 45px rgba(245, 158, 11, 0.25)';
-        }}
-        onMouseOut={(e) => {
-          e.target.style.transform = 'scale(1.02) translateY(0)';
-          e.target.style.boxShadow = '0 12px 35px rgba(245, 158, 11, 0.2)';
-        }}
-        >
+        }}>
           <div style={{
             position: 'absolute',
             top: 0,
@@ -343,7 +499,7 @@ This is just the beginning of your story...`;
             fontWeight: 'bold',
             boxShadow: '0 4px 10px rgba(245, 158, 11, 0.3)'
           }}>
-            ⭐ MOST POPULAR ⭐
+            MOST POPULAR
           </div>
           
           <h3 style={{
@@ -365,20 +521,8 @@ This is just the beginning of your story...`;
             marginBottom: '20px',
             lineHeight: '1.5'
           }}>Your story with summary</p>
-          <ul style={{
-            textAlign: 'left',
-            fontSize: 'clamp(12px, 3vw, 14px)',
-            marginBottom: '25px',
-            paddingLeft: '20px',
-            lineHeight: '1.6'
-          }}>
-            <li style={{ marginBottom: '8px' }}>✅ Everything in Basic</li>
-            <li style={{ marginBottom: '8px' }}>✅ Professional Summary</li>
-            <li style={{ marginBottom: '8px' }}>✅ Skills & Achievements</li>
-            <li style={{ marginBottom: '8px' }}>✅ Cover Letter Template</li>
-          </ul>
           <button 
-            onClick={() => setShowModal(true)}
+            onClick={() => startWithTier('best')}
             style={{
               background: 'linear-gradient(45deg, #f59e0b, #fbbf24)',
               color: 'white',
@@ -392,7 +536,7 @@ This is just the beginning of your story...`;
               transition: 'all 0.3s ease'
             }}
           >
-            Tell Your Story 🌟
+            Tell Your Story
           </button>
         </div>
 
@@ -406,16 +550,7 @@ This is just the beginning of your story...`;
           transition: 'all 0.3s ease',
           position: 'relative',
           overflow: 'hidden'
-        }}
-        onMouseOver={(e) => {
-          e.target.style.transform = 'translateY(-5px)';
-          e.target.style.boxShadow = '0 15px 35px rgba(124, 58, 237, 0.15)';
-        }}
-        onMouseOut={(e) => {
-          e.target.style.transform = 'translateY(0)';
-          e.target.style.boxShadow = '0 8px 25px rgba(124, 58, 237, 0.1)';
-        }}
-        >
+        }}>
           <div style={{
             position: 'absolute',
             top: 0,
@@ -443,21 +578,8 @@ This is just the beginning of your story...`;
             marginBottom: '20px',
             lineHeight: '1.5'
           }}>Complete career narrative</p>
-          <ul style={{
-            textAlign: 'left',
-            fontSize: 'clamp(12px, 3vw, 14px)',
-            marginBottom: '25px',
-            paddingLeft: '20px',
-            lineHeight: '1.6'
-          }}>
-            <li style={{ marginBottom: '8px' }}>✅ Everything in Best</li>
-            <li style={{ marginBottom: '8px' }}>✅ Full Story Development</li>
-            <li style={{ marginBottom: '8px' }}>✅ Job Description Matching</li>
-            <li style={{ marginBottom: '8px' }}>✅ Document Uploads</li>
-            <li style={{ marginBottom: '8px' }}>✅ LinkedIn Optimization</li>
-          </ul>
           <button 
-            onClick={() => setShowModal(true)}
+            onClick={() => startWithTier('immaculate')}
             style={{
               background: 'linear-gradient(45deg, #7c3aed, #a855f7)',
               color: 'white',
@@ -471,12 +593,102 @@ This is just the beginning of your story...`;
               transition: 'all 0.3s ease'
             }}
           >
-            Master Your Story 👑
+            Master Your Story
           </button>
         </div>
       </div>
 
-      {/* Mobile-Optimized Modal */}
+      {/* Download Modal */}
+      {showDownload && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.8)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+          padding: '10px'
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '20px',
+            padding: 'clamp(20px, 5vw, 40px)',
+            maxWidth: '95vw',
+            width: '100%',
+            maxHeight: '95vh',
+            overflow: 'auto',
+            position: 'relative',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
+          }}>
+            <button
+              onClick={() => setShowDownload(false)}
+              style={{
+                position: 'absolute',
+                top: '15px',
+                right: '15px',
+                background: 'linear-gradient(45deg, #ef4444, #f87171)',
+                border: 'none',
+                borderRadius: '50%',
+                width: '40px',
+                height: '40px',
+                fontSize: '20px',
+                cursor: 'pointer',
+                color: 'white',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              ×
+            </button>
+
+            <h2 style={{ fontSize: 'clamp(20px, 5vw, 28px)', marginBottom: '20px', color: '#059669' }}>
+              Choose Your Tier to Download
+            </h2>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
+              {[
+                { tier: 'basic', price: 19, color: '#059669' },
+                { tier: 'best', price: 39, color: '#f59e0b' },
+                { tier: 'immaculate', price: 49, color: '#7c3aed' }
+              ].map(({ tier, price, color }) => (
+                <div key={tier} style={{
+                  border: `2px solid ${color}`,
+                  borderRadius: '12px',
+                  padding: '20px',
+                  backgroundColor: tier === 'best' ? '#fef3c7' : 'white'
+                }}>
+                  <h3 style={{ fontSize: '20px', marginBottom: '10px', textTransform: 'capitalize' }}>{tier}</h3>
+                  <p style={{ fontSize: '24px', fontWeight: 'bold', color: color, marginBottom: '15px' }}>
+                    ${price}/mo
+                  </p>
+                  <button
+                    onClick={() => alert(`Processing ${tier} tier payment... This would connect to Stripe/payment system.`)}
+                    style={{
+                      backgroundColor: color,
+                      color: 'white',
+                      padding: '12px 20px',
+                      border: 'none',
+                      borderRadius: '8px',
+                      width: '100%',
+                      cursor: 'pointer',
+                      fontWeight: 'bold'
+                    }}
+                  >
+                    Download {tier.charAt(0).toUpperCase() + tier.slice(1)} Resume
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Main Question Modal */}
       {showModal && (
         <div style={{
           position: 'fixed',
@@ -611,7 +823,7 @@ This is just the beginning of your story...`;
                   </label>
                 </div>
 
-                {/* Mobile-Optimized Navigation */}
+                {/* Navigation */}
                 <div style={{
                   display: 'flex',
                   justifyContent: 'space-between',
@@ -652,20 +864,20 @@ This is just the beginning of your story...`;
                       flex: '1'
                     }}
                   >
-                    {currentQuestion === questions.length - 1 ? 'See My Story ✨' : 'Next'}
+                    {currentQuestion === questions.length - 1 ? 'Generate My Resume' : 'Next'}
                   </button>
                 </div>
               </>
             ) : (
               <>
-                {/* Mobile-Optimized Preview */}
+                {/* AI-Generated Resume Preview */}
                 <h2 style={{
                   fontSize: 'clamp(20px, 5vw, 28px)',
                   marginBottom: '20px',
                   color: '#059669',
                   textAlign: 'center'
                 }}>
-                  Here's a glimpse of your story...
+                  AI-Generated Resume Preview
                 </h2>
 
                 <div style={{
@@ -692,16 +904,11 @@ This is just the beginning of your story...`;
                       fontSize: 'clamp(12px, 3vw, 14px)',
                       lineHeight: '1.8',
                       letterSpacing: '0.5px',
-                      whiteSpace: 'pre-line'
+                      whiteSpace: 'pre-line',
+                      maxHeight: '400px',
+                      overflow: 'auto'
                     }}>
-                      <strong>Your Moment:</strong><br/>
-                      {answers.moment}
-
-                      <br/><br/><strong>Your Approach:</strong><br/>
-                      {answers.approach}
-
-                      <br/><br/><strong>Your Uniqueness:</strong><br/>
-                      {answers.uniqueness}
+                      {generateFullResume('preview')}
                     </div>
                   </div>
 
@@ -722,36 +929,41 @@ This is just the beginning of your story...`;
                       fontSize: 'clamp(10px, 2.5vw, 12px)',
                       lineHeight: '1.4',
                       whiteSpace: 'pre-line',
-                      fontFamily: 'Times, serif'
+                      fontFamily: 'Times, serif',
+                      maxHeight: '400px',
+                      overflow: 'auto'
                     }}>
-                      {generatePreview()}
+                      {generateFullResume(selectedTier)}
                     </div>
                   </div>
                 </div>
 
-                {/* Upgrade Message */}
+                {/* AI Analysis Box */}
                 <div style={{
-                  background: 'linear-gradient(135deg, #fef3c7, #fde68a)',
+                  background: 'linear-gradient(135deg, #e0f2fe, #f0f9ff)',
                   padding: '20px',
                   borderRadius: '15px',
                   marginBottom: '25px',
                   textAlign: 'center',
-                  border: '2px solid #fbbf24'
+                  border: '2px solid #0ea5e9'
                 }}>
                   <p style={{ 
                     fontSize: 'clamp(14px, 3vw, 16px)', 
-                    color: '#92400e', 
+                    color: '#0c4a6e', 
                     marginBottom: '10px',
                     fontWeight: 'bold'
                   }}>
-                    🌟 This is just the beginning!
+                    AI Detected Industry: {detectIndustry(answers).charAt(0).toUpperCase() + detectIndustry(answers).slice(1)}
                   </p>
-                  <p style={{ fontSize: 'clamp(12px, 3vw, 14px)', color: '#a16207' }}>
-                    With our paid tiers, we'll help you craft a complete, compelling narrative that showcases your full potential.
+                  <p style={{ fontSize: 'clamp(12px, 3vw, 14px)', color: '#075985' }}>
+                    Your resume has been customized with industry-specific language and formatting. 
+                    {selectedTier === 'immaculate' ? ' Full version includes job description matching and LinkedIn optimization.' : 
+                     selectedTier === 'best' ? ' Upgrade to Immaculate for complete career narrative.' : 
+                     ' Upgrade for professional summary and enhanced formatting.'}
                   </p>
                 </div>
 
-                {/* Mobile-Optimized Action Buttons */}
+                {/* Action Buttons */}
                 <div style={{
                   display: 'flex',
                   flexDirection: window.innerWidth > 480 ? 'row' : 'column',
@@ -775,10 +987,7 @@ This is just the beginning of your story...`;
                   </button>
                   
                   <button
-                    onClick={() => {
-                      setShowModal(false);
-                      alert('Ready to unlock your full story! Choose your tier above and we\'ll help you create an amazing resume.');
-                    }}
+                    onClick={handleUpgrade}
                     style={{
                       padding: 'clamp(12px, 3vw, 15px) clamp(20px, 5vw, 30px)',
                       background: 'linear-gradient(45deg, #059669, #10b981)',
@@ -791,7 +1000,7 @@ This is just the beginning of your story...`;
                       flex: window.innerWidth > 480 ? '2' : 'none'
                     }}
                   >
-                    Unlock My Full Story 🚀
+                    Download My Resume
                   </button>
                 </div>
               </>
