@@ -671,6 +671,97 @@ PROFESSIONAL AFFILIATIONS
         </div>
       </div>
 
+      {/* About the Founder Section */}
+      <div style={{ padding: '80px 20px', backgroundColor: '#475569' }}>
+        <h2 style={{ 
+          fontSize: 'clamp(28px, 6vw, 48px)', 
+          marginBottom: '30px',
+          color: '#f1f5f9'
+        }}>
+          Built by Someone Who Gets It
+        </h2>
+        
+        <div style={{
+          maxWidth: '900px',
+          margin: '0 auto',
+          background: 'rgba(59, 130, 246, 0.1)',
+          backdropFilter: 'blur(10px)',
+          padding: '40px',
+          borderRadius: '20px',
+          border: '2px solid rgba(59, 130, 246, 0.3)'
+        }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: window.innerWidth > 768 ? '1fr 2fr' : '1fr',
+            gap: '30px',
+            alignItems: 'center'
+          }}>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ 
+                fontSize: '80px', 
+                marginBottom: '20px',
+                background: 'linear-gradient(45deg, #60a5fa, #34d399)',
+                borderRadius: '50%',
+                width: '120px',
+                height: '120px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 20px auto'
+              }}>👨‍🚀</div>
+              <h3 style={{ fontSize: '24px', color: '#60a5fa', marginBottom: '10px' }}>The Founder</h3>
+              <p style={{ fontSize: '16px', color: '#cbd5e1' }}>Dyslexic • ADHD • Career Launch Specialist</p>
+            </div>
+            
+            <div>
+              <p style={{ 
+                fontSize: '18px', 
+                lineHeight: '1.6', 
+                color: '#e2e8f0',
+                marginBottom: '20px',
+                fontStyle: 'italic'
+              }}>
+                "I've spent my entire career being told my brain works 'wrong.' Dyslexia made me scramble words. ADHD made me jump between ideas. Traditional resume builders made me feel like I was trying to fit a rocket engine into a bicycle frame."
+              </p>
+              
+              <p style={{ 
+                fontSize: '16px', 
+                lineHeight: '1.6', 
+                color: '#cbd5e1',
+                marginBottom: '20px'
+              }}>
+                But here's what I discovered: my dyslexia gives me a unique ability to spot patterns others miss. My ADHD brain sees connections across industries that linear thinkers can't. These aren't disabilities - they're design features for building better career tools.
+              </p>
+              
+              <p style={{ 
+                fontSize: '16px', 
+                lineHeight: '1.6', 
+                color: '#cbd5e1',
+                marginBottom: '25px'
+              }}>
+                LaunchpadPoint exists because I understand the frustration of having incredible value that traditional systems can't capture. If you've ever felt like your resume doesn't show your real capabilities, this is your mission control.
+              </p>
+              
+              <button
+                onClick={() => setShowStory(true)}
+                style={{
+                  background: 'linear-gradient(45deg, #3b82f6, #10b981)',
+                  color: 'white',
+                  padding: '15px 25px',
+                  border: 'none',
+                  borderRadius: '10px',
+                  fontSize: '16px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer'
+                }}
+              >
+                Read My Full Mission Story
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Social Proof Section */}
       <div style={{ padding: '80px 20px', backgroundColor: '#334155' }}>
         <h2 style={{ 
@@ -915,34 +1006,116 @@ PROFESSIONAL AFFILIATIONS
             <div style={{ fontSize: '48px', textAlign: 'center', marginBottom: '20px' }}>🚀</div>
 
             <h2 style={{ fontSize: '32px', marginBottom: '20px', color: '#60a5fa', textAlign: 'center' }}>
-              Mission Briefing: Why LaunchpadPoint?
+              The Mission Behind LaunchpadPoint
             </h2>
 
             <div style={{ fontSize: '16px', lineHeight: '1.6', color: '#e2e8f0' }}>
               <p style={{ marginBottom: '20px' }}>
-                Growing up with dyslexia and ADHD, I watched my resume crash-land repeatedly. Traditional resume builders weren't built for minds like mine - or yours.
+                I was 8 years old when my teacher first told my parents I was "behind." The letters on the page looked like they were doing backflips. Words I knew by heart suddenly became foreign when I tried to write them down. My brain processed information like a rocket engine - powerful, but completely different from everyone else's steady-burning jets.
               </p>
 
               <p style={{ marginBottom: '20px' }}>
-                I realized we needed a different approach. Not just better formatting, but AI that understands unique thinking patterns and transforms them into competitive advantages.
+                By high school, I had two labels: <strong style={{ color: '#fbbf24' }}>Dyslexic. ADHD.</strong> Most people saw these as limitations. I saw them as my brain's unique operating system - one that could see patterns others missed, make connections across seemingly unrelated ideas, and approach problems from angles that linear thinkers never considered.
               </p>
 
               <p style={{ marginBottom: '20px' }}>
-                <strong style={{ color: '#34d399' }}>LaunchpadPoint isn't just a resume builder.</strong> It's mission control for careers that have been stuck in orbit, waiting for the right moment to break through.
+                But when I entered the job market, reality hit hard. Traditional resume formats made my career story look scattered. My diverse experiences - jumping between industries, finding creative solutions to complex problems - looked like instability rather than innovation. I watched hiring managers' eyes glaze over as they tried to fit my rocket-engine brain into their bicycle-frame expectations.
               </p>
 
-              <p style={{ marginBottom: '30px' }}>
-                Your different perspective isn't a bug - it's a feature. Let's launch it into the stratosphere where it belongs.
+              <div style={{
+                background: 'rgba(239, 68, 68, 0.1)',
+                padding: '20px',
+                borderRadius: '10px',
+                borderLeft: '4px solid #ef4444',
+                marginBottom: '20px'
+              }}>
+                <p style={{ fontStyle: 'italic', margin: 0, color: '#fca5a5' }}>
+                  I was rejected from 47 jobs in 6 months. Not because I couldn't do the work - I knew I could excel. But because my resume couldn't communicate my value in their language.
+                </p>
+              </div>
+
+              <p style={{ marginBottom: '20px' }}>
+                That's when I realized something crucial: <strong style={{ color: '#34d399' }}>My dyslexia wasn't the problem. Traditional resume builders were.</strong>
+              </p>
+
+              <p style={{ marginBottom: '20px' }}>
+                My dyslexic brain excels at pattern recognition - I can spot the hidden connections between a candidate's experiences and what employers actually need. My ADHD gives me the ability to rapidly process multiple data points and synthesize them into compelling narratives. These aren't disorders - they're design features for understanding career complexity.
+              </p>
+
+              <p style={{ marginBottom: '20px' }}>
+                So I built LaunchpadPoint using my "disadvantages" as advantages:
+              </p>
+
+              <ul style={{ 
+                color: '#cbd5e1', 
+                marginBottom: '20px', 
+                paddingLeft: '0',
+                listStyle: 'none'
+              }}>
+                <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
+                  <span style={{ color: '#60a5fa', marginRight: '10px', fontWeight: 'bold' }}>🧠</span>
+                  <strong>Dyslexia</strong> gave me the ability to see resume patterns that neurotypical builders miss
+                </li>
+                <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
+                  <span style={{ color: '#34d399', marginRight: '10px', fontWeight: 'bold' }}>⚡</span>
+                  <strong>ADHD</strong> helps me rapidly connect experiences across industries and roles
+                </li>
+                <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
+                  <span style={{ color: '#fbbf24', marginRight: '10px', fontWeight: 'bold' }}>🎯</span>
+                  <strong>Career struggles</strong> taught me exactly what hiring managers are actually looking for
+                </li>
+                <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
+                  <span style={{ color: '#f87171', marginRight: '10px', fontWeight: 'bold' }}>💡</span>
+                  <strong>Rejection experience</strong> showed me how to break through ATS barriers
+                </li>
+              </ul>
+
+              <p style={{ marginBottom: '20px' }}>
+                Every feature in LaunchpadPoint exists because I understand what it feels like to:
               </p>
 
               <div style={{
                 background: 'rgba(59, 130, 246, 0.1)',
                 padding: '20px',
                 borderRadius: '10px',
-                borderLeft: '4px solid #3b82f6'
+                marginBottom: '20px'
               }}>
-                <p style={{ fontStyle: 'italic', margin: 0, color: '#cbd5e1' }}>
-                  "Every great career needs a great launch. Let's make yours legendary."
+                <p style={{ margin: '0 0 10px 0', color: '#cbd5e1' }}>✓ Have incredible value that traditional formats can't capture</p>
+                <p style={{ margin: '0 0 10px 0', color: '#cbd5e1' }}>✓ Know you're perfect for a role but can't get past the screening</p>
+                <p style={{ margin: '0 0 10px 0', color: '#cbd5e1' }}>✓ Feel like your unique thinking style is seen as a weakness</p>
+                <p style={{ margin: '0', color: '#cbd5e1' }}>✓ Need extra processing time or different formatting to show your best work</p>
+              </div>
+
+              <p style={{ marginBottom: '20px' }}>
+                The breakthrough came when I stopped trying to fit into their system and started building one that actually works for minds like ours. LaunchpadPoint's AI doesn't just format your resume - it translates your unique experiences into the language hiring managers understand and value.
+              </p>
+
+              <p style={{ marginBottom: '30px' }}>
+                This isn't just another resume builder. It's a translation system built by someone whose brain works differently, for everyone whose career story deserves to be told properly.
+              </p>
+
+              <div style={{
+                background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.1))',
+                padding: '20px',
+                borderRadius: '10px',
+                borderLeft: '4px solid #3b82f6',
+                textAlign: 'center'
+              }}>
+                <p style={{ 
+                  fontStyle: 'italic', 
+                  margin: 0, 
+                  fontSize: '18px',
+                  color: '#f1f5f9'
+                }}>
+                  "If you've ever felt like your resume doesn't show your real capabilities, if you've ever been told your brain works 'wrong,' if you've ever known you were perfect for a job but couldn't get past the gatekeepers - this is your mission control. Let's launch your career where it belongs: in orbit above the competition."
+                </p>
+                <p style={{ 
+                  marginTop: '15px', 
+                  fontSize: '14px', 
+                  color: '#94a3b8',
+                  fontWeight: 'bold'
+                }}>
+                  - Founder & Chief Launch Officer
                 </p>
               </div>
             </div>
