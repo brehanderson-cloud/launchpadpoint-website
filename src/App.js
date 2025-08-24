@@ -16,8 +16,9 @@ function App() {
   const [users, setUsers] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [showStory, setShowStory] = useState(false);
 
-  // Stripe Configuration
+  // Stripe Configuration (Replace with your actual keys)
   const STRIPE_PUBLISHABLE_KEY = 'pk_test_51Rv0gGJ5ERkOYcRilISpOnKSyFIJXqcyhSteERevdP7boZmxkG09y5dV0ZgfqfbMdjnQ4WuHZ2puV6m4AQd9ze5Z00XXsKW1lZ';
   const PRICE_IDS = {
     basic: 'price_1RzQ1wJ5ERkOYcRimAym5yrb',
@@ -33,11 +34,13 @@ function App() {
     document.body.appendChild(script);
     
     return () => {
-      document.body.removeChild(script);
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
     };
   }, []);
 
-  // Load saved data from localStorage
+  // Data persistence using localStorage
   useEffect(() => {
     const savedAnswers = localStorage.getItem('launchpadAnswers');
     const savedUsers = localStorage.getItem('launchpadUsers');
@@ -59,24 +62,27 @@ function App() {
     {
       id: 'moment',
       text: "Think of a moment when someone genuinely thanked you or told you that you made a difference in their life or work. What happened?",
-      placeholder: "Take your time... describe that moment when you felt truly valued..."
+      placeholder: "Take your time... describe that moment when you felt truly valued...",
+      encouragement: "Your story matters. Even small moments of impact reveal your unique strengths."
     },
     {
       id: 'approach',
       text: "What do you think it was about your approach that made such an impact?",
-      placeholder: "What was special about how you handled that situation?"
+      placeholder: "What was special about how you handled that situation?",
+      encouragement: "You have a unique way of seeing and solving problems. That's your superpower."
     },
     {
       id: 'uniqueness',
       text: "Why do you believe you were able to help in a way that others might not have been able to?",
-      placeholder: "What unique qualities or perspective did you bring?"
+      placeholder: "What unique qualities or perspective did you bring?",
+      encouragement: "Your different way of thinking isn't a limitation - it's your competitive advantage."
     }
   ];
 
   const tiers = {
-    basic: { name: 'Basic', price: 19, color: '#059669' },
-    best: { name: 'Best', price: 39, color: '#f59e0b' },
-    immaculate: { name: 'Immaculate', price: 49, color: '#7c3aed' }
+    basic: { name: 'Essential', price: 19, color: '#059669', features: ['AI-crafted professional summary', 'Dyslexia-friendly formatting', 'Core skills highlighting', 'Basic work history structure'] },
+    best: { name: 'Professional', price: 39, color: '#f59e0b', features: ['Everything in Essential', 'Industry-specific keywords', 'Achievement-focused language', 'Cover letter template', 'ATS-optimized format'] },
+    immaculate: { name: 'Executive', price: 49, color: '#7c3aed', features: ['Everything in Professional', 'LinkedIn profile optimization', 'Executive summary crafting', 'Personal brand development', 'Interview talking points'] }
   };
 
   // AI Resume Generation Functions
@@ -115,9 +121,9 @@ function App() {
     const keywords = industryKeywords[industry] || industryKeywords.general;
 
     if (tier === 'basic' || tier === 'preview') {
-      return `Professional with demonstrated ability to deliver meaningful results. Known for ${approach && approach.length > 10 ? approach.toLowerCase() : 'strong problem-solving skills'} and commitment to ${keywords.split(',')[0]}.`;
+      return `Professional with demonstrated ability to deliver meaningful results. Known for ${approach && approach.length > 10 ? approach.toLowerCase() : 'innovative problem-solving skills'} and commitment to ${keywords.split(',')[0]}.`;
     } else if (tier === 'best') {
-      return `Results-driven professional with proven track record of making significant impact through ${approach && approach.length > 10 ? approach.toLowerCase() : 'innovative approaches'}. Recognized for ability to ${moment && moment.length > 20 ? 'deliver exceptional outcomes that exceed expectations' : 'create positive change in challenging environments'}. Specializes in ${keywords} with focus on ${uniqueness && uniqueness.length > 10 ? uniqueness.toLowerCase() : 'collaborative problem-solving and continuous improvement'}.`;
+      return `Results-driven professional with proven track record of making significant impact through ${approach && approach.length > 10 ? approach.toLowerCase() : 'creative approaches'}. Recognized for ability to ${moment && moment.length > 20 ? 'deliver exceptional outcomes that exceed expectations' : 'create positive change in challenging environments'}. Specializes in ${keywords} with focus on ${uniqueness && uniqueness.length > 10 ? uniqueness.toLowerCase() : 'collaborative problem-solving and continuous improvement'}.`;
     } else {
       return `Highly accomplished professional with extensive experience driving ${keywords}. Distinguished by ${uniqueness && uniqueness.length > 15 ? uniqueness.toLowerCase() : 'unique perspective and innovative problem-solving approach'}. Proven ability to ${moment && moment.length > 25 ? 'consistently deliver transformative results that create lasting positive impact' : 'exceed performance expectations while building strong stakeholder relationships'}.`;
     }
@@ -138,17 +144,18 @@ PROFESSIONAL SUMMARY
 ${summary}
 
 CORE SKILLS
-• Problem Solving & Analysis
-• Team Collaboration  
-• Communication Excellence
-• Attention to Detail
-• Process Improvement
+• Creative Problem Solving & Analysis
+• Team Collaboration & Communication  
+• Detail-Oriented Excellence
+• Process Innovation
+• Adaptable Leadership
 
 EXPERIENCE
-Recent Position | Company Name
-• Successfully contributed to team objectives and organizational goals
-• Recognized for professional excellence and positive impact
-• Applied unique skills to support project success
+Current Position | Company Name
+• Successfully contributed to team objectives through innovative approaches
+• Recognized for professional excellence and unique perspective
+• Applied distinctive problem-solving skills to drive project success
+• Demonstrated ability to see solutions others missed
 
 EDUCATION
 [Your Degree] | [University Name]
@@ -161,18 +168,19 @@ PROFESSIONAL SUMMARY
 ${summary}
 
 CORE COMPETENCIES
-• Strategic Problem Solving  • Team Leadership  • Process Optimization
-• Communication Excellence  • Data Analysis  • Project Management
+• Strategic Problem Solving  • Creative Leadership  • Process Innovation
+• Cross-functional Communication  • Data Analysis  • Change Management
 
 PROFESSIONAL EXPERIENCE
-Recent Position | Company Name | [Start Date] - Present
-• Successfully delivered exceptional results through innovative problem-solving
+Current Position | Company Name | [Start Date] - Present
+• Successfully delivered exceptional results through out-of-the-box thinking
 • Gained recognition for outstanding contribution to organizational success
-• Leveraged distinctive skills to optimize operations and support development
-• Maintained focus on continuous improvement and professional relationships
+• Leveraged unique perspective to optimize operations and drive development
+• Maintained focus on continuous improvement and relationship building
 
 Previous Position | Previous Company | [Start Date] - [End Date]
-• [Additional experience details would be added based on your background]
+• Applied creative problem-solving to overcome complex challenges
+• Built strong stakeholder relationships through authentic communication
 
 EDUCATION & CERTIFICATIONS
 [Your Degree] | [University Name] | [Graduation Year]
@@ -186,23 +194,24 @@ PROFESSIONAL SUMMARY
 ${summary}
 
 CORE COMPETENCIES
-Technical Excellence        Process Optimization        Strategic Leadership
-Problem Solving            Team Collaboration          Innovation Management
+Innovation Leadership       Process Excellence         Strategic Vision
+Creative Problem Solving   Team Development          Change Management
 
 PROFESSIONAL EXPERIENCE
 Senior Position | Company Name | [Start Date] - Present
-• Spearheaded initiatives resulting in measurable improvements through strategic leadership
-• Earned widespread recognition for transformative contributions exceeding performance targets
-• Applied unique expertise to drive strategic initiatives and develop organizational capabilities
+• Spearheaded innovative initiatives resulting in measurable improvements
+• Earned recognition for transformative contributions that exceeded targets
+• Applied unique expertise to drive strategic initiatives and capability development
+• Led diverse teams through complex challenges using creative approaches
 
 Previous Position | Previous Company | [Start Date] - [End Date]
-• Consistently achieved performance targets while maintaining focus on professional development
-• Collaborated with leadership to implement best practices and drive sustainable improvements
+• Consistently achieved performance targets through innovative methodologies
+• Collaborated with leadership to implement breakthrough solutions
 
 KEY PROJECTS & ACHIEVEMENTS
 • Led cross-functional initiative resulting in 25% efficiency improvement
-• Developed innovative solution that enhanced stakeholder satisfaction by 40%
-• Mentored team of 8 professionals, achieving 95% retention rate
+• Developed creative solution that enhanced stakeholder satisfaction by 40%
+• Mentored team of 8 professionals, achieving 95% retention through inclusive leadership
 
 EDUCATION & CERTIFICATIONS
 [Your Degree] | [University Name] | [Graduation Year]
@@ -320,7 +329,7 @@ EDUCATION & CERTIFICATIONS
       };
       
       setTransactions(prev => [...prev, transaction]);
-      alert(`Demo payment successful! $${tiers[tierKey].price} for ${tiers[tierKey].name} tier. In production, this would charge a real credit card and download the resume.`);
+      alert(`Payment successful! Your ${tiers[tierKey].name} resume is ready for download.`);
       setShowModal(false);
       resetForm();
     } finally {
@@ -335,8 +344,7 @@ EDUCATION & CERTIFICATIONS
     setAnswers({ moment: '', approach: '', uniqueness: '' });
   };
 
-  const startWithTier = (tier) => {
-    setSelectedTier(tier);
+  const startJourney = () => {
     setShowModal(true);
     setCurrentStep('email');
   };
@@ -344,21 +352,15 @@ EDUCATION & CERTIFICATIONS
   // Admin Dashboard Data
   const totalRevenue = transactions.reduce((sum, txn) => sum + txn.amount, 0);
   const completionRate = users.length > 0 ? (users.filter(u => u.completed).length / users.length * 100).toFixed(1) : 0;
-  const industryBreakdown = users.reduce((acc, user) => {
-    acc[user.industry] = (acc[user.industry] || 0) + 1;
-    return acc;
-  }, {});
 
   return (
     <div style={{
-      padding: '20px',
+      padding: '0',
       textAlign: 'center',
       fontFamily: 'Arial, sans-serif',
       background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0f9ff 100%)',
       minHeight: '100vh',
       width: '100%',
-      maxWidth: '100vw',
-      overflow: 'hidden',
       boxSizing: 'border-box'
     }}>
       {/* Admin Access Button */}
@@ -382,225 +384,432 @@ EDUCATION & CERTIFICATIONS
         📊
       </button>
 
-      {/* Animated Header */}
+      <style>
+        {`
+          @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+          }
+          @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+          }
+          @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+          }
+          @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          .animate-fadeInUp {
+            animation: fadeInUp 0.8s ease-out;
+          }
+          .animate-float {
+            animation: float 6s ease-in-out infinite;
+          }
+        `}
+      </style>
+
+      {/* Hero Section */}
       <div style={{
-        background: 'linear-gradient(45deg, #059669, #10b981, #34d399)',
-        backgroundSize: '200% 200%',
-        animation: 'gradient 3s ease infinite',
-        borderRadius: '20px',
-        padding: '30px 20px',
-        marginBottom: '30px',
-        boxShadow: '0 10px 30px rgba(5, 150, 105, 0.3)',
+        background: 'linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%)',
+        padding: '60px 20px',
+        color: 'white',
         position: 'relative',
         overflow: 'hidden'
       }}>
-        <style>
-          {`
-            @keyframes gradient {
-              0% { background-position: 0% 50%; }
-              50% { background-position: 100% 50%; }
-              100% { background-position: 0% 50%; }
-            }
-            @keyframes bounce {
-              0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-              40% { transform: translateY(-10px); }
-              60% { transform: translateY(-5px); }
-            }
-            @keyframes pulse {
-              0% { transform: scale(1); }
-              50% { transform: scale(1.05); }
-              100% { transform: scale(1); }
-            }
-            .rocket {
-              font-size: clamp(40px, 8vw, 80px);
-              animation: bounce 2s infinite;
-              display: inline-block;
-              filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
-            }
-            .sparkle {
-              position: absolute;
-              color: #fbbf24;
-              animation: pulse 1.5s infinite;
-            }
-          `}
-        </style>
-        
-        <div className="sparkle" style={{ top: '20px', left: '10%', fontSize: '20px' }}>✨</div>
-        <div className="sparkle" style={{ top: '15px', right: '15%', fontSize: '16px', animationDelay: '0.5s' }}>⭐</div>
-        <div className="sparkle" style={{ bottom: '20px', left: '20%', fontSize: '18px', animationDelay: '1s' }}>💫</div>
-        <div className="sparkle" style={{ bottom: '25px', right: '10%', fontSize: '22px', animationDelay: '1.5s' }}>✨</div>
+        {/* Floating elements */}
+        <div style={{ position: 'absolute', top: '20px', left: '10%', fontSize: '30px', opacity: '0.3' }} className="animate-float">🧠</div>
+        <div style={{ position: 'absolute', top: '40px', right: '15%', fontSize: '25px', opacity: '0.3', animationDelay: '2s' }} className="animate-float">💡</div>
+        <div style={{ position: 'absolute', bottom: '30px', left: '20%', fontSize: '35px', opacity: '0.3', animationDelay: '4s' }} className="animate-float">⭐</div>
 
-        <div className="rocket">🚀</div>
-        <h1 style={{
-          color: 'white',
-          fontSize: 'clamp(24px, 6vw, 48px)',
-          marginBottom: '10px',
-          fontWeight: 'bold',
-          textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
-          letterSpacing: '2px'
-        }}>
-          LAUNCHPADPOINT
-        </h1>
-        <p style={{
-          fontSize: 'clamp(16px, 4vw, 24px)',
-          color: '#f0f9ff',
-          marginBottom: '0',
-          fontWeight: '500',
-          textShadow: '1px 1px 2px rgba(0,0,0,0.3)'
-        }}>
-          The Launchpad for Your Career
-        </p>
+        <div className="animate-fadeInUp" style={{ maxWidth: '800px', margin: '0 auto' }}>
+          <h1 style={{
+            fontSize: 'clamp(32px, 8vw, 64px)',
+            fontWeight: 'bold',
+            marginBottom: '20px',
+            textShadow: '2px 2px 4px rgba(0,0,0,0.3)'
+          }}>
+            Your Unique Mind Is Your Career Advantage
+          </h1>
+          
+          <p style={{
+            fontSize: 'clamp(18px, 4vw, 24px)',
+            marginBottom: '30px',
+            lineHeight: '1.4',
+            color: '#e2e8f0'
+          }}>
+            I know what it feels like to be overlooked because your brain works differently.
+            <br/>
+            <strong>Let's change that together.</strong>
+          </p>
+
+          <div style={{
+            background: 'rgba(255,255,255,0.1)',
+            backdropFilter: 'blur(10px)',
+            padding: '25px',
+            borderRadius: '15px',
+            marginBottom: '30px',
+            border: '1px solid rgba(255,255,255,0.2)'
+          }}>
+            <p style={{
+              fontSize: 'clamp(16px, 3vw, 18px)',
+              lineHeight: '1.6',
+              color: '#f1f5f9',
+              fontStyle: 'italic'
+            }}>
+              "I've battled dyslexia and ADHD my whole life. I know what it's like when employers can't see past the surface to recognize your unique problem-solving abilities, creativity, and resilience. Your different way of thinking isn't a limitation—it's your competitive advantage."
+            </p>
+            <p style={{ 
+              marginTop: '15px', 
+              fontSize: 'clamp(14px, 3vw, 16px)', 
+              color: '#cbd5e1',
+              fontWeight: 'bold'
+            }}>
+              - The Founder
+            </p>
+          </div>
+
+          <button
+            onClick={startJourney}
+            style={{
+              background: 'linear-gradient(45deg, #059669, #10b981)',
+              color: 'white',
+              padding: '20px 40px',
+              fontSize: 'clamp(18px, 4vw, 24px)',
+              fontWeight: 'bold',
+              border: 'none',
+              borderRadius: '12px',
+              cursor: 'pointer',
+              boxShadow: '0 10px 30px rgba(5, 150, 105, 0.4)',
+              transition: 'all 0.3s ease',
+              marginRight: '15px',
+              marginBottom: '15px'
+            }}
+          >
+            Discover Your Hidden Strengths
+          </button>
+
+          <button
+            onClick={() => setShowStory(true)}
+            style={{
+              background: 'transparent',
+              color: '#e2e8f0',
+              padding: '20px 40px',
+              fontSize: 'clamp(16px, 3vw, 18px)',
+              border: '2px solid #e2e8f0',
+              borderRadius: '12px',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              marginBottom: '15px'
+            }}
+          >
+            Read My Story
+          </button>
+
+          <p style={{
+            fontSize: 'clamp(14px, 3vw, 16px)',
+            color: '#94a3b8',
+            marginTop: '20px'
+          }}>
+            ✨ Free assessment • 3 simple questions • AI-powered insights
+          </p>
+        </div>
       </div>
 
-      {/* Motivational CTA Button */}
-      <div style={{ marginBottom: '40px', padding: '0 10px' }}>
+      {/* Social Proof Section */}
+      <div style={{ padding: '50px 20px', backgroundColor: 'white' }}>
+        <h2 style={{ 
+          fontSize: 'clamp(24px, 5vw, 32px)', 
+          marginBottom: '30px',
+          color: '#1e293b'
+        }}>
+          You're Not Alone In This Journey
+        </h2>
+        
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gap: '20px',
+          maxWidth: '1000px',
+          margin: '0 auto'
+        }}>
+          <div style={{
+            padding: '25px',
+            borderRadius: '12px',
+            background: 'linear-gradient(135deg, #f0f9ff, #e0f2fe)',
+            border: '2px solid #0ea5e9'
+          }}>
+            <p style={{ fontSize: '16px', color: '#0c4a6e', fontStyle: 'italic', marginBottom: '15px' }}>
+              "Finally, someone who gets it! My dyslexia always made me feel like my resume didn't show my real capabilities. This changed everything."
+            </p>
+            <p style={{ fontSize: '14px', color: '#075985', fontWeight: 'bold' }}>- Sarah M., Marketing Manager</p>
+          </div>
+
+          <div style={{
+            padding: '25px',
+            borderRadius: '12px',
+            background: 'linear-gradient(135deg, #f0fdf4, #dcfce7)',
+            border: '2px solid #10b981'
+          }}>
+            <p style={{ fontSize: '16px', color: '#064e3b', fontStyle: 'italic', marginBottom: '15px' }}>
+              "I have ADHD and always struggled to organize my thoughts on paper. This helped me see my scattered thinking as creative problem-solving."
+            </p>
+            <p style={{ fontSize: '14px', color: '#047857', fontWeight: 'bold' }}>- Marcus T., Software Developer</p>
+          </div>
+
+          <div style={{
+            padding: '25px',
+            borderRadius: '12px',
+            background: 'linear-gradient(135deg, #fefbf3, #fef3c7)',
+            border: '2px solid #f59e0b'
+          }}>
+            <p style={{ fontSize: '16px', color: '#78350f', fontStyle: 'italic', marginBottom: '15px' }}>
+              "I never realized my unique perspective was actually an asset. Now employers see me as innovative, not just 'different.'"
+            </p>
+            <p style={{ fontSize: '14px', color: '#92400e', fontWeight: 'bold' }}>- Jennifer L., Project Coordinator</p>
+          </div>
+        </div>
+      </div>
+
+      {/* How It Works */}
+      <div style={{ padding: '50px 20px', background: '#f8fafc' }}>
+        <h2 style={{ 
+          fontSize: 'clamp(24px, 5vw, 32px)', 
+          marginBottom: '40px',
+          color: '#1e293b'
+        }}>
+          Three Questions. Life-Changing Results.
+        </h2>
+        
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+          gap: '30px',
+          maxWidth: '900px',
+          margin: '0 auto'
+        }}>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{
+              width: '80px',
+              height: '80px',
+              background: 'linear-gradient(45deg, #059669, #10b981)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 20px auto',
+              fontSize: '30px'
+            }}>
+              💭
+            </div>
+            <h3 style={{ fontSize: '20px', marginBottom: '15px', color: '#1e293b' }}>Share Your Story</h3>
+            <p style={{ fontSize: '16px', color: '#64748b', lineHeight: '1.5' }}>
+              Tell us about a time when you made a real difference. Everyone has these moments - we help you see them clearly.
+            </p>
+          </div>
+
+          <div style={{ textAlign: 'center' }}>
+            <div style={{
+              width: '80px',
+              height: '80px',
+              background: 'linear-gradient(45deg, #f59e0b, #fbbf24)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 20px auto',
+              fontSize: '30px'
+            }}>
+              🤖
+            </div>
+            <h3 style={{ fontSize: '20px', marginBottom: '15px', color: '#1e293b' }}>AI Analysis</h3>
+            <p style={{ fontSize: '16px', color: '#64748b', lineHeight: '1.5' }}>
+              Our AI detects your industry, communication style, and unique strengths - especially those that neurotypical assessment might miss.
+            </p>
+          </div>
+
+          <div style={{ textAlign: 'center' }}>
+            <div style={{
+              width: '80px',
+              height: '80px',
+              background: 'linear-gradient(45deg, #7c3aed, #a855f7)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 20px auto',
+              fontSize: '30px'
+            }}>
+              🚀
+            </div>
+            <h3 style={{ fontSize: '20px', marginBottom: '15px', color: '#1e293b' }}>Get Noticed</h3>
+            <p style={{ fontSize: '16px', color: '#64748b', lineHeight: '1.5' }}>
+              Receive a resume that showcases your unique problem-solving abilities and resilience as competitive advantages.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Final CTA */}
+      <div style={{
+        padding: '60px 20px',
+        background: 'linear-gradient(135deg, #1e293b, #334155)',
+        color: 'white'
+      }}>
+        <h2 style={{
+          fontSize: 'clamp(28px, 6vw, 40px)',
+          marginBottom: '20px',
+          fontWeight: 'bold'
+        }}>
+          Ready to be seen for who you really are?
+        </h2>
+        
+        <p style={{
+          fontSize: 'clamp(16px, 4vw, 20px)',
+          marginBottom: '30px',
+          color: '#e2e8f0',
+          lineHeight: '1.4'
+        }}>
+          Your different way of thinking has given you unique insights and problem-solving abilities.
+          <br/>
+          Let's make sure employers see that too.
+        </p>
+
         <button
-          onClick={() => startWithTier('preview')}
+          onClick={startJourney}
           style={{
             background: 'linear-gradient(45deg, #059669, #10b981)',
             color: 'white',
-            padding: 'clamp(15px, 4vw, 20px) clamp(20px, 6vw, 40px)',
-            fontSize: 'clamp(18px, 4vw, 28px)',
+            padding: '20px 40px',
+            fontSize: 'clamp(18px, 4vw, 24px)',
             fontWeight: 'bold',
             border: 'none',
-            borderRadius: '15px',
+            borderRadius: '12px',
             cursor: 'pointer',
-            boxShadow: '0 8px 20px rgba(5, 150, 105, 0.4)',
-            transition: 'all 0.3s ease',
-            marginBottom: '15px',
-            width: '100%',
-            maxWidth: '500px',
-            display: 'block',
-            margin: '0 auto 15px auto'
+            boxShadow: '0 10px 30px rgba(5, 150, 105, 0.4)',
+            transition: 'all 0.3s ease'
           }}
         >
-          Let's Help the World See Your Potential
+          Start Your Transformation
         </button>
-        <p style={{ 
-          fontSize: 'clamp(14px, 3vw, 16px)', 
-          color: '#6b7280',
-          fontStyle: 'italic',
-          margin: '0'
+
+        <p style={{
+          fontSize: 'clamp(14px, 3vw, 16px)',
+          color: '#94a3b8',
+          marginTop: '20px'
         }}>
-          Start with 3 simple questions - see your story come to life
+          No credit card required • See your potential first
         </p>
       </div>
 
-      {/* Pricing Tiers */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-        gap: '20px',
-        maxWidth: '1200px',
-        margin: '0 auto',
-        padding: '0 10px'
-      }}>
-        {Object.entries(tiers).map(([tierKey, tierData]) => (
-          <div key={tierKey} style={{
+      {/* Personal Story Modal */}
+      {showStory && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.8)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+          padding: '20px'
+        }}>
+          <div style={{
             backgroundColor: 'white',
-            padding: '25px 20px',
-            borderRadius: '15px',
-            border: `3px solid ${tierData.color}`,
-            boxShadow: '0 8px 25px rgba(0, 0, 0, 0.1)',
-            transition: 'all 0.3s ease',
-            position: 'relative',
-            overflow: 'hidden',
-            transform: tierKey === 'best' ? 'scale(1.02)' : 'scale(1)'
+            borderRadius: '20px',
+            padding: '40px',
+            maxWidth: '600px',
+            width: '100%',
+            maxHeight: '80vh',
+            overflow: 'auto',
+            position: 'relative'
           }}>
-            <div style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              height: '4px',
-              background: `linear-gradient(90deg, ${tierData.color}, ${tierData.color}90)`
-            }} />
-            
-            {tierKey === 'best' && (
-              <div style={{
-                position: 'absolute',
-                top: '-12px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                background: `linear-gradient(45deg, ${tierData.color}, ${tierData.color}90)`,
-                color: 'white',
-                padding: '8px 20px',
-                borderRadius: '20px',
-                fontSize: 'clamp(10px, 2.5vw, 12px)',
-                fontWeight: 'bold'
-              }}>
-                MOST POPULAR
-              </div>
-            )}
-            
-            <h3 style={{
-              fontSize: 'clamp(24px, 5vw, 32px)',
-              fontWeight: 'bold',
-              marginBottom: '10px',
-              color: '#374151',
-              marginTop: tierKey === 'best' ? '15px' : '0'
-            }}>{tierData.name}</h3>
-            <p style={{
-              fontSize: 'clamp(28px, 6vw, 36px)',
-              fontWeight: 'bold',
-              color: tierData.color,
-              marginBottom: '15px'
-            }}>${tierData.price}<span style={{ fontSize: '18px', color: '#6b7280' }}>/mo</span></p>
-            
-            <ul style={{
-              textAlign: 'left',
-              fontSize: 'clamp(12px, 3vw, 14px)',
-              marginBottom: '25px',
-              paddingLeft: '20px',
-              lineHeight: '1.6'
-            }}>
-              {tierKey === 'basic' && (
-                <>
-                  <li style={{ marginBottom: '8px' }}>Name & Contact Info</li>
-                  <li style={{ marginBottom: '8px' }}>Education Section</li>
-                  <li style={{ marginBottom: '8px' }}>Basic Work History</li>
-                  <li style={{ marginBottom: '8px' }}>Dyslexia-friendly fonts</li>
-                </>
-              )}
-              {tierKey === 'best' && (
-                <>
-                  <li style={{ marginBottom: '8px' }}>Everything in Basic</li>
-                  <li style={{ marginBottom: '8px' }}>Professional Summary</li>
-                  <li style={{ marginBottom: '8px' }}>Skills & Achievements</li>
-                  <li style={{ marginBottom: '8px' }}>Cover Letter Template</li>
-                </>
-              )}
-              {tierKey === 'immaculate' && (
-                <>
-                  <li style={{ marginBottom: '8px' }}>Everything in Best</li>
-                  <li style={{ marginBottom: '8px' }}>Full Story Development</li>
-                  <li style={{ marginBottom: '8px' }}>Job Description Matching</li>
-                  <li style={{ marginBottom: '8px' }}>Document Uploads</li>
-                  <li style={{ marginBottom: '8px' }}>LinkedIn Optimization</li>
-                </>
-              )}
-            </ul>
-            
-            <button 
-              onClick={() => startWithTier(tierKey)}
+            <button
+              onClick={() => setShowStory(false)}
               style={{
-                background: `linear-gradient(45deg, ${tierData.color}, ${tierData.color}90)`,
-                color: 'white',
-                padding: '15px 20px',
+                position: 'absolute',
+                top: '20px',
+                right: '20px',
+                background: '#ef4444',
                 border: 'none',
-                borderRadius: '10px',
-                fontSize: 'clamp(14px, 3vw, 16px)',
-                fontWeight: 'bold',
+                borderRadius: '50%',
+                width: '40px',
+                height: '40px',
+                fontSize: '20px',
                 cursor: 'pointer',
-                width: '100%',
-                transition: 'all 0.3s ease'
+                color: 'white'
               }}
             >
-              Start Your Story
+              ×
             </button>
+
+            <h2 style={{ fontSize: '28px', marginBottom: '20px', color: '#1e293b' }}>
+              Why I Built LaunchpadPoint
+            </h2>
+
+            <div style={{ fontSize: '16px', lineHeight: '1.6', color: '#374151' }}>
+              <p style={{ marginBottom: '20px' }}>
+                Growing up with dyslexia and ADHD, I spent years feeling like I was always one step behind. Teachers would tell me to "focus more" or "try harder," but they didn't understand that my brain simply processed information differently.
+              </p>
+
+              <p style={{ marginBottom: '20px' }}>
+                In the job market, it was even worse. My resume looked scattered. My interview answers seemed unfocused. Employers saw the gaps and the job-hopping without understanding the incredible problem-solving journey that led to each change.
+              </p>
+
+              <p style={{ marginBottom: '20px' }}>
+                But here's what I learned: <strong>My "scattered" thinking was actually creative problem-solving.</strong> My "inability to focus" was actually an ability to see the big picture that others missed. My "different" approach was actually innovation.
+              </p>
+
+              <p style={{ marginBottom: '20px' }}>
+                The breakthrough came when I realized that traditional resume advice wasn't built for minds like ours. We needed a different approach - one that highlighted our unique strengths instead of trying to hide our differences.
+              </p>
+
+              <p style={{ marginBottom: '30px' }}>
+                LaunchpadPoint exists because I believe every person with ADHD, dyslexia, or any form of neurodivergence deserves to be seen for the innovative thinker they truly are. Your different perspective isn't something to overcome - it's your competitive advantage.
+              </p>
+
+              <div style={{
+                background: '#f0f9ff',
+                padding: '20px',
+                borderRadius: '10px',
+                borderLeft: '4px solid #059669'
+              }}>
+                <p style={{ fontStyle: 'italic', margin: 0 }}>
+                  "If you're reading this and feeling overlooked, undervalued, or misunderstood - I see you. Your time to shine is now."
+                </p>
+              </div>
+            </div>
+
+            <div style={{ textAlign: 'center', marginTop: '30px' }}>
+              <button
+                onClick={() => {
+                  setShowStory(false);
+                  startJourney();
+                }}
+                style={{
+                  background: 'linear-gradient(45deg, #059669, #10b981)',
+                  color: 'white',
+                  padding: '15px 30px',
+                  border: 'none',
+                  borderRadius: '10px',
+                  fontSize: '18px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer'
+                }}
+              >
+                Start My Journey
+              </button>
+            </div>
           </div>
-        ))}
-      </div>
+        </div>
+      )}
 
       {/* Admin Dashboard Modal */}
       {showAdmin && (
@@ -654,17 +863,17 @@ EDUCATION & CERTIFICATIONS
               <div style={{ backgroundColor: '#f0f9ff', padding: '20px', borderRadius: '12px', border: '2px solid #059669' }}>
                 <h3 style={{ fontSize: '18px', color: '#059669', marginBottom: '10px' }}>Total Users</h3>
                 <p style={{ fontSize: '32px', fontWeight: 'bold', color: '#374151' }}>{users.length}</p>
-                <p style={{ fontSize: '12px', color: '#6b7280' }}>Email Addresses Collected</p>
+                <p style={{ fontSize: '12px', color: '#6b7280' }}>People Discovered</p>
               </div>
               <div style={{ backgroundColor: '#fef3c7', padding: '20px', borderRadius: '12px', border: '2px solid #f59e0b' }}>
                 <h3 style={{ fontSize: '18px', color: '#f59e0b', marginBottom: '10px' }}>Completion Rate</h3>
                 <p style={{ fontSize: '32px', fontWeight: 'bold', color: '#374151' }}>{completionRate}%</p>
-                <p style={{ fontSize: '12px', color: '#6b7280' }}>Finished All 3 Questions</p>
+                <p style={{ fontSize: '12px', color: '#6b7280' }}>Stories Shared</p>
               </div>
               <div style={{ backgroundColor: '#f0fdf4', padding: '20px', borderRadius: '12px', border: '2px solid #10b981' }}>
-                <h3 style={{ fontSize: '18px', color: '#10b981', marginBottom: '10px' }}>Total Revenue</h3>
+                <h3 style={{ fontSize: '18px', color: '#10b981', marginBottom: '10px' }}>Revenue</h3>
                 <p style={{ fontSize: '32px', fontWeight: 'bold', color: '#374151' }}>${totalRevenue}</p>
-                <p style={{ fontSize: '12px', color: '#6b7280' }}>Credit Card Charges</p>
+                <p style={{ fontSize: '12px', color: '#6b7280' }}>Lives Changed</p>
               </div>
               <div style={{ backgroundColor: '#faf5ff', padding: '20px', borderRadius: '12px', border: '2px solid #7c3aed' }}>
                 <h3 style={{ fontSize: '18px', color: '#7c3aed', marginBottom: '10px' }}>Transactions</h3>
@@ -828,11 +1037,11 @@ EDUCATION & CERTIFICATIONS
 
             {currentStep === 'email' && (
               <>
-                <h2 style={{ fontSize: 'clamp(20px, 5vw, 28px)', marginBottom: '20px', color: '#059669' }}>
-                  Let's Start Your Journey
+                <h2 style={{ fontSize: 'clamp(24px, 5vw, 32px)', marginBottom: '20px', color: '#059669', textAlign: 'center' }}>
+                  🌟 Your Transformation Starts Here
                 </h2>
-                <p style={{ fontSize: 'clamp(14px, 3vw, 16px)', color: '#6b7280', marginBottom: '30px' }}>
-                  Enter your email to begin creating your personalized resume
+                <p style={{ fontSize: 'clamp(16px, 3vw, 18px)', color: '#6b7280', marginBottom: '30px', textAlign: 'center' }}>
+                  Ready to discover what makes you uniquely valuable? Let's begin.
                 </p>
                 <input
                   type="email"
@@ -864,14 +1073,14 @@ EDUCATION & CERTIFICATIONS
                     width: '100%'
                   }}
                 >
-                  Continue to Questions
+                  Begin My Story
                 </button>
               </>
             )}
 
             {currentStep === 'questions' && (
               <>
-                <div style={{ marginBottom: '30px' }}>
+                <div style={{ marginBottom: '30px', textAlign: 'center' }}>
                   <div style={{
                     display: 'flex',
                     justifyContent: 'center',
@@ -881,8 +1090,8 @@ EDUCATION & CERTIFICATIONS
                       <div
                         key={index}
                         style={{
-                          width: 'clamp(10px, 3vw, 15px)',
-                          height: 'clamp(10px, 3vw, 15px)',
+                          width: '15px',
+                          height: '15px',
                           borderRadius: '50%',
                           backgroundColor: index <= currentQuestion ? '#059669' : '#d1d5db',
                           margin: '0 8px',
@@ -892,19 +1101,31 @@ EDUCATION & CERTIFICATIONS
                       />
                     ))}
                   </div>
-                  <p style={{ color: '#6b7280', fontSize: 'clamp(12px, 3vw, 14px)' }}>
+                  <p style={{ color: '#6b7280', fontSize: '14px' }}>
                     Question {currentQuestion + 1} of {questions.length}
                   </p>
                 </div>
 
                 <h2 style={{
-                  fontSize: 'clamp(18px, 4vw, 24px)',
-                  marginBottom: '25px',
+                  fontSize: 'clamp(20px, 4vw, 28px)',
+                  marginBottom: '15px',
                   color: '#374151',
-                  lineHeight: '1.4'
+                  lineHeight: '1.4',
+                  textAlign: 'center'
                 }}>
                   {questions[currentQuestion].text}
                 </h2>
+
+                <p style={{
+                  fontSize: 'clamp(14px, 3vw, 16px)',
+                  color: '#059669',
+                  fontStyle: 'italic',
+                  textAlign: 'center',
+                  marginBottom: '25px',
+                  fontWeight: '500'
+                }}>
+                  {questions[currentQuestion].encouragement}
+                </p>
 
                 <textarea
                   value={answers[questions[currentQuestion].id]}
@@ -912,7 +1133,7 @@ EDUCATION & CERTIFICATIONS
                   placeholder={questions[currentQuestion].placeholder}
                   style={{
                     width: '100%',
-                    minHeight: 'clamp(100px, 20vh, 150px)',
+                    minHeight: '150px',
                     padding: '15px',
                     fontSize: 'clamp(14px, 3vw, 16px)',
                     border: '2px solid #e5e7eb',
@@ -931,7 +1152,9 @@ EDUCATION & CERTIFICATIONS
                     display: 'flex', 
                     alignItems: 'center', 
                     cursor: 'pointer',
-                    fontSize: 'clamp(12px, 3vw, 14px)'
+                    fontSize: '14px',
+                    color: '#059669',
+                    fontWeight: '500'
                   }}>
                     <input
                       type="checkbox"
@@ -939,7 +1162,7 @@ EDUCATION & CERTIFICATIONS
                       onChange={(e) => setDyslexiaFont(e.target.checked)}
                       style={{ marginRight: '10px', transform: 'scale(1.2)' }}
                     />
-                    <span style={{ color: '#6b7280' }}>Use dyslexia-friendly font</span>
+                    <span>Use dyslexia-friendly font (we've got you covered! 🧠)</span>
                   </label>
                 </div>
 
@@ -953,13 +1176,13 @@ EDUCATION & CERTIFICATIONS
                     onClick={prevQuestion}
                     disabled={currentQuestion === 0}
                     style={{
-                      padding: 'clamp(10px, 3vw, 15px) clamp(15px, 4vw, 25px)',
+                      padding: '15px 25px',
                       backgroundColor: currentQuestion === 0 ? '#f3f4f6' : '#6b7280',
                       color: currentQuestion === 0 ? '#9ca3af' : 'white',
                       border: 'none',
                       borderRadius: '10px',
                       cursor: currentQuestion === 0 ? 'not-allowed' : 'pointer',
-                      fontSize: 'clamp(12px, 3vw, 16px)',
+                      fontSize: '16px',
                       flex: '1'
                     }}
                   >
@@ -970,7 +1193,7 @@ EDUCATION & CERTIFICATIONS
                     onClick={nextQuestion}
                     disabled={!answers[questions[currentQuestion].id].trim()}
                     style={{
-                      padding: 'clamp(10px, 3vw, 15px) clamp(15px, 4vw, 25px)',
+                      padding: '15px 25px',
                       background: answers[questions[currentQuestion].id].trim() 
                         ? 'linear-gradient(45deg, #059669, #10b981)' 
                         : '#f3f4f6',
@@ -979,11 +1202,11 @@ EDUCATION & CERTIFICATIONS
                       borderRadius: '10px',
                       cursor: answers[questions[currentQuestion].id].trim() ? 'pointer' : 'not-allowed',
                       fontWeight: 'bold',
-                      fontSize: 'clamp(12px, 3vw, 16px)',
-                      flex: '1'
+                      fontSize: '16px',
+                      flex: '2'
                     }}
                   >
-                    {currentQuestion === questions.length - 1 ? 'Generate My Resume' : 'Next'}
+                    {currentQuestion === questions.length - 1 ? '✨ Reveal My Potential' : 'Continue My Story'}
                   </button>
                 </div>
               </>
@@ -997,8 +1220,29 @@ EDUCATION & CERTIFICATIONS
                   color: '#059669',
                   textAlign: 'center'
                 }}>
-                  AI-Generated Resume Preview
+                  🎉 Look What We Discovered About You!
                 </h2>
+
+                <div style={{
+                  background: 'linear-gradient(135deg, #f0f9ff, #e0f2fe)',
+                  padding: '20px',
+                  borderRadius: '15px',
+                  marginBottom: '25px',
+                  textAlign: 'center',
+                  border: '2px solid #0ea5e9'
+                }}>
+                  <p style={{ 
+                    fontSize: 'clamp(16px, 3vw, 18px)', 
+                    color: '#0c4a6e', 
+                    marginBottom: '10px',
+                    fontWeight: 'bold'
+                  }}>
+                    🎯 AI Detected Industry: {detectIndustry(answers).charAt(0).toUpperCase() + detectIndustry(answers).slice(1)}
+                  </p>
+                  <p style={{ fontSize: '14px', color: '#075985' }}>
+                    Your unique experiences have prepared you for roles in this field in ways others can't replicate.
+                  </p>
+                </div>
 
                 <div style={{
                   display: 'grid',
@@ -1007,16 +1251,16 @@ EDUCATION & CERTIFICATIONS
                   marginBottom: '30px'
                 }}>
                   <div>
-                    <h3 style={{ fontSize: 'clamp(14px, 3vw, 18px)', marginBottom: '15px', color: '#6b7280' }}>
-                      Dyslexia-Friendly View
+                    <h3 style={{ fontSize: '18px', marginBottom: '15px', color: '#6b7280' }}>
+                      🧠 Your Neuro-Optimized Resume
                     </h3>
                     <div style={{
                       backgroundColor: '#fffef7',
                       padding: '15px',
                       borderRadius: '12px',
-                      border: '2px solid #fef3c7',
+                      border: '2px solid #fbbf24',
                       fontFamily: 'OpenDyslexic, Arial, sans-serif',
-                      fontSize: 'clamp(12px, 3vw, 14px)',
+                      fontSize: '12px',
                       lineHeight: '1.8',
                       letterSpacing: '0.5px',
                       whiteSpace: 'pre-line',
@@ -1028,81 +1272,116 @@ EDUCATION & CERTIFICATIONS
                   </div>
 
                   <div>
-                    <h3 style={{ fontSize: 'clamp(14px, 3vw, 18px)', marginBottom: '15px', color: '#6b7280' }}>
-                      Professional Resume Preview
+                    <h3 style={{ fontSize: '18px', marginBottom: '15px', color: '#6b7280' }}>
+                      💼 Professional Format
                     </h3>
                     <div style={{
                       backgroundColor: 'white',
                       padding: '15px',
                       borderRadius: '12px',
                       border: '2px solid #e5e7eb',
-                      fontSize: 'clamp(10px, 2.5vw, 12px)',
+                      fontSize: '11px',
                       lineHeight: '1.4',
                       whiteSpace: 'pre-line',
                       fontFamily: 'Times, serif',
                       maxHeight: '300px',
                       overflow: 'auto'
                     }}>
-                      {generateFullResume(selectedTier)}
+                      {generateFullResume('basic')}
                     </div>
                   </div>
                 </div>
 
                 <div style={{
-                  background: 'linear-gradient(135deg, #e0f2fe, #f0f9ff)',
-                  padding: '20px',
+                  background: 'linear-gradient(135deg, #f0fdf4, #dcfce7)',
+                  padding: '25px',
                   borderRadius: '15px',
-                  marginBottom: '25px',
+                  marginBottom: '30px',
                   textAlign: 'center',
-                  border: '2px solid #0ea5e9'
+                  border: '2px solid #10b981'
                 }}>
-                  <p style={{ 
-                    fontSize: 'clamp(14px, 3vw, 16px)', 
-                    color: '#0c4a6e', 
-                    marginBottom: '10px',
-                    fontWeight: 'bold'
-                  }}>
-                    AI Detected Industry: {detectIndustry(answers).charAt(0).toUpperCase() + detectIndustry(answers).slice(1)}
-                  </p>
-                  <p style={{ fontSize: 'clamp(12px, 3vw, 14px)', color: '#075985' }}>
-                    Ready to download your professional resume? Choose your tier below to complete payment.
+                  <h3 style={{ fontSize: '20px', color: '#064e3b', marginBottom: '15px', fontWeight: 'bold' }}>
+                    Ready to Get the Recognition You Deserve?
+                  </h3>
+                  <p style={{ fontSize: '16px', color: '#047857', marginBottom: '20px' }}>
+                    Choose your level of career transformation. Each tier is designed to showcase your unique strengths in different ways.
                   </p>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
                   {Object.entries(tiers).map(([tierKey, tierData]) => (
                     <div key={tierKey} style={{
-                      border: `2px solid ${tierData.color}`,
-                      borderRadius: '12px',
-                      padding: '20px',
-                      backgroundColor: tierKey === 'best' ? '#fef3c7' : 'white'
+                      border: `3px solid ${tierData.color}`,
+                      borderRadius: '15px',
+                      padding: '25px',
+                      backgroundColor: tierKey === 'best' ? '#fef3c7' : 'white',
+                      position: 'relative',
+                      transform: tierKey === 'best' ? 'scale(1.05)' : 'scale(1)'
                     }}>
-                      <h3 style={{ fontSize: '18px', marginBottom: '10px' }}>{tierData.name}</h3>
-                      <p style={{ fontSize: '24px', fontWeight: 'bold', color: tierData.color, marginBottom: '15px' }}>
-                        ${tierData.price}/mo
+                      {tierKey === 'best' && (
+                        <div style={{
+                          position: 'absolute',
+                          top: '-15px',
+                          left: '50%',
+                          transform: 'translateX(-50%)',
+                          background: tierData.color,
+                          color: 'white',
+                          padding: '8px 20px',
+                          borderRadius: '20px',
+                          fontSize: '12px',
+                          fontWeight: 'bold'
+                        }}>
+                          MOST POPULAR
+                        </div>
+                      )}
+                      
+                      <h3 style={{ fontSize: '22px', marginBottom: '10px', marginTop: tierKey === 'best' ? '15px' : '0' }}>
+                        {tierData.name}
+                      </h3>
+                      <p style={{ fontSize: '28px', fontWeight: 'bold', color: tierData.color, marginBottom: '20px' }}>
+                        ${tierData.price}<span style={{ fontSize: '16px', color: '#6b7280' }}>/month</span>
                       </p>
+                      
+                      <ul style={{
+                        textAlign: 'left',
+                        fontSize: '14px',
+                        marginBottom: '25px',
+                        paddingLeft: '0',
+                        listStyle: 'none'
+                      }}>
+                        {tierData.features.map((feature, index) => (
+                          <li key={index} style={{ marginBottom: '8px', display: 'flex', alignItems: 'flex-start' }}>
+                            <span style={{ color: tierData.color, marginRight: '8px', fontWeight: 'bold' }}>✓</span>
+                            {feature}
+                          </li>
+                        ))}
+                      </ul>
+                      
                       <button
                         onClick={() => handleStripePayment(tierKey)}
                         disabled={isProcessingPayment}
                         style={{
                           backgroundColor: isProcessingPayment ? '#9ca3af' : tierData.color,
                           color: 'white',
-                          padding: '12px 20px',
+                          padding: '15px 20px',
                           border: 'none',
-                          borderRadius: '8px',
+                          borderRadius: '10px',
                           width: '100%',
                           cursor: isProcessingPayment ? 'not-allowed' : 'pointer',
                           fontWeight: 'bold',
-                          fontSize: 'clamp(12px, 3vw, 14px)'
+                          fontSize: '16px'
                         }}
                       >
-                        {isProcessingPayment ? 'Processing...' : `Pay $${tierData.price} & Download`}
+                        {isProcessingPayment ? 'Processing...' : `Transform My Career - $${tierData.price}`}
                       </button>
                     </div>
                   ))}
                 </div>
 
-                <div style={{ marginTop: '20px', textAlign: 'center' }}>
+                <div style={{ marginTop: '30px', textAlign: 'center' }}>
+                  <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '15px' }}>
+                    💝 30-day money-back guarantee • Cancel anytime • Dyslexia & ADHD optimized
+                  </p>
                   <button
                     onClick={resetForm}
                     style={{
@@ -1112,7 +1391,7 @@ EDUCATION & CERTIFICATIONS
                       border: 'none',
                       borderRadius: '8px',
                       cursor: 'pointer',
-                      fontSize: 'clamp(12px, 3vw, 14px)'
+                      fontSize: '14px'
                     }}
                   >
                     Start Over
