@@ -18,13 +18,13 @@ function App() {
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [showStory, setShowStory] = useState(false);
 
-  // Stripe Configuration (Replace with your actual keys)
+  // Stripe Configuration
 const STRIPE_PUBLISHABLE_KEY = 'pk_test_51Rv0gQMefLmcYtK75GuIVPj1PA707dyiVqrJ_p5T9Riv73B2Hz00d89QNScS';
-  const PRICE_IDS = {
-    price_1RzQ1wJ5ERkOYcRimAym5yrb
-    price_1RzQ2YJ5ERkOYcRiYs0G8RDs
-    price_1RzQ35J5ERkOYcRiNysMIv4x
-  };
+const PRICE_IDS = {
+  basic: 'price_1RzQ1wJ5ERkOYcRimAym5yrb',
+  best: 'price_1RzQ2YJ5ERkOYcRiYs0G8RDs',
+  immaculate: 'price_1RzQ35J5ERkOYcRiNysMIv4x'
+};
 
   // Load Stripe
   useEffect(() => {
