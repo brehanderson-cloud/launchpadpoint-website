@@ -1,3 +1,4 @@
+import './App.css';
 import React, { useState } from 'react';
 import { User, MessageSquare, Star, Zap, Eye, Brain, Menu, X, Target, Bot, Rocket } from 'lucide-react';
 
