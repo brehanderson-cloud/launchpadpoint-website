@@ -16,6 +16,10 @@ const JobSearch = lazy(() => import('./pages/JobSearch'));
 const Network = lazy(() => import('./pages/Network'));
 const Finances = lazy(() => import('./pages/Finances'));
 
+// New Payment Pages
+const Success = lazy(() => import('./pages/Success'));
+const PaymentPage = lazy(() => import('./pages/PaymentPage'));
+
 function App() {
   const [user, setUser] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
@@ -60,6 +64,8 @@ function App() {
               <Route path="/jobs" element={<JobSearch />} />
               <Route path="/network" element={<Network />} />
               <Route path="/finances" element={<Finances />} />
+              <Route path="/resume-payment" element={<PaymentPage />} />
+              <Route path="/success" element={<Success />} />
               <Route path="*" element={
                 <div className="min-h-screen flex items-center justify-center">
                   <div className="text-center">
