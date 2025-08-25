@@ -10,9 +10,7 @@ export default function PaymentButton({
       return;
     }
 
-    // Your Stripe payment link
-    const stripePaymentLink = 'https://buy.stripe.com/test_fZu28t93caXj2TcejDe3e00';
-    window.location.href = stripePaymentLink;
+    window.location.href = 'https://buy.stripe.com/test_fZu28t93caXj2TcejDe3e00';
   };
 
   return (
@@ -35,14 +33,6 @@ export default function PaymentButton({
       >
         Pay $29.99 for Resume
       </button>
-      
-      <p style={{ 
-        fontSize: '14px', 
-        color: '#6b7280', 
-        marginTop: '8px' 
-      }}>
-        Secure payment powered by Stripe
-      </p>
     </div>
   );
 }
