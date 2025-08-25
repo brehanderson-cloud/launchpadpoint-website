@@ -10,8 +10,8 @@ export default function PaymentButton({
       return;
     }
 
-    // Replace this URL with your actual Stripe payment link
-    const stripePaymentLink = 'https://buy.stripe.com/test_YOUR_PAYMENT_LINK_HERE';
+    // Your Stripe payment link
+    const stripePaymentLink = 'https://buy.stripe.com/test_fZu28t93caXj2TcejDe3e00';
     window.location.href = stripePaymentLink;
   };
 
