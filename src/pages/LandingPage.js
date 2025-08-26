@@ -40,7 +40,7 @@ const LandingPage = ({ toggleTheme, darkMode }) => {
           {/* Updated CTA Buttons - Resume Builder Primary */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
-              onClick={() => navigate('/payment')}
+              onClick={() => navigate('/resume-payment')}
               className="bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg text-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
             >
               Create Professional Resume
@@ -70,7 +70,7 @@ const LandingPage = ({ toggleTheme, darkMode }) => {
             <h3 className="text-xl font-semibold mb-2 dark:text-white text-red-600 dark:text-red-400">AI Resume Builder</h3>
             <p className="text-gray-600 dark:text-gray-400 mb-4">Create tailored, professional resumes that match job requirements</p>
             <button 
-              onClick={() => navigate('/payment')}
+              onClick={() => navigate('/resume-payment')}
               className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg text-sm transition-colors"
             >
               Build Now → $29.99
@@ -129,7 +129,7 @@ const LandingPage = ({ toggleTheme, darkMode }) => {
           </div>
           <div className="mt-8">
             <button 
-              onClick={() => navigate('/payment')}
+              onClick={() => navigate('/resume-payment')}
               className="bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-12 rounded-lg text-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
             >
               Get Your Professional Resume
