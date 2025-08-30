@@ -9,12 +9,38 @@ const LoadingSpinner = () => (
   </div>
 );
 
+// Coming Soon Component
+const ComingSoonPage = ({ feature, icon }) => (
+  <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 text-center max-w-md mx-4">
+      <div className="text-6xl mb-4">{icon}</div>
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">{feature}</h1>
+      <p className="text-xl text-orange-600 mb-4">Coming Soon!</p>
+      <p className="text-gray-600 dark:text-gray-400 mb-8">
+        We're working hard to bring you this feature. Stay tuned for updates!
+      </p>
+      <div className="space-y-3">
+        <button
+          onClick={() => window.location.href = '/dashboard'}
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+        >
+          Back to Dashboard
+        </button>
+        <button
+          onClick={() => window.location.href = '/resume-payment'}
+          className="w-full bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+        >
+          Create Professional Resume
+        </button>
+      </div>
+    </div>
+  </div>
+);
+
 // Lazy-loaded Pages
 const LandingPage = lazy(() => import('./pages/LandingPage'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const AIAssistant = lazy(() => import('./pages/AIAssistant'));
-const JobSearch = lazy(() => import('./pages/JobSearch'));
-const Network = lazy(() => import('./pages/Network'));
 const Finances = lazy(() => import('./pages/Finances'));
 
 // Payment and Resume Pages
@@ -64,8 +90,8 @@ function App() {
               <Route path="/" element={<LandingPage toggleTheme={toggleTheme} darkMode={darkMode} />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/ai-assistant" element={<AIAssistant />} />
-              <Route path="/jobs" element={<JobSearch />} />
-              <Route path="/network" element={<Network />} />
+              <Route path="/jobs" element={<ComingSoonPage feature="Job Search" icon="🔍" />} />
+              <Route path="/network" element={<ComingSoonPage feature="Professional Network" icon="🤝" />} />
               <Route path="/finances" element={<Finances />} />
               <Route path="/resume-payment" element={<PaymentPage />} />
               <Route path="/resume-builder" element={<ResumeBuilder />} />
