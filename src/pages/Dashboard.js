@@ -4,52 +4,26 @@ import { useNavigate } from 'react-router-dom';
 const Dashboard = () => {
   const navigate = useNavigate();
   const [stats] = useState({
-    applications: 24,
-    connections: 156,
-    income: 4250,
-    profileViews: 89
+    applications: 0,
+    connections: 0,
+    income: 0,
+    profileViews: 0
   });
 
   const recentActivity = [
     {
       id: 1,
-      type: 'application',
-      title: 'Applied to Senior Developer at TechCorp',
+      type: 'system',
+      title: 'Resume builder accessed',
       time: '2 hours ago',
-      icon: '💼'
+      icon: '📄'
     },
     {
       id: 2,
-      type: 'connection',
-      title: 'Sarah Johnson accepted your connection',
-      time: '4 hours ago',
-      icon: '👥'
-    },
-    {
-      id: 3,
-      type: 'payment',
-      title: 'Received $1,500 payment from Client A',
+      type: 'system',
+      title: 'Account created successfully',
       time: '1 day ago',
-      icon: '💰'
-    }
-  ];
-
-  const jobRecommendations = [
-    {
-      id: 1,
-      title: 'Senior Full Stack Developer',
-      company: 'TechFlow Inc',
-      location: 'Remote',
-      salary: '$95k - $130k',
-      matchScore: 92
-    },
-    {
-      id: 2,
-      title: 'Frontend Architect',
-      company: 'Innovation Labs',
-      location: 'San Francisco',
-      salary: '$120k - $160k',
-      matchScore: 88
+      icon: '✅'
     }
   ];
 
@@ -72,18 +46,18 @@ const Dashboard = () => {
               >
                 Dashboard
               </button>
-              <button 
-                onClick={() => navigate('/jobs')}
-                className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
-              >
-                Jobs
-              </button>
-              <button 
-                onClick={() => navigate('/network')}
-                className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
-              >
-                Network
-              </button>
+              <div className="relative">
+                <span className="text-gray-400 cursor-not-allowed">Jobs</span>
+                <span className="absolute -top-2 -right-6 bg-orange-500 text-white text-xs px-2 py-1 rounded-full">
+                  Coming Soon
+                </span>
+              </div>
+              <div className="relative">
+                <span className="text-gray-400 cursor-not-allowed">Network</span>
+                <span className="absolute -top-2 -right-6 bg-orange-500 text-white text-xs px-2 py-1 rounded-full">
+                  Coming Soon
+                </span>
+              </div>
               <button 
                 onClick={() => navigate('/finances')}
                 className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
@@ -105,10 +79,10 @@ const Dashboard = () => {
         {/* Welcome Section */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            Welcome back, Professional!
+            Welcome to LaunchpadPoint!
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            Here's your career progress overview
+            Your career development journey starts here
           </p>
         </div>
 
@@ -119,7 +93,7 @@ const Dashboard = () => {
               <div>
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Applications</p>
                 <p className="text-2xl font-bold text-blue-600">{stats.applications}</p>
-                <p className="text-xs text-green-600 mt-1">+12% this month</p>
+                <p className="text-xs text-gray-500 mt-1">Track your job applications</p>
               </div>
               <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
                 💼
@@ -132,7 +106,7 @@ const Dashboard = () => {
               <div>
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Connections</p>
                 <p className="text-2xl font-bold text-green-600">{stats.connections}</p>
-                <p className="text-xs text-green-600 mt-1">+8% this month</p>
+                <p className="text-xs text-gray-500 mt-1">Build your network</p>
               </div>
               <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
                 👥
@@ -145,7 +119,7 @@ const Dashboard = () => {
               <div>
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Monthly Income</p>
                 <p className="text-2xl font-bold text-purple-600">${stats.income}</p>
-                <p className="text-xs text-green-600 mt-1">+15% this month</p>
+                <p className="text-xs text-gray-500 mt-1">Track your earnings</p>
               </div>
               <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center">
                 💰
@@ -158,7 +132,7 @@ const Dashboard = () => {
               <div>
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Profile Views</p>
                 <p className="text-2xl font-bold text-orange-600">{stats.profileViews}</p>
-                <p className="text-xs text-green-600 mt-1">+5% this week</p>
+                <p className="text-xs text-gray-500 mt-1">Monitor your visibility</p>
               </div>
               <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900 rounded-lg flex items-center justify-center">
                 👀
@@ -196,16 +170,16 @@ const Dashboard = () => {
                 Ask AI Assistant
               </button>
               <button 
-                onClick={() => navigate('/jobs')}
-                className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium transition-colors"
+                onClick={() => navigate('/resume-builder')}
+                className="w-full bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-lg font-medium transition-colors"
               >
-                Search Jobs
+                Create Resume
               </button>
-              <button 
-                onClick={() => navigate('/network')}
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-lg font-medium transition-colors"
-              >
-                Connect & Network
+              <button className="w-full bg-gray-400 text-white py-3 px-4 rounded-lg font-medium cursor-not-allowed">
+                Search Jobs (Coming Soon)
+              </button>
+              <button className="w-full bg-gray-400 text-white py-3 px-4 rounded-lg font-medium cursor-not-allowed">
+                Connect & Network (Coming Soon)
               </button>
               <button 
                 onClick={() => navigate('/finances')}
@@ -217,33 +191,35 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Job Recommendations */}
+        {/* Coming Soon Features */}
         <div className="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4 dark:text-white">AI Job Recommendations</h2>
+          <h2 className="text-xl font-semibold mb-4 dark:text-white">Coming Soon</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {jobRecommendations.map(job => (
-              <div key={job.id} className="border dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow">
-                <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white">{job.title}</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">{job.company}</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-500">{job.location} • {job.salary}</p>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-lg font-bold text-green-600">{job.matchScore}%</div>
-                    <div className="text-xs text-gray-500">Match</div>
-                  </div>
+            <div className="border dark:border-gray-700 rounded-lg p-4">
+              <div className="flex items-center mb-3">
+                <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center mr-3">
+                  🔍
                 </div>
-                <div className="flex space-x-2">
-                  <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-3 rounded text-sm transition-colors">
-                    View Details
-                  </button>
-                  <button className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 px-3 rounded text-sm transition-colors">
-                    Apply Now
-                  </button>
+                <div>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">Job Search</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">AI-powered job matching</p>
                 </div>
               </div>
-            ))}
+              <p className="text-sm text-gray-500">Find jobs that match your skills and experience with our intelligent job search engine.</p>
+            </div>
+            
+            <div className="border dark:border-gray-700 rounded-lg p-4">
+              <div className="flex items-center mb-3">
+                <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mr-3">
+                  🤝
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">Professional Network</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Connect with professionals</p>
+                </div>
+              </div>
+              <p className="text-sm text-gray-500">Build meaningful connections with industry professionals and grow your network.</p>
+            </div>
           </div>
         </div>
       </div>
