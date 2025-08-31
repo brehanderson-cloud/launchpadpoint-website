@@ -2,7 +2,7 @@
   "name": "launchpadpoint-website",
   "version": "2.0.0",
   "private": true,
-  "description": "AI-powered career development platform",
+  "description": "AI-powered career development platform with Claude AI resume optimization",
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -10,13 +10,24 @@
     "react-router-dom": "^6.8.0",
     "web-vitals": "^2.1.4",
     "stripe": "^15.0.0",
-    "@stripe/stripe-js": "^3.0.0"
+    "@stripe/stripe-js": "^3.0.0",
+    "pdf-parse": "^1.1.1",
+    "multer": "^1.4.5-lts.1",
+    "cors": "^2.8.5",
+    "express-rate-limit": "^6.7.0",
+    "lucide-react": "^0.263.1"
+  },
+  "devDependencies": {
+    "@types/multer": "^1.4.7",
+    "@types/pdf-parse": "^1.1.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "dev": "react-scripts start",
+    "analyze": "npm run build && npx serve -s build"
   },
   "eslintConfig": {
     "extends": [
