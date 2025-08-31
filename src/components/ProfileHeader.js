@@ -20,3 +20,4 @@ export default function ProfileHeader({ userName = 'User', userEmail = '' }) {
       </div>
     </header>
   );
+}
