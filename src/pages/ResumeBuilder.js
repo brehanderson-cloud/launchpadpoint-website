@@ -675,4 +675,236 @@ The more detail you provide, the better our AI can optimize your resume!"
                         {suggestion.type === 'critical' && <AlertCircle size={20} className="text-red-600" />}
                         {suggestion.type === 'improvement' && <TrendingUp size={20} className="text-orange-600" />}
                         {suggestion.type === 'enhancement' && <Zap size={20} className="text-blue-600" />}
-                        {suggestion.type === 'formatting' && <Edit3 size={20
+                        {suggestion.type === 'formatting' && <Edit3 size={20} className="text-green-600" />}
+                        <h4 className="font-semibold text-gray-900">{suggestion.title}</h4>
+                      </div>
+                      <span className={`text-xs px-3 py-1 rounded-full font-medium ${
+                        suggestion.impact === 'High' ? 'bg-red-200 text-red-800' :
+                        suggestion.impact === 'Medium' ? 'bg-orange-200 text-orange-800' :
+                        'bg-green-200 text-green-800'
+                      }`}>
+                        {suggestion.impact} Impact
+                      </span>
+                    </div>
+                    
+                    <p className="text-gray-700 mb-4">{suggestion.description}</p>
+                    
+                    {suggestion.specificExample && (
+                      <div className="bg-white p-3 rounded border-l-2 border-gray-300 mb-3">
+                        <p className="text-xs text-gray-500 mb-1">BEFORE:</p>
+                        <p className="text-sm text-gray-700 mb-2">{suggestion.specificExample}</p>
+                        <p className="text-xs text-gray-500 mb-1">AFTER:</p>
+                        <p className="text-sm text-green-700 font-medium">{suggestion.improvedVersion}</p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Industry Insights */}
+            {aiAnalysis.industryInsights && (
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <h3 className="text-2xl font-bold mb-6 flex items-center">
+                  <TrendingUp className="mr-3 text-purple-600" />
+                  Industry Insights & Trends
+                </h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-3">🔥 Trending Skills</h4>
+                    <div className="space-y-2">
+                      {aiAnalysis.industryInsights.trendingSkills.map((skill, idx) => (
+                        <span key={idx} className="inline-block bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm mr-2 mb-2">
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-3">💼 Career Path</h4>
+                    <ul className="space-y-2">
+                      {aiAnalysis.industryInsights.careerPathSuggestions.map((path, idx) => (
+                        <li key={idx} className="flex items-center text-sm text-gray-700">
+                          <TrendingUp size={14} className="mr-2 text-purple-600" />
+                          {path}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+                
+                {aiAnalysis.industryInsights.salaryInsights && (
+                  <div className="mt-6 bg-green-50 border border-green-200 rounded-lg p-4">
+                    <h4 className="font-medium text-green-900 mb-2">💰 Market Insights</h4>
+                    <p className="text-green-800 text-sm">{aiAnalysis.industryInsights.salaryInsights}</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Generate Optimized Resume */}
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg shadow-lg p-6 text-white text-center">
+              <h3 className="text-2xl font-bold mb-4">Ready to Optimize Your Resume?</h3>
+              <p className="mb-6 opacity-90">
+                Claude AI will now create a perfectly optimized version of your resume based on all the analysis above.
+              </p>
+              <button
+                onClick={generateOptimizedResume}
+                disabled={isOptimizing}
+                className="bg-white text-blue-600 px-8 py-4 rounded-lg hover:bg-gray-100 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed flex items-center justify-center font-bold text-lg mx-auto"
+              >
+                {isOptimizing ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mr-3"></div>
+                    Creating Your Perfect Resume...
+                  </>
+                ) : (
+                  <>
+                    <Zap className="mr-3" size={24} />
+                    Generate Optimized Resume
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 4: Optimized Resume */}
+        {currentStep === 4 && optimizedResume && (
+          <div className="space-y-8">
+            {/* Success Header */}
+            <div className="bg-gradient-to-r from-green-500 to-blue-500 rounded-lg shadow-lg p-6 text-white text-center">
+              <CheckCircle className="mx-auto mb-4" size={48} />
+              <h2 className="text-3xl font-bold mb-2">Your Optimized Resume is Ready!</h2>
+              <p className="text-lg opacity-90">Claude AI has enhanced your resume for maximum impact</p>
+            </div>
+
+            {/* Before/After Comparison */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Original Resume */}
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <h3 className="text-xl font-bold mb-4 text-gray-600">📄 Original Resume</h3>
+                <div className="space-y-4 opacity-75">
+                  <div className="border-b pb-3">
+                    <h4 className="font-bold">{resumeContent.name}</h4>
+                    <p className="text-sm text-gray-600">{resumeContent.email}</p>
+                  </div>
+                  <div>
+                    <h5 className="font-medium mb-2">Summary</h5>
+                    <p className="text-sm text-gray-700">{resumeContent.summary}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Optimized Resume */}
+              <div className="bg-white rounded-lg shadow-lg p-6 border-2 border-green-200">
+                <h3 className="text-xl font-bold mb-4 text-green-600 flex items-center">
+                  ✨ Optimized Resume
+                  <span className="ml-2 bg-green-100 text-green-800 px-2 py-1 rounded text-xs">NEW</span>
+                </h3>
+                <div className="space-y-4">
+                  <div className="border-b pb-3">
+                    <h4 className="font-bold">{optimizedResume.optimizedResume.personalInfo.name}</h4>
+                    <p className="text-sm text-gray-600">{optimizedResume.optimizedResume.personalInfo.email}</p>
+                    {optimizedResume.optimizedResume.personalInfo.linkedin && (
+                      <p className="text-sm text-blue-600">{optimizedResume.optimizedResume.personalInfo.linkedin}</p>
+                    )}
+                  </div>
+                  <div>
+                    <h5 className="font-medium mb-2">Enhanced Summary</h5>
+                    <p className="text-sm text-gray-700 bg-green-50 p-3 rounded">
+                      {optimizedResume.optimizedResume.professionalSummary}
+                    </p>
+                  </div>
+                  
+                  {/* Enhanced Skills */}
+                  <div>
+                    <h5 className="font-medium mb-2">Optimized Skills</h5>
+                    <div className="space-y-2">
+                      {Object.entries(optimizedResume.optimizedResume.skills).map(([category, skills]) => (
+                        <div key={category}>
+                          <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">{category}</p>
+                          <div className="flex flex-wrap gap-1">
+                            {skills.map((skill, idx) => (
+                              <span key={idx} className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">
+                                {skill}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Key Improvements Summary */}
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <h3 className="text-2xl font-bold mb-6 flex items-center">
+                <TrendingUp className="mr-3 text-blue-600" />
+                Key Improvements Made
+              </h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-3">✨ Changes Applied</h4>
+                  <ul className="space-y-2">
+                    {optimizedResume.improvementsSummary.keyChanges.map((change, idx) => (
+                      <li key={idx} className="flex items-start text-sm">
+                        <CheckCircle size={14} className="mr-2 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-gray-700">{change}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-3">🎯 ATS Optimization</h4>
+                  <div className="bg-blue-50 p-4 rounded-lg">
+                    <p className="text-sm text-blue-800 mb-2">
+                      <strong>Keyword Strategy:</strong> {optimizedResume.improvementsSummary.keywordOptimization}
+                    </p>
+                    <p className="text-sm text-blue-800">
+                      <strong>ATS Improvements:</strong> {optimizedResume.improvementsSummary.atsImprovements}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                onClick={() => setCurrentStep(2)}
+                className="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700 font-medium flex items-center justify-center"
+              >
+                <Edit3 className="mr-2" size={20} />
+                Make More Changes
+              </button>
+              
+              <button className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 font-medium flex items-center justify-center">
+                <Download className="mr-2" size={20} />
+                Download PDF Resume
+              </button>
+              
+              <button className="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700 font-medium flex items-center justify-center">
+                <FileText className="mr-2" size={20} />
+                Download Word Format
+              </button>
+              
+              <button className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 font-medium flex items-center justify-center">
+                <Target className="mr-2" size={20} />
+                Generate Cover Letter
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default ResumeBuilder;
