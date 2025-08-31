@@ -222,4 +222,61 @@ function generateFallbackStructuredData(resumeText) {
   const nameCandidate = lines.slice(0, 5).find(line => 
     line.length < 50 && 
     line.includes(' ') && 
-    !line.includes('@') &&
+    !line.includes('@') && 
+    !line.includes('http') &&
+    /^[A-Za-z\s]+$/.test(line.trim())
+  );
+
+  // Extract email
+  const emailMatch = resumeText.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+  
+  // Extract phone
+  const phoneMatch = resumeText.match(/(\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4})/);
+  
+  // Extract LinkedIn
+  const linkedinMatch = resumeText.match(/(linkedin\.com\/in\/[a-zA-Z0-9-]+)/);
+
+  // Basic skills extraction (look for common skill keywords)
+  const skillKeywords = ['javascript', 'python', 'react', 'node', 'sql', 'aws', 'git', 'docker', 'kubernetes', 'agile', 'scrum', 'leadership', 'management', 'communication', 'analysis', 'marketing', 'sales', 'design', 'research'];
+  const foundSkills = skillKeywords.filter(skill => 
+    resumeText.toLowerCase().includes(skill.toLowerCase())
+  );
+
+  return {
+    personalInfo: {
+      name: nameCandidate || "Name Not Found",
+      email: emailMatch ? emailMatch[0] : "",
+      phone: phoneMatch ? phoneMatch[0] : "",
+      location: "",
+      linkedin: linkedinMatch ? `https://${linkedinMatch[0]}` : "",
+      website: ""
+    },
+    summary: "Professional summary extracted from uploaded resume",
+    experience: [
+      {
+        title: "Position extracted from resume",
+        company: "Company extracted from resume", 
+        duration: "Duration extracted from resume",
+        location: "",
+        responsibilities: [
+          "Responsibility extracted from resume text",
+          "Additional responsibility from resume",
+          "Further details from uploaded document"
+        ]
+      }
+    ],
+    education: [
+      {
+        degree: "Degree information from resume",
+        school: "Educational institution from resume",
+        year: "Year from resume",
+        details: ""
+      }
+    ],
+    skills: foundSkills.length > 0 ? foundSkills : ["skills", "extracted", "from", "resume"],
+    certifications: [],
+    projects: [],
+    languages: [],
+    achievements: []
+  };
+}
