@@ -1,20 +1,898 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="LaunchpadPoint - The Launchpad for Your Career"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <title>LaunchpadPoint</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LaunchPad Point - AI Resume Builder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .insights-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .insights-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .chart-icon {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .fire-icon, .briefcase-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+            background: linear-gradient(45deg, #ff6b6b, #ffa500);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .briefcase-icon {
+            background: linear-gradient(45deg, #8B4513, #D2691E);
+            border-radius: 6px;
+        }
+
+        .skills-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .skill-tag {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .career-list {
+            list-style: none;
+        }
+
+        .career-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .career-item::before {
+            content: "📈";
+            margin-right: 10px;
+        }
+
+        .market-insights {
+            background: linear-gradient(135deg, #e8f5e8, #f0f8f0);
+            border: 2px solid #4CAF50;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .market-title {
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2E7D32;
+        }
+
+        .dollar-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+            background: linear-gradient(45deg, #4CAF50, #66BB6A);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .salary-info {
+            font-size: 18px;
+            color: #1B5E20;
+            font-weight: 600;
+        }
+
+        .generate-section {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 25px;
+            padding: 40px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .generate-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .generate-subtitle {
+            font-size: 18px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .generate-btn {
+            background: white;
+            color: #3b82f6;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .resume-form {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input, textarea, select {
+            padding: 12px;
+            border: 2px solid #e1e1e1;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e1e1e1;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            background: white;
+            border-radius: 20px;
+            margin-top: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .resume-output {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .resume-header {
+            text-align: center;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .resume-name {
+            font-size: 32px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .resume-contact {
+            color: #666;
+            font-size: 14px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .resume-section {
+            margin-bottom: 25px;
+        }
+
+        .resume-section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+            border-bottom: 1px solid #e1e1e1;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+        }
+
+        .resume-content {
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border: 1px solid #fcc;
+        }
+
+        .success-message {
+            background: #efe;
+            color: #393;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border: 1px solid #cfc;
+        }
+
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .generate-title {
+                font-size: 28px;
+            }
+            
+            .resume-contact {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Industry Insights Section -->
+        <div class="insights-section">
+            <div class="insights-header">
+                <div class="chart-icon">📊</div>
+                Industry Insights & Trends
+            </div>
+            
+            <div class="content-grid">
+                <div class="trending-skills">
+                    <div class="section-title">
+                        <div class="fire-icon">🔥</div>
+                        Trending Skills
+                    </div>
+                    <div class="skills-tags">
+                        <div class="skill-tag">AI recruiting tools</div>
+                        <div class="skill-tag">data-driven HR</div>
+                        <div class="skill-tag">remote team management</div>
+                    </div>
+                </div>
+                
+                <div class="career-paths">
+                    <div class="section-title">
+                        <div class="briefcase-icon">💼</div>
+                        Career Path
+                    </div>
+                    <ul class="career-list">
+                        <li class="career-item">HR Manager</li>
+                        <li class="career-item">Talent Acquisition Lead</li>
+                        <li class="career-item">People Operations</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="market-insights">
+                <div class="market-title">
+                    <div class="dollar-icon">💰</div>
+                    Market Insights
+                </div>
+                <div class="salary-info">HR Specialists in your area typically earn $65k-$85k</div>
+            </div>
+        </div>
+
+        <!-- Generate Resume Section -->
+        <div class="generate-section">
+            <h1 class="generate-title">Ready to Optimize Your Resume?</h1>
+            <p class="generate-subtitle">Claude AI will now create a perfectly optimized version of your resume based on all the analysis above.</p>
+            <button class="generate-btn" id="generateBtn" onclick="showResumeForm()">
+                <span>⚡</span>
+                Generate Optimized Resume
+            </button>
+        </div>
+
+        <!-- Resume Form -->
+        <div class="resume-form" id="resumeForm">
+            <h2 style="margin-bottom: 20px; color: #333; text-align: center;">Tell Us About Yourself</h2>
+            <form id="resumeDataForm" onsubmit="generateResume(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="fullName">Full Name *</label>
+                        <input type="text" id="fullName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="tel" id="phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" placeholder="City, State">
+                    </div>
+                    <div class="form-group">
+                        <label for="jobTitle">Target Job Title *</label>
+                        <input type="text" id="jobTitle" required placeholder="e.g., HR Manager, Data Analyst">
+                    </div>
+                    <div class="form-group">
+                        <label for="experience">Years of Experience</label>
+                        <select id="experience">
+                            <option value="">Select...</option>
+                            <option value="0-1">0-1 years</option>
+                            <option value="2-5">2-5 years</option>
+                            <option value="6-10">6-10 years</option>
+                            <option value="10+">10+ years</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="summary">Professional Summary</label>
+                        <textarea id="summary" placeholder="Brief overview of your professional background and key achievements..."></textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="workExperience">Work Experience</label>
+                        <textarea id="workExperience" placeholder="Job Title - Company Name (Year-Year)&#10;• Key achievement or responsibility&#10;• Another accomplishment with metrics if possible"></textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="education">Education</label>
+                        <textarea id="education" placeholder="Degree - University Name (Year)&#10;Relevant Certifications"></textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="skills">Key Skills</label>
+                        <input type="text" id="skills" placeholder="Separate skills with commas: Project Management, Data Analysis, Leadership, etc.">
+                    </div>
+                </div>
+                
+                <div class="btn-group">
+                    <button type="button" class="btn btn-secondary" onclick="hideResumeForm()">Back</button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">Generate My Resume</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Loading Animation -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p id="loadingText">Creating your optimized resume...</p>
+        </div>
+
+        <!-- Resume Output -->
+        <div class="resume-output" id="resumeOutput">
+            <div id="resumeContent"></div>
+            <div class="btn-group" style="margin-top: 40px;">
+                <button class="btn btn-secondary" onclick="showResumeForm()">Edit Resume</button>
+                <button class="btn btn-primary" onclick="downloadResume()" id="downloadBtn">Download PDF</button>
+                <button class="btn btn-primary" onclick="saveResume()" id="saveBtn">Save Resume</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentResumeData = null;
+        let currentResumeId = null;
+
+        // API Base URL - adjust this to match your API structure
+        const API_BASE = '/api';
+
+        // Show resume form
+        function showResumeForm() {
+            document.getElementById('resumeForm').style.display = 'block';
+            document.getElementById('resumeOutput').style.display = 'none';
+            document.getElementById('loading').style.display = 'none';
+            document.querySelector('.generate-section').style.display = 'block';
+            
+            // Smooth scroll to form
+            document.getElementById('resumeForm').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Hide resume form
+        function hideResumeForm() {
+            document.getElementById('resumeForm').style.display = 'none';
+        }
+
+        // Main resume generation function
+        async function generateResume(event) {
+            event.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+            const loadingText = document.getElementById('loadingText');
+            
+            try {
+                // Disable form and show loading
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Generating...';
+                document.getElementById('resumeForm').style.display = 'none';
+                document.querySelector('.generate-section').style.display = 'none';
+                loading.style.display = 'block';
+                
+                // Collect form data
+                const formData = collectFormData();
+                currentResumeData = formData;
+                
+                // Step 1: Analyze resume data
+                loadingText.textContent = 'Analyzing your background...';
+                const analysisResult = await callAPI('/ai/analyze-resume', formData);
+                
+                // Step 2: Optimize resume content
+                loadingText.textContent = 'Optimizing resume content...';
+                const optimizationResult = await callAPI('/ai/optimize-resume', {
+                    ...formData,
+                    analysis: analysisResult
+                });
+                
+                // Step 3: Generate final resume
+                loadingText.textContent = 'Creating your professional resume...';
+                const resumeResult = await generateFinalResume(optimizationResult);
+                
+                // Display the resume
+                displayResume(resumeResult);
+                
+                // Hide loading and show resume
+                loading.style.display = 'none';
+                document.getElementById('resumeOutput').style.display = 'block';
+                
+                // Smooth scroll to resume
+                document.getElementById('resumeOutput').scrollIntoView({ behavior: 'smooth' });
+                
+            } catch (error) {
+                console.error('Resume generation failed:', error);
+                handleError(error);
+            } finally {
+                // Re-enable form
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Generate My Resume';
+            }
+        }
+
+        // Collect form data
+        function collectFormData() {
+            return {
+                fullName: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                location: document.getElementById('location').value,
+                jobTitle: document.getElementById('jobTitle').value,
+                experience: document.getElementById('experience').value,
+                summary: document.getElementById('summary').value,
+                workExperience: document.getElementById('workExperience').value,
+                education: document.getElementById('education').value,
+                skills: document.getElementById('skills').value,
+                timestamp: new Date().toISOString()
+            };
+        }
+
+        // Generic API call function
+        async function callAPI(endpoint, data) {
+            const response = await fetch(API_BASE + endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            });
+            
+            if (!response.ok) {
+                throw new Error(`API call failed: ${response.status} ${response.statusText}`);
+            }
+            
+            return await response.json();
+        }
+
+        // Generate final resume (fallback if API fails)
+        async function generateFinalResume(data) {
+            try {
+                // Try to use the API first
+                return await callAPI('/generate-resume', data);
+            } catch (error) {
+                console.warn('API generation failed, using local generation:', error);
+                // Fallback to local generation
+                return generateLocalResume(data);
+            }
+        }
+
+        // Local resume generation (backup)
+        function generateLocalResume(data) {
+            const resumeData = data.optimizedData || currentResumeData;
+            
+            return {
+                header: {
+                    name: resumeData.fullName,
+                    contact: buildContactInfo(resumeData)
+                },
+                summary: generateSmartSummary(resumeData),
+                experience: formatWorkExperience(resumeData.workExperience),
+                education: formatEducation(resumeData.education),
+                skills: optimizeSkills(resumeData.skills, resumeData.jobTitle),
+                metadata: {
+                    generatedAt: new Date().toISOString(),
+                    method: 'local'
+                }
+            };
+        }
+
+        // Display resume
+        function displayResume(resumeData) {
+            const resumeContent = document.getElementById('resumeContent');
+            
+            resumeContent.innerHTML = `
+                <div class="resume-header">
+                    <div class="resume-name">${resumeData.header.name}</div>
+                    <div class="resume-contact">${resumeData.header.contact}</div>
+                </div>
+                
+                <div class="resume-section">
+                    <div class="resume-section-title">Professional Summary</div>
+                    <div class="resume-content">${resumeData.summary}</div>
+                </div>
+                
+                <div class="resume-section">
+                    <div class="resume-section-title">Experience</div>
+                    <div class="resume-content">${resumeData.experience}</div>
+                </div>
+                
+                <div class="resume-section">
+                    <div class="resume-section-title">Education</div>
+                    <div class="resume-content">${resumeData.education}</div>
+                </div>
+                
+                <div class="resume-section">
+                    <div class="resume-section-title">Key Skills</div>
+                    <div class="resume-content">${resumeData.skills}</div>
+                </div>
+            `;
+        }
+
+        // Download resume as PDF
+        async function downloadResume() {
+            const downloadBtn = document.getElementById('downloadBtn');
+            
+            try {
+                downloadBtn.disabled = true;
+                downloadBtn.textContent = 'Generating PDF...';
+                
+                const response = await callAPI('/download-resume-pdf', {
+                    resumeData: currentResumeData,
+                    resumeId: currentResumeId
+                });
+                
+                // Create download link
+                const blob = await fetch(response.downloadUrl).then(r => r.blob());
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${currentResumeData.fullName.replace(/\s+/g, '_')}_Resume.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                
+                showSuccess('Resume downloaded successfully!');
+                
+            } catch (error) {
+                console.error('Download failed:', error);
+                showError('Failed to download resume. Please try again.');
+            } finally {
+                downloadBtn.disabled = false;
+                downloadBtn.textContent = 'Download PDF';
+            }
+        }
+
+        // Save resume
+        async function saveResume() {
+            const saveBtn = document.getElementById('saveBtn');
+            
+            try {
+                saveBtn.disabled = true;
+                saveBtn.textContent = 'Saving...';
+                
+                const response = await callAPI('/save-resume', {
+                    resumeData: currentResumeData,
+                    resumeId: currentResumeId
+                });
+                
+                currentResumeId = response.resumeId;
+                showSuccess('Resume saved successfully!');
+                
+            } catch (error) {
+                console.error('Save failed:', error);
+                showError('Failed to save resume. Please try again.');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Save Resume';
+            }
+        }
+
+        // Helper functions
+        function buildContactInfo(data) {
+            const contact = [];
+            if (data.email) contact.push(`📧 ${data.email}`);
+            if (data.phone) contact.push(`📞 ${data.phone}`);
+            if (data.location) contact.push(`📍 ${data.location}`);
+            return contact.join(' • ');
+        }
+
+        function generateSmartSummary(data) {
+            // Enhanced summary generation logic
+            const experienceText = getExperienceText(data.experience);
+            const templates = getSummaryTemplates();
+            
+            for (let role in templates) {
+                if (data.jobTitle && data.jobTitle.toLowerCase().includes(role.toLowerCase().split(' ')[0])) {
+                    return templates[role].replace('{experience}', experienceText);
+                }
+            }
+            
+            return `Dynamic ${experienceText} with strong analytical and communication skills. Committed to delivering excellence and driving results in fast-paced environments.`;
+        }
+
+        function getExperienceText(experience) {
+            return experience === '0-1' ? 'emerging professional' : 
+                   experience === '2-5' ? 'experienced professional' :
+                   experience === '6-10' ? 'seasoned professional' : 'senior professional';
+        }
+
+        function getSummaryTemplates() {
+            return {
+                'HR': 'Results-driven {experience} with expertise in talent acquisition, employee relations, and organizational development. Proven track record of implementing strategic HR initiatives that drive business success.',
+                'Data': '{experience} specializing in data analysis, statistical modeling, and business intelligence. Expert in transforming complex datasets into actionable insights.',
+                'Software': 'Innovative {experience} with expertise in full-stack development and modern programming languages. Passionate about creating scalable solutions.',
+                'Marketing': 'Creative {experience} with strong background in digital marketing, brand strategy, and campaign optimization.'
+            };
+        }
+
+        function formatWorkExperience(experience) {
+            if (!experience) return '<p style="color: #888; font-style: italic;">No work experience provided.</p>';
+            
+            const lines = experience.split('\n').filter(line => line.trim());
+            let formatted = '';
+            
+            lines.forEach(line => {
+                line = line.trim();
+                if (line && !line.startsWith('•') && !line.startsWith('-')) {
+                    formatted += `<div class="experience-item" style="margin-bottom: 15px;"><strong>${line}</strong></div>`;
+                } else if (line.startsWith('•') || line.startsWith('-')) {
+                    formatted += `<div style="margin-left: 20px; margin-bottom: 5px;">${line}</div>`;
+                }
+            });
+            
+            return formatted;
+        }
+
+        function formatEducation(education) {
+            if (!education) return '<p style="color: #888; font-style: italic;">No education information provided.</p>';
+            
+            return education.split('\n').filter(line => line.trim()).map(line => 
+                `<div style="margin-bottom: 10px;"><strong>${line.trim()}</strong></div>`
+            ).join('');
+        }
+
+        function optimizeSkills(skills, jobTitle) {
+            if (!skills) return '<p style="color: #888; font-style: italic;">No skills provided.</p>';
+            
+            const skillsArray = skills.split(',').map(s => s.trim()).filter(s => s);
+            return skillsArray.map(skill => 
+                `<span style="display: inline-block; background: #f0f0f0; padding: 5px 10px; margin: 3px; border-radius: 15px; font-size: 14px;">${skill}</span>`
+            ).join(' ');
+        }
+
+        function handleError(error) {
+            document.getElementById('loading').style.display = 'none';
+            showError(`Resume generation failed: ${error.message}`);
+            document.getElementById('resumeForm').style.display = 'block';
+        }
+
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+            document.querySelector('.container').appendChild(errorDiv);
+            
+            setTimeout(() => {
+                errorDiv.remove();
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-message';
+            successDiv.textContent = message;
+            document.querySelector('.container').appendChild(successDiv);
+            
+            setTimeout(() => {
+                successDiv.remove();
+            }, 3000);
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('LaunchPad Point Resume Builder initialized');
+            
+            // Check if user has a saved resume
+            checkForSavedResume();
+        });
+
+        async function checkForSavedResume() {
+            try {
+                const response = await callAPI('/get-user-resumes', {});
+                if (response.resumes && response.resumes.length > 0) {
+                    // User has saved resumes - could show them here
+                    console.log('Found saved resumes:', response.resumes.length);
+                }
+            } catch (error) {
+                // Silently fail - user probably doesn't have saved resumes
+                console.log('No saved resumes found');
+            }
+        }
+    </script>
+</body>
 </html>
