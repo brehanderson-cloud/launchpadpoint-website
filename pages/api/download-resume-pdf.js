@@ -1,241 +1,637 @@
-// File: api/download-resume-pdf.js
-// Complete PDF resume generation with jsPDF
+// /api/download-resume-pdf.js
+import puppeteer from 'puppeteer';
+import { v4 as uuidv4 } from 'uuid';
 
 export default async function handler(req, res) {
-  // Enable CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    // Set CORS headers
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+    res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
 
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  try {
-    const { optimizedResume, stylePreference = 'professional' } = req.body;
-
-    if (!optimizedResume) {
-      return res.status(400).json({ error: 'Optimized resume data required' });
+    if (req.method === 'OPTIONS') {
+        res.status(200).end();
+        return;
     }
 
-    // Import jsPDF dynamically for serverless environment
-    const { jsPDF } = await import('jspdf');
-    
-    // Create PDF document
-    const doc = new jsPDF({
-      orientation: 'portrait',
-      unit: 'mm',
-      format: 'a4'
-    });
-
-    // Page dimensions
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const pageHeight = doc.internal.pageSize.getHeight();
-    const margin = 20;
-    let yPosition = 25;
-
-    // Color scheme based on style
-    const colorSchemes = {
-      professional: { primary: '#000000', secondary: '#555555', accent: '#2563eb' },
-      modern: { primary: '#1f2937', secondary: '#6b7280', accent: '#3b82f6' },
-      creative: { primary: '#1e40af', secondary: '#64748b', accent: '#8b5cf6' }
-    };
-    
-    const colors = colorSchemes[stylePreference] || colorSchemes.professional;
-
-    // Helper functions
-    const addText = (text, fontSize = 11, color = colors.primary, isBold = false, isItalic = false) => {
-      if (yPosition > pageHeight - 30) {
-        doc.addPage();
-        yPosition = 25;
-      }
-
-      doc.setFontSize(fontSize);
-      doc.setTextColor(color);
-      
-      let fontStyle = 'normal';
-      if (isBold && isItalic) fontStyle = 'bolditalic';
-      else if (isBold) fontStyle = 'bold';
-      else if (isItalic) fontStyle = 'italic';
-      
-      doc.setFont('helvetica', fontStyle);
-      
-      const maxWidth = pageWidth - (margin * 2);
-      const lines = doc.splitTextToSize(text, maxWidth);
-      
-      doc.text(lines, margin, yPosition);
-      yPosition += (lines.length * (fontSize * 0.35)) + 3;
-      
-      return yPosition;
-    };
-
-    const addSectionHeader = (title) => {
-      yPosition += 8;
-      doc.setTextColor(colors.accent);
-      doc.setFontSize(12);
-      doc.setFont('helvetica', 'bold');
-      doc.text(title.toUpperCase(), margin, yPosition);
-      
-      // Add underline
-      const textWidth = doc.getTextWidth(title.toUpperCase());
-      doc.setDrawColor(colors.accent);
-      doc.setLineWidth(0.5);
-      doc.line(margin, yPosition + 1, margin + textWidth, yPosition + 1);
-      
-      yPosition += 8;
-    };
-
-    const addBulletPoint = (text, indent = 5) => {
-      const bulletX = margin + indent;
-      const textX = bulletX + 5;
-      
-      doc.setTextColor(colors.accent);
-      doc.setFontSize(10);
-      doc.text('•', bulletX, yPosition);
-      
-      doc.setTextColor(colors.primary);
-      doc.setFontSize(10);
-      doc.setFont('helvetica', 'normal');
-      
-      const maxWidth = pageWidth - textX - margin;
-      const lines = doc.splitTextToSize(text, maxWidth);
-      doc.text(lines, textX, yPosition);
-      
-      yPosition += (lines.length * 3.5) + 2;
-    };
-
-    // Document Header
-    const resume = optimizedResume.optimizedResume || optimizedResume;
-    
-    // Name (Large, Bold)
-    doc.setFontSize(24);
-    doc.setTextColor(colors.primary);
-    doc.setFont('helvetica', 'bold');
-    doc.text(resume.personalInfo.name, margin, yPosition);
-    yPosition += 12;
-
-    // Contact Information
-    const contactInfo = [
-      resume.personalInfo.email,
-      resume.personalInfo.phone,
-      resume.personalInfo.location,
-      resume.personalInfo.linkedin
-    ].filter(Boolean).join(' • ');
-
-    doc.setFontSize(10);
-    doc.setTextColor(colors.secondary);
-    doc.setFont('helvetica', 'normal');
-    doc.text(contactInfo, margin, yPosition);
-    yPosition += 15;
-
-    // Professional Summary
-    if (resume.professionalSummary) {
-      addSectionHeader('Professional Summary');
-      addText(resume.professionalSummary, 11, colors.primary);
+    if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    // Core Competencies
-    if (resume.skills || resume.coreCompetencies) {
-      addSectionHeader('Core Competencies');
-      
-      const skills = resume.coreCompetencies || 
-        (resume.skills ? Object.values(resume.skills).flat() : []);
-      
-      if (skills.length > 0) {
-        // Display skills in rows of 3
-        const skillsPerRow = 3;
-        for (let i = 0; i < skills.length; i += skillsPerRow) {
-          const rowSkills = skills.slice(i, i + skillsPerRow);
-          const skillText = rowSkills.join(' • ');
-          addText(skillText, 10, colors.primary);
+    try {
+        const { resumeData, resumeId, format = 'pdf' } = req.body;
+
+        if (!resumeData) {
+            return res.status(400).json({ error: 'Resume data is required' });
         }
-      }
-    }
 
-    // Professional Experience
-    if (resume.experience && resume.experience.length > 0) {
-      addSectionHeader('Professional Experience');
-      
-      resume.experience.forEach((exp, index) => {
-        // Job title and company (bold)
-        const jobHeader = `${exp.title} | ${exp.company}`;
-        addText(jobHeader, 12, colors.primary, true);
+        // Generate PDF
+        const pdfBuffer = await generateResumePDF(resumeData, format);
         
-        // Duration and location
-        const jobDetails = `${exp.duration}${exp.location ? ` • ${exp.location}` : ''}`;
-        addText(jobDetails, 9, colors.secondary, false, true);
-        yPosition += 2;
+        // Generate unique filename
+        const fileName = `${resumeData.fullName?.replace(/\s+/g, '_') || 'Resume'}_${Date.now()}.pdf`;
         
-        // Achievements/Responsibilities
-        const achievements = exp.achievements || exp.responsibilities || [];
-        achievements.forEach(achievement => {
-          addBulletPoint(achievement);
+        // Set response headers for PDF download
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+        res.setHeader('Content-Length', pdfBuffer.length);
+        
+        // Send the PDF
+        res.status(200).send(pdfBuffer);
+
+    } catch (error) {
+        console.error('PDF generation error:', error);
+        res.status(500).json({ 
+            error: 'Failed to generate PDF', 
+            details: process.env.NODE_ENV === 'development' ? error.message : undefined 
+        });
+    }
+}
+
+async function generateResumePDF(resumeData, format) {
+    let browser;
+    
+    try {
+        // Launch puppeteer
+        browser = await puppeteer.launch({
+            headless: 'new',
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
         });
         
-        if (index < resume.experience.length - 1) {
-          yPosition += 5;
-        }
-      });
-    }
-
-    // Education
-    if (resume.education && resume.education.length > 0) {
-      addSectionHeader('Education');
-      
-      resume.education.forEach(edu => {
-        const eduText = `${edu.degree} | ${edu.school} | ${edu.year}`;
-        addText(eduText, 11, colors.primary, true);
+        const page = await browser.newPage();
         
-        if (edu.relevant || edu.details) {
-          addText(edu.relevant || edu.details, 10, colors.secondary);
-        }
-      });
-    }
-
-    // Certifications
-    if (resume.certifications && resume.certifications.length > 0) {
-      addSectionHeader('Certifications');
-      resume.certifications.forEach(cert => {
-        addBulletPoint(cert);
-      });
-    }
-
-    // Projects (if applicable)
-    if (resume.projects && resume.projects.length > 0) {
-      addSectionHeader('Notable Projects');
-      
-      resume.projects.forEach(project => {
-        addText(project.name, 11, colors.primary, true);
-        addText(project.description, 10, colors.primary);
+        // Generate HTML content
+        const htmlContent = generateResumeHTML(resumeData, format);
         
-        if (project.technologies && project.technologies.length > 0) {
-          const techText = `Technologies: ${project.technologies.join(', ')}`;
-          addText(techText, 9, colors.secondary, false, true);
+        // Set content and wait for fonts to load
+        await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+        
+        // Generate PDF with professional settings
+        const pdfBuffer = await page.pdf({
+            format: 'A4',
+            margin: {
+                top: '0.5in',
+                right: '0.5in',
+                bottom: '0.5in',
+                left: '0.5in'
+            },
+            printBackground: true,
+            preferCSSPageSize: true
+        });
+        
+        return pdfBuffer;
+        
+    } finally {
+        if (browser) {
+            await browser.close();
         }
-        yPosition += 3;
-      });
     }
+}
 
-    // Generate PDF
-    const pdfBytes = doc.output('arraybuffer');
+function generateResumeHTML(data, format = 'professional') {
+    const templates = {
+        professional: generateProfessionalTemplate(data),
+        modern: generateModernTemplate(data),
+        creative: generateCreativeTemplate(data)
+    };
+    
+    return templates[format] || templates.professional;
+}
 
-    // Set response headers
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'attachment; filename="optimized-resume.pdf"');
-    res.setHeader('Content-Length', pdfBytes.byteLength);
+function generateProfessionalTemplate(data) {
+    return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume - ${data.fullName}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-size: 11px;
+            line-height: 1.4;
+            color: #333;
+            background: white;
+        }
+        
+        .resume-container {
+            max-width: 8.5in;
+            margin: 0 auto;
+            background: white;
+            padding: 0.5in;
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+        
+        .contact-info {
+            font-size: 10px;
+            color: #666;
+            line-height: 1.3;
+        }
+        
+        .section {
+            margin-bottom: 18px;
+        }
+        
+        .section-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #2c3e50;
+            border-bottom: 1px solid #bdc3c7;
+            padding-bottom: 3px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .content {
+            margin-left: 0;
+        }
+        
+        .job-entry, .education-entry {
+            margin-bottom: 12px;
+        }
+        
+        .job-title, .degree {
+            font-weight: bold;
+            font-size: 11px;
+        }
+        
+        .company, .school {
+            font-style: italic;
+            color: #666;
+            font-size: 10px;
+        }
+        
+        .date {
+            float: right;
+            font-size: 9px;
+            color: #888;
+        }
+        
+        .job-description, .education-details {
+            margin-top: 5px;
+            font-size: 10px;
+            line-height: 1.4;
+        }
+        
+        .job-description ul {
+            margin-left: 15px;
+            margin-top: 3px;
+        }
+        
+        .job-description li {
+            margin-bottom: 2px;
+        }
+        
+        .skills-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .skill-item {
+            background: #ecf0f1;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 9px;
+            color: #2c3e50;
+        }
+        
+        .summary-text {
+            font-size: 10px;
+            line-height: 1.5;
+            text-align: justify;
+            margin-bottom: 5px;
+        }
+        
+        @media print {
+            body { print-color-adjust: exact; }
+            .resume-container { box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="resume-container">
+        <div class="header">
+            <div class="name">${data.fullName || 'Your Name'}</div>
+            <div class="contact-info">
+                ${buildContactLine(data)}
+            </div>
+        </div>
+        
+        ${data.summary ? `
+        <div class="section">
+            <div class="section-title">Professional Summary</div>
+            <div class="content">
+                <div class="summary-text">${data.optimizedSummary || data.summary}</div>
+            </div>
+        </div>
+        ` : ''}
+        
+        ${data.workExperience ? `
+        <div class="section">
+            <div class="section-title">Professional Experience</div>
+            <div class="content">
+                ${formatWorkExperienceForPDF(data.optimizedExperience || data.workExperience)}
+            </div>
+        </div>
+        ` : ''}
+        
+        ${data.education ? `
+        <div class="section">
+            <div class="section-title">Education</div>
+            <div class="content">
+                ${formatEducationForPDF(data.education)}
+            </div>
+        </div>
+        ` : ''}
+        
+        ${data.skills ? `
+        <div class="section">
+            <div class="section-title">Core Competencies</div>
+            <div class="content">
+                <div class="skills-grid">
+                    ${formatSkillsForPDF(data.optimizedSkills || data.skills)}
+                </div>
+            </div>
+        </div>
+        ` : ''}
+    </div>
+</body>
+</html>`;
+}
 
-    // Send PDF
-    res.end(Buffer.from(pdfBytes));
+function generateModernTemplate(data) {
+    return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume - ${data.fullName}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            font-size: 11px;
+            line-height: 1.4;
+            color: #333;
+            background: white;
+        }
+        
+        .resume-container {
+            max-width: 8.5in;
+            margin: 0 auto;
+            background: white;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            min-height: 11in;
+        }
+        
+        .sidebar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+        }
+        
+        .main-content {
+            padding: 30px 25px;
+        }
+        
+        .name {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .job-title {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 15px;
+            font-weight: 300;
+        }
+        
+        .contact-info {
+            font-size: 9px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+        
+        .contact-info div {
+            margin-bottom: 3px;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-title {
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .skills-list {
+            list-style: none;
+        }
+        
+        .skills-list li {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 8px;
+            margin: 3px 0;
+            border-radius: 3px;
+            font-size: 9px;
+        }
+        
+        .main-section {
+            margin-bottom: 25px;
+        }
+        
+        .main-section-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 5px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+        
+        .experience-item {
+            margin-bottom: 15px;
+        }
+        
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 5px;
+        }
+        
+        .job-info h4 {
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+        
+        .job-info .company {
+            font-size: 10px;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .job-date {
+            font-size: 9px;
+            color: #888;
+        }
+        
+        .job-description {
+            font-size: 10px;
+            line-height: 1.4;
+            margin-top: 5px;
+        }
+        
+        @media print {
+            body { print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <div class="resume-container">
+        <div class="sidebar">
+            <div class="name">${data.fullName || 'Your Name'}</div>
+            <div class="job-title">${data.jobTitle || 'Professional'}</div>
+            
+            <div class="contact-info">
+                ${buildContactSidebar(data)}
+            </div>
+            
+            ${data.skills ? `
+            <div class="sidebar-section">
+                <div class="sidebar-title">Skills</div>
+                <ul class="skills-list">
+                    ${formatSkillsForSidebar(data.optimizedSkills || data.skills)}
+                </ul>
+            </div>
+            ` : ''}
+        </div>
+        
+        <div class="main-content">
+            ${data.summary ? `
+            <div class="main-section">
+                <div class="main-section-title">Profile</div>
+                <div style="font-size: 10px; line-height: 1.5;">${data.optimizedSummary || data.summary}</div>
+            </div>
+            ` : ''}
+            
+            ${data.workExperience ? `
+            <div class="main-section">
+                <div class="main-section-title">Experience</div>
+                ${formatWorkExperienceModern(data.optimizedExperience || data.workExperience)}
+            </div>
+            ` : ''}
+            
+            ${data.education ? `
+            <div class="main-section">
+                <div class="main-section-title">Education</div>
+                ${formatEducationModern(data.education)}
+            </div>
+            ` : ''}
+        </div>
+    </div>
+</body>
+</html>`;
+}
 
-  } catch (error) {
-    console.error('PDF generation error:', error);
-    res.status(500).json({ 
-      error: 'Failed to generate PDF',
-      details: error.message 
+function generateCreativeTemplate(data) {
+    // A more creative template with colors and modern design
+    return generateModernTemplate(data); // For now, use modern template
+}
+
+function buildContactLine(data) {
+    const contact = [];
+    if (data.email) contact.push(data.email);
+    if (data.phone) contact.push(data.phone);
+    if (data.location) contact.push(data.location);
+    return contact.join(' | ');
+}
+
+function buildContactSidebar(data) {
+    let contact = '';
+    if (data.email) contact += `<div>📧 ${data.email}</div>`;
+    if (data.phone) contact += `<div>📞 ${data.phone}</div>`;
+    if (data.location) contact += `<div>📍 ${data.location}</div>`;
+    return contact;
+}
+
+function formatWorkExperienceForPDF(workExperience) {
+    if (!workExperience) return '';
+    
+    const lines = workExperience.split('\n').filter(line => line.trim());
+    let formatted = '';
+    let currentJob = null;
+    
+    lines.forEach(line => {
+        line = line.trim();
+        if (line && !line.startsWith('•') && !line.startsWith('-')) {
+            // Job title line
+            if (currentJob) {
+                formatted += '</div></div>';
+            }
+            
+            // Parse job title, company, and dates
+            const parts = line.split(' - ');
+            const title = parts[0] || '';
+            const rest = parts.slice(1).join(' - ');
+            
+            // Try to extract dates (basic pattern matching)
+            const datePattern = /\(([^)]+)\)$/;
+            const dateMatch = rest.match(datePattern);
+            const company = dateMatch ? rest.replace(datePattern, '').trim() : rest;
+            const dates = dateMatch ? dateMatch[1] : '';
+            
+            formatted += `
+                <div class="job-entry">
+                    <div class="job-title">${title}</div>
+                    <div class="company">${company}</div>
+                    ${dates ? `<div class="date">${dates}</div>` : ''}
+                    <div class="job-description">
+            `;
+            currentJob = true;
+        } else if (line.startsWith('•') || line.startsWith('-')) {
+            // Bullet point
+            if (!currentJob) {
+                formatted += '<div class="job-entry"><div class="job-description">';
+                currentJob = true;
+            }
+            formatted += `<div style="margin-left: 15px; margin-bottom: 3px;">${line}</div>`;
+        }
     });
-  }
+    
+    if (currentJob) {
+        formatted += '</div></div>';
+    }
+    
+    return formatted;
+}
+
+function formatWorkExperienceModern(workExperience) {
+    if (!workExperience) return '';
+    
+    const lines = workExperience.split('\n').filter(line => line.trim());
+    let formatted = '';
+    let currentJob = null;
+    
+    lines.forEach(line => {
+        line = line.trim();
+        if (line && !line.startsWith('•') && !line.startsWith('-')) {
+            if (currentJob) {
+                formatted += '</div></div>';
+            }
+            
+            const parts = line.split(' - ');
+            const title = parts[0] || '';
+            const rest = parts.slice(1).join(' - ');
+            const datePattern = /\(([^)]+)\)$/;
+            const dateMatch = rest.match(datePattern);
+            const company = dateMatch ? rest.replace(datePattern, '').trim() : rest;
+            const dates = dateMatch ? dateMatch[1] : '';
+            
+            formatted += `
+                <div class="experience-item">
+                    <div class="job-header">
+                        <div class="job-info">
+                            <h4>${title}</h4>
+                            <div class="company">${company}</div>
+                        </div>
+                        <div class="job-date">${dates}</div>
+                    </div>
+                    <div class="job-description">
+            `;
+            currentJob = true;
+        } else if (line.startsWith('•') || line.startsWith('-')) {
+            if (!currentJob) {
+                formatted += '<div class="experience-item"><div class="job-description">';
+                currentJob = true;
+            }
+            formatted += `<div style="margin-bottom: 2px;">${line}</div>`;
+        }
+    });
+    
+    if (currentJob) {
+        formatted += '</div></div>';
+    }
+    
+    return formatted;
+}
+
+function formatEducationForPDF(education) {
+    if (!education) return '';
+    
+    return education.split('\n').filter(line => line.trim()).map(line => {
+        line = line.trim();
+        const parts = line.split(' - ');
+        const degree = parts[0] || line;
+        const school = parts[1] || '';
+        const year = parts[2] || '';
+        
+        return `
+            <div class="education-entry">
+                <div class="degree">${degree}</div>
+                ${school ? `<div class="school">${school}</div>` : ''}
+                ${year ? `<div class="date">${year}</div>` : ''}
+            </div>
+        `;
+    }).join('');
+}
+
+function formatEducationModern(education) {
+    return formatEducationForPDF(education); // Same format for now
+}
+
+function formatSkillsForPDF(skills) {
+    if (!skills) return '';
+    
+    return skills.split(',')
+        .map(skill => skill.trim())
+        .filter(skill => skill)
+        .map(skill => `<span class="skill-item">${skill}</span>`)
+        .join('');
+}
+
+function formatSkillsForSidebar(skills) {
+    if (!skills) return '';
+    
+    return skills.split(',')
+        .map(skill => skill.trim())
+        .filter(skill => skill)
+        .map(skill => `<li>${skill}</li>`)
+        .join('');
 }
