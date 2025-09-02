@@ -6,6 +6,9 @@ import { v4 as uuidv4 } from 'uuid';
 let resumeStorage = new Map();
 
 export default async function handler(req, res) {
+    console.log(`🔍 SAVE-RESUME: ${req.method} ${req.url || 'unknown'} - Headers:`, req.headers);
+    console.log(`🔍 SAVE-RESUME Body:`, req.body);
+    
     // Set CORS headers
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -13,18 +16,23 @@ export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
 
     if (req.method === 'OPTIONS') {
+        console.log(`🔍 SAVE-RESUME: OPTIONS request handled`);
         res.status(200).end();
         return;
     }
 
     if (req.method !== 'POST') {
+        console.log(`❌ SAVE-RESUME: Method ${req.method} not allowed - returning 405`);
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
     try {
         const { resumeData, resumeId, userId, metadata = {} } = req.body;
 
+        console.log(`🔍 SAVE-RESUME: Processing save for user ${userId || 'anonymous'}`);
+
         if (!resumeData) {
+            console.log(`❌ SAVE-RESUME: No resume data provided`);
             return res.status(400).json({ error: 'Resume data is required' });
         }
 
@@ -52,6 +60,7 @@ export default async function handler(req, res) {
         // Generate analytics
         const analytics = await generateResumeAnalytics(resumeRecord);
 
+        console.log(`✅ SAVE-RESUME: Successfully saved resume ${id}`);
         res.status(200).json({
             success: true,
             resumeId: id,
@@ -61,7 +70,7 @@ export default async function handler(req, res) {
         });
 
     } catch (error) {
-        console.error('Resume save error:', error);
+        console.error('❌ SAVE-RESUME: Error:', error);
         res.status(500).json({ 
             error: 'Failed to save resume', 
             details: process.env.NODE_ENV === 'development' ? error.message : undefined 
@@ -286,4 +295,4 @@ function generateImprovementSuggestions(resumeData) {
     }
     
     return suggestions;
-}
+            }
