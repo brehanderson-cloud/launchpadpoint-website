@@ -21,14 +21,22 @@ export default async function handler(req, res) {
         return;
     }
 
-    // Handle GET requests (likely automatic health checks)
+    // Handle GET requests (prevents 405 errors from health checks) - THIS IS THE NEW PART
     if (req.method === 'GET') {
-        console.log('🔍 SAVE-RESUME: GET request received - returning basic info');
+        console.log('🔍 SAVE-RESUME: GET request received - returning API info');
         return res.status(200).json({ 
-            message: 'Resume API endpoint', 
+            message: 'Resume Save API endpoint', 
             methods: ['POST'],
             status: 'active',
-            endpoint: '/api/save-resume'
+            endpoint: '/api/save-resume',
+            version: '1.0.0',
+            features: [
+                'Resume saving',
+                'Analytics generation',
+                'Completeness scoring',
+                'Improvement suggestions'
+            ],
+            timestamp: new Date().toISOString()
         });
     }
 
@@ -37,6 +45,7 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
+    // REST OF YOUR EXISTING CODE STAYS THE SAME...
     try {
         const { resumeData, resumeId, userId, metadata = {} } = req.body;
 
@@ -89,10 +98,8 @@ export default async function handler(req, res) {
     }
 }
 
+// Keep ALL your existing helper functions - they're excellent!
 async function saveResumeToStorage(id, resumeRecord) {
-    // In production, this would save to your database (MongoDB, PostgreSQL, etc.)
-    // For demo purposes, we're using in-memory storage
-    
     try {
         resumeStorage.set(id, resumeRecord);
         
