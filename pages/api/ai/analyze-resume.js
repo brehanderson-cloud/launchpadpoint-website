@@ -1,5 +1,8 @@
 // /api/ai/analyze-resume.js
 export default async function handler(req, res) {
+    console.log(`🔍 ANALYZE-RESUME: ${req.method} ${req.url || 'unknown'} - Headers:`, req.headers);
+    console.log(`🔍 ANALYZE-RESUME Body:`, req.body);
+    
     // Set CORS headers
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -7,19 +10,24 @@ export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
 
     if (req.method === 'OPTIONS') {
+        console.log(`🔍 ANALYZE-RESUME: OPTIONS request handled`);
         res.status(200).end();
         return;
     }
 
     if (req.method !== 'POST') {
+        console.log(`❌ ANALYZE-RESUME: Method ${req.method} not allowed - returning 405`);
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
     try {
         const resumeData = req.body;
 
+        console.log(`🔍 ANALYZE-RESUME: Processing analysis for job title: ${resumeData.jobTitle || 'unknown'}`);
+
         // Validate input
         if (!resumeData.jobTitle) {
+            console.log(`❌ ANALYZE-RESUME: Missing job title`);
             return res.status(400).json({ 
                 error: 'Job title is required for analysis' 
             });
@@ -28,6 +36,7 @@ export default async function handler(req, res) {
         // Perform comprehensive resume analysis
         const analysis = await analyzeResumeComprehensively(resumeData);
 
+        console.log(`✅ ANALYZE-RESUME: Analysis complete`);
         res.status(200).json({
             success: true,
             analysis,
@@ -38,7 +47,7 @@ export default async function handler(req, res) {
         });
 
     } catch (error) {
-        console.error('Resume analysis error:', error);
+        console.error('❌ ANALYZE-RESUME: Error:', error);
         res.status(500).json({ 
             error: 'Failed to analyze resume', 
             details: process.env.NODE_ENV === 'development' ? error.message : undefined 
@@ -470,4 +479,4 @@ function performCompetitiveAnalysis(jobTitle, analysis) {
     };
 
     return competitiveAnalysis;
-}
+        }
