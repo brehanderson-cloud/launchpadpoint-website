@@ -114,11 +114,6 @@ const ResumeBuilder = () => {
 
   // Enhanced work experience extraction
   const extractWorkExperience = (content) => {
-    // Look for common job title patterns and company indicators
-    const experienceKeywords = ['experience', 'employment', 'work history', 'professional experience'];
-    const jobTitles = ['engineer', 'developer', 'manager', 'analyst', 'specialist', 'coordinator', 'assistant'];
-    
-    // Sample extracted experience (in real implementation, this would parse actual content)
     const sampleExperience = [
       {
         company: "Tech Innovations LLC",
@@ -665,3 +660,308 @@ const ResumeBuilder = () => {
                   )}
                 </div>
               </div>
+              
+              <div className="p-8 max-h-96 overflow-y-auto">
+                {previewSections.map((section, index) => (
+                  <div 
+                    key={`${section.type}-${section.timestamp}`}
+                    className="animate-fade-in-up opacity-0 mb-8 last:mb-0"
+                    style={{ 
+                      animation: `fadeInUp 0.8s ease-out ${index * 0.4}s forwards`
+                    }}
+                  >
+                    {section.type === 'personal' && (
+                      <div className="border-b-2 border-gray-100 pb-6">
+                        <div className="flex items-center mb-4">
+                          <div className="bg-blue-100 p-2 rounded-lg mr-3">
+                            <User className="w-6 h-6 text-blue-600" />
+                          </div>
+                          <h4 className="text-lg font-bold text-gray-800">Personal Information</h4>
+                        </div>
+                        <div className="bg-gradient-to-r from-gray-50 to-blue-50 p-6 rounded-xl">
+                          <h2 className="text-3xl font-bold text-gray-900 mb-2">{section.data.name}</h2>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-gray-600">
+                            <div className="flex items-center">
+                              <span className="font-medium mr-2">Email:</span>
+                              <span>{section.data.email}</span>
+                            </div>
+                            <div className="flex items-center">
+                              <span className="font-medium mr-2">Phone:</span>
+                              <span>{section.data.phone}</span>
+                            </div>
+                            <div className="flex items-center">
+                              <span className="font-medium mr-2">Location:</span>
+                              <span>{section.data.location}</span>
+                            </div>
+                            <div className="flex items-center">
+                              <span className="font-medium mr-2">LinkedIn:</span>
+                              <span className="text-blue-600">{section.data.linkedin}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {section.type === 'experience' && (
+                      <div className="border-b-2 border-gray-100 pb-6">
+                        <div className="flex items-center mb-4">
+                          <div className="bg-green-100 p-2 rounded-lg mr-3">
+                            <Briefcase className="w-6 h-6 text-green-600" />
+                          </div>
+                          <h4 className="text-lg font-bold text-gray-800">Professional Experience</h4>
+                        </div>
+                        <div className="space-y-6">
+                          {section.data.map((exp, i) => (
+                            <div key={i} className="bg-gradient-to-r from-gray-50 to-green-50 p-6 rounded-xl">
+                              <div className="flex justify-between items-start mb-3">
+                                <div>
+                                  <h5 className="text-xl font-bold text-gray-900">{exp.position}</h5>
+                                  <p className="text-lg font-semibold text-green-600">{exp.company}</p>
+                                  <p className="text-gray-600">{exp.location}</p>
+                                </div>
+                                <div className="bg-green-100 px-3 py-1 rounded-full">
+                                  <span className="text-sm font-semibold text-green-700">{exp.duration}</span>
+                                </div>
+                              </div>
+                              <div className="space-y-2">
+                                {exp.achievements.map((achievement, j) => (
+                                  <div key={j} className="flex items-start">
+                                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                                    <p className="text-gray-700 leading-relaxed">{achievement}</p>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {section.type === 'education' && (
+                      <div className="border-b-2 border-gray-100 pb-6">
+                        <div className="flex items-center mb-4">
+                          <div className="bg-purple-100 p-2 rounded-lg mr-3">
+                            <GraduationCap className="w-6 h-6 text-purple-600" />
+                          </div>
+                          <h4 className="text-lg font-bold text-gray-800">Education</h4>
+                        </div>
+                        <div className="space-y-4">
+                          {section.data.map((edu, i) => (
+                            <div key={i} className="bg-gradient-to-r from-gray-50 to-purple-50 p-6 rounded-xl">
+                              <div className="flex justify-between items-start mb-3">
+                                <div>
+                                  <h5 className="text-xl font-bold text-gray-900">{edu.degree}</h5>
+                                  <p className="text-lg font-semibold text-purple-600">{edu.institution}</p>
+                                  {edu.honors && (
+                                    <p className="text-purple-700 font-medium">{edu.honors}</p>
+                                  )}
+                                </div>
+                                <div className="text-right">
+                                  <div className="bg-purple-100 px-3 py-1 rounded-full mb-1">
+                                    <span className="text-sm font-semibold text-purple-700">{edu.year}</span>
+                                  </div>
+                                  {edu.gpa && (
+                                    <div className="text-sm text-gray-600">GPA: {edu.gpa}</div>
+                                  )}
+                                </div>
+                              </div>
+                              {edu.relevantCourses && (
+                                <div>
+                                  <h6 className="font-semibold text-gray-700 mb-2">Relevant Coursework:</h6>
+                                  <div className="flex flex-wrap gap-2">
+                                    {edu.relevantCourses.map((course, j) => (
+                                      <span key={j} className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">
+                                        {course}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {section.type === 'skills' && (
+                      <div>
+                        <div className="flex items-center mb-4">
+                          <div className="bg-orange-100 p-2 rounded-lg mr-3">
+                            <Award className="w-6 h-6 text-orange-600" />
+                          </div>
+                          <h4 className="text-lg font-bold text-gray-800">Skills & Expertise</h4>
+                        </div>
+                        <div className="bg-gradient-to-r from-gray-50 to-orange-50 p-6 rounded-xl space-y-6">
+                          {section.data.technical && (
+                            <div>
+                              <h6 className="font-bold text-gray-800 mb-3">Technical Skills</h6>
+                              <div className="flex flex-wrap gap-2">
+                                {section.data.technical.map((skill, i) => (
+                                  <span key={i} className="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-md hover:bg-blue-600 transition-colors">
+                                    {skill}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          
+                          {section.data.soft && (
+                            <div>
+                              <h6 className="font-bold text-gray-800 mb-3">Soft Skills</h6>
+                              <div className="flex flex-wrap gap-2">
+                                {section.data.soft.map((skill, i) => (
+                                  <span key={i} className="bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-md hover:bg-green-600 transition-colors">
+                                    {skill}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          
+                          {section.data.tools && (
+                            <div>
+                              <h6 className="font-bold text-gray-800 mb-3">Tools & Technologies</h6>
+                              <div className="flex flex-wrap gap-2">
+                                {section.data.tools.map((tool, i) => (
+                                  <span key={i} className="bg-purple-500 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-md hover:bg-purple-600 transition-colors">
+                                    {tool}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          
+                          {section.data.certifications && (
+                            <div>
+                              <h6 className="font-bold text-gray-800 mb-3">Certifications</h6>
+                              <div className="flex flex-wrap gap-2">
+                                {section.data.certifications.map((cert, i) => (
+                                  <span key={i} className="bg-yellow-500 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-md hover:bg-yellow-600 transition-colors">
+                                    {cert}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+                
+                {previewSections.length === 0 && !isProcessing && (
+                  <div className="text-center py-16">
+                    <div className="bg-gray-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <FileText className="w-12 h-12 text-gray-400" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-gray-600 mb-2">Ready to Parse Your Resume</h3>
+                    <p className="text-gray-500 max-w-md mx-auto">
+                      Upload your resume or paste its content to see a beautiful, optimized preview with real-time suggestions
+                    </p>
+                  </div>
+                )}
+                
+                {isProcessing && previewSections.length === 0 && (
+                  <div className="text-center py-16">
+                    <div className="bg-blue-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                    </div>
+                    <h3 className="text-xl font-semibold text-blue-600 mb-2">Analyzing Your Resume</h3>
+                    <p className="text-blue-500">
+                      Please wait while we extract and optimize your information...
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Quick Actions */}
+            {previewSections.length > 0 && !isProcessing && (
+              <div className="bg-white rounded-2xl shadow-xl p-6">
+                <h3 className="text-lg font-bold text-gray-800 mb-4">Quick Actions</h3>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => handleExport('pdf')}
+                    className="flex items-center justify-center p-3 bg-red-500 hover:bg-red-600 text-white rounded-xl transition-colors font-semibold"
+                  >
+                    <Download className="w-5 h-5 mr-2" />
+                    Export PDF
+                  </button>
+                  <button
+                    onClick={() => handleExport('docx')}
+                    className="flex items-center justify-center p-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-colors font-semibold"
+                  >
+                    <FileText className="w-5 h-5 mr-2" />
+                    Export Word
+                  </button>
+                  <button
+                    onClick={() => window.print()}
+                    className="flex items-center justify-center p-3 bg-gray-500 hover:bg-gray-600 text-white rounded-xl transition-colors font-semibold"
+                  >
+                    <Eye className="w-5 h-5 mr-2" />
+                    Print Preview
+                  </button>
+                  <button
+                    onClick={() => setParseMethod(parseMethod === 'upload' ? 'paste' : 'upload')}
+                    className="flex items-center justify-center p-3 bg-green-500 hover:bg-green-600 text-white rounded-xl transition-colors font-semibold"
+                  >
+                    <Edit3 className="w-5 h-5 mr-2" />
+                    Try Again
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+      
+      <style jsx>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        .animate-fade-in-up {
+          animation-fill-mode: both;
+        }
+        
+        @media (max-width: 768px) {
+          .grid-cols-2 {
+            grid-template-columns: 1fr;
+          }
+        }
+        
+        .bg-blue-25 {
+          background-color: rgba(59, 130, 246, 0.05);
+        }
+        
+        /* Scrollbar Styling */
+        .overflow-y-auto::-webkit-scrollbar {
+          width: 6px;
+        }
+        
+        .overflow-y-auto::-webkit-scrollbar-track {
+          background: #f1f5f9;
+          border-radius: 10px;
+        }
+        
+        .overflow-y-auto::-webkit-scrollbar-thumb {
+          background: #cbd5e1;
+          border-radius: 10px;
+        }
+        
+        .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+          background: #94a3b8;
+        }
+      `}</style>
+    </div>
+  );
+};
+
+export default ResumeBuilder;
