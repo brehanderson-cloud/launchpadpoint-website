@@ -1,22 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 export default function AccessibilityMenu() {
   const [dyslexiaFont, setDyslexiaFont] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => {
-    const savedFont = localStorage.getItem('dyslexiaFont') === 'true';
-    setDyslexiaFont(savedFont);
-    
-    if (savedFont) {
-      document.body.style.fontFamily = 'OpenDyslexic, "Comic Sans MS", Arial, sans-serif';
-    }
-  }, []);
-
   const toggleDyslexiaFont = () => {
     const newValue = !dyslexiaFont;
     setDyslexiaFont(newValue);
-    localStorage.setItem('dyslexiaFont', newValue.toString());
     
     if (newValue) {
       document.body.style.fontFamily = 'OpenDyslexic, "Comic Sans MS", Arial, sans-serif';
