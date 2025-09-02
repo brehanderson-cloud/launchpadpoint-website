@@ -21,6 +21,17 @@ export default async function handler(req, res) {
         return;
     }
 
+    // Handle GET requests (likely automatic health checks)
+    if (req.method === 'GET') {
+        console.log('🔍 SAVE-RESUME: GET request received - returning basic info');
+        return res.status(200).json({ 
+            message: 'Resume API endpoint', 
+            methods: ['POST'],
+            status: 'active',
+            endpoint: '/api/save-resume'
+        });
+    }
+
     if (req.method !== 'POST') {
         console.log(`❌ SAVE-RESUME: Method ${req.method} not allowed - returning 405`);
         return res.status(405).json({ error: 'Method not allowed' });
@@ -295,4 +306,4 @@ function generateImprovementSuggestions(resumeData) {
     }
     
     return suggestions;
-            }
+}
