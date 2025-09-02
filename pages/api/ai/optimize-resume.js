@@ -1,5 +1,8 @@
 // /api/ai/optimize-resume.js
 export default async function handler(req, res) {
+    console.log(`🔍 OPTIMIZE-RESUME: ${req.method} ${req.url || 'unknown'} - Headers:`, req.headers);
+    console.log(`🔍 OPTIMIZE-RESUME Body:`, req.body);
+    
     // Set CORS headers
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -7,11 +10,13 @@ export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
 
     if (req.method === 'OPTIONS') {
+        console.log(`🔍 OPTIMIZE-RESUME: OPTIONS request handled`);
         res.status(200).end();
         return;
     }
 
     if (req.method !== 'POST') {
+        console.log(`❌ OPTIMIZE-RESUME: Method ${req.method} not allowed - returning 405`);
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
@@ -30,8 +35,11 @@ export default async function handler(req, res) {
             analysis 
         } = req.body;
 
+        console.log(`🔍 OPTIMIZE-RESUME: Processing data for ${fullName || 'unknown'}`);
+
         // Validate required fields
         if (!fullName || !email || !jobTitle) {
+            console.log(`❌ OPTIMIZE-RESUME: Missing required fields`);
             return res.status(400).json({ 
                 error: 'Missing required fields: fullName, email, and jobTitle are required' 
             });
@@ -52,6 +60,7 @@ export default async function handler(req, res) {
             analysis
         });
 
+        console.log(`✅ OPTIMIZE-RESUME: Success for ${fullName}`);
         res.status(200).json({
             success: true,
             optimizedData,
@@ -62,7 +71,7 @@ export default async function handler(req, res) {
         });
 
     } catch (error) {
-        console.error('Resume optimization error:', error);
+        console.error('❌ OPTIMIZE-RESUME: Error:', error);
         res.status(500).json({ 
             error: 'Failed to optimize resume', 
             details: process.env.NODE_ENV === 'development' ? error.message : undefined 
