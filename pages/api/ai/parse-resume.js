@@ -1,6 +1,4 @@
-// File: api/parse-resume.js
-// Vercel Serverless Function for PDF Resume Parsing
-
+// /api/ai/parse-resume.js
 import formidable from 'formidable';
 import fs from 'fs';
 import pdfParse from 'pdf-parse';
@@ -13,6 +11,8 @@ export const config = {
 };
 
 export default async function handler(req, res) {
+  console.log(`🔍 PARSE-RESUME: ${req.method} ${req.url || 'unknown'} - Headers:`, req.headers);
+  
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -20,17 +20,22 @@ export default async function handler(req, res) {
 
   // Handle preflight requests
   if (req.method === 'OPTIONS') {
+    console.log(`🔍 PARSE-RESUME: OPTIONS request handled`);
     return res.status(200).end();
   }
 
   // Only allow POST requests
   if (req.method !== 'POST') {
+    console.log(`❌ PARSE-RESUME: Method ${req.method} not allowed - returning 405`);
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
+    console.log(`🔍 PARSE-RESUME: Processing file upload`);
+    
     // Validate environment
     if (!process.env.ANTHROPIC_API_KEY) {
+      console.log(`❌ PARSE-RESUME: ANTHROPIC_API_KEY not configured`);
       throw new Error('ANTHROPIC_API_KEY not configured');
     }
 
@@ -46,11 +51,14 @@ export default async function handler(req, res) {
     const resumeFile = Array.isArray(files.resume) ? files.resume[0] : files.resume;
     
     if (!resumeFile) {
+      console.log(`❌ PARSE-RESUME: No resume file uploaded`);
       return res.status(400).json({ 
         error: 'No resume file uploaded',
         success: false
       });
     }
+
+    console.log(`🔍 PARSE-RESUME: Processing file ${resumeFile.originalFilename}`);
 
     // Read and parse the PDF
     const fileBuffer = fs.readFileSync(resumeFile.filepath);
@@ -58,6 +66,7 @@ export default async function handler(req, res) {
     const resumeText = pdfData.text;
 
     if (!resumeText || resumeText.trim().length < 100) {
+      console.log(`❌ PARSE-RESUME: Could not extract readable text from PDF`);
       return res.status(400).json({
         error: 'Could not extract readable text from PDF. Please ensure your resume contains selectable text.',
         success: false
@@ -67,6 +76,7 @@ export default async function handler(req, res) {
     // Use Claude to extract structured data from raw text
     const structuringPrompt = createStructuringPrompt(resumeText);
 
+    console.log(`🔍 PARSE-RESUME: Calling Claude API for text structuring`);
     const claudeResponse = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -86,7 +96,7 @@ export default async function handler(req, res) {
     });
 
     if (!claudeResponse.ok) {
-      console.error('Claude API Error:', await claudeResponse.text());
+      console.error('❌ PARSE-RESUME: Claude API Error:', await claudeResponse.text());
       throw new Error(`Claude API failed: ${claudeResponse.status}`);
     }
 
@@ -107,7 +117,7 @@ export default async function handler(req, res) {
       }
       
     } catch (parseError) {
-      console.error('JSON parsing error:', parseError);
+      console.error('❌ PARSE-RESUME: JSON parsing error:', parseError);
       
       // Generate fallback structured data
       structuredData = generateFallbackStructuredData(resumeText);
@@ -120,8 +130,7 @@ export default async function handler(req, res) {
       console.warn('Could not clean up temporary file:', cleanupError);
     }
 
-    // Log successful parsing
-    console.log(`Resume parsed successfully - Name: ${structuredData.personalInfo.name}`);
+    console.log(`✅ PARSE-RESUME: Successfully parsed resume for ${structuredData.personalInfo.name}`);
 
     return res.status(200).json({
       success: true,
@@ -136,7 +145,7 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error('PDF parsing error:', error);
+    console.error('❌ PARSE-RESUME: Error:', error);
     
     return res.status(500).json({ 
       error: 'Failed to parse resume',
