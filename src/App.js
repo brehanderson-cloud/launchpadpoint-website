@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense, lazy } from 'react';
+import React, { useState, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import AccessibilityMenu from './components/AccessibilityMenu';
 import ProfileHeader from './components/ProfileHeader';
@@ -48,7 +48,7 @@ const ComingSoonPage = ({ feature, icon }) => (
 const AIAssistantWrapper = () => {
   const [showRedirect, setShowRedirect] = useState(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     // Show redirect message after 3 seconds
     const timer = setTimeout(() => setShowRedirect(true), 3000);
     return () => clearTimeout(timer);
@@ -82,7 +82,7 @@ const AIAssistantWrapper = () => {
             <div className="mb-4 p-3 bg-gray-100 rounded-lg">
               Hi! I'm your AI Career Assistant. I can help with job searching, salary negotiations, interview prep, and career planning. 
               <div className="mt-2 text-sm text-blue-600">
-                💡 For resume updates and improvements, I recommend using our specialized Resume Builder!
+                For resume updates and improvements, I recommend using our specialized Resume Builder!
               </div>
             </div>
           </div>
@@ -92,16 +92,16 @@ const AIAssistantWrapper = () => {
               onClick={() => window.location.href = '/resume-builder'}
               className="bg-blue-100 text-blue-800 p-3 rounded-lg hover:bg-blue-200 text-sm font-medium"
             >
-              📄 Build/Update Resume
+              Build/Update Resume
             </button>
             <button className="bg-gray-100 text-gray-800 p-3 rounded-lg hover:bg-gray-200 text-sm font-medium">
-              💼 Job Search Tips
+              Job Search Tips
             </button>
             <button className="bg-gray-100 text-gray-800 p-3 rounded-lg hover:bg-gray-200 text-sm font-medium">
-              💰 Salary Negotiation
+              Salary Negotiation
             </button>
             <button className="bg-gray-100 text-gray-800 p-3 rounded-lg hover:bg-gray-200 text-sm font-medium">
-              🎯 Interview Prep
+              Interview Prep
             </button>
           </div>
           
@@ -168,8 +168,6 @@ const EnhancedFinances = () => (
 // Lazy-loaded Pages
 const LandingPage = lazy(() => import('./pages/LandingPage'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
-
-// Payment and Resume Pages
 const Success = lazy(() => import('./pages/Success'));
 const PaymentPage = lazy(() => import('./pages/PaymentPage'));
 const ResumeBuilder = lazy(() => import('./pages/ResumeBuilder'));
@@ -178,23 +176,14 @@ function App() {
   const [user, setUser] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
 
-  useEffect(() => {
-    // Check for saved theme preference
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-      setDarkMode(true);
-      document.documentElement.classList.add('dark');
-    }
-  }, []);
+  // REMOVED THE PROBLEMATIC useEffect THAT WAS CAUSING 405 ERROR
 
   const toggleTheme = () => {
     setDarkMode(!darkMode);
     if (!darkMode) {
       document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
     } else {
       document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
     }
   };
 
