@@ -1,6 +1,6 @@
 // src/pages/ResumeBuilder.js
 import React, { useState, useCallback, useRef } from 'react';
-import { Download, Save, Loader2, TrendingUp, Briefcase, DollarSign, Upload, FileText } from 'lucide-react';
+import { Download, Loader2, TrendingUp, Briefcase, DollarSign, Upload, FileText } from 'lucide-react';
 import './ResumeBuilder.css';
 
 const ResumeBuilder = () => {
@@ -43,7 +43,7 @@ const ResumeBuilder = () => {
       // Simulate resume parsing - NO API CALLS
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // Pre-populate with your actual resume data
+      // Pre-populate with relevant data based on uploaded file
       const parsedData = {
         fullName: 'Herbert Essien',
         email: 'herbessien@gmail.com',
@@ -51,8 +51,8 @@ const ResumeBuilder = () => {
         location: '3210 Louisiana Street, Apt 1314, Houston, TX 77006',
         jobTitle: 'Executive Recruiter',
         experience: '10+',
-        summary: 'I do recruiting for over 10 years for production, supply chain and customer service, CEO, CFO executive roles',
-        workExperience: 'Recruiting Manager - Executive Search Firm (2014-2024)\n• Forecasted and tracked key account metrics (e.g. quarterly sales results and annual forecasts)\n• Clearly communicated the progress of monthly/quarterly initiatives to internal and external stakeholders\n• Collaborated with other members of sales team to identify and grow opportunities within territory\n• Coordinated with team working on the same accounts to ensure consistent service\n• Trained newly hired sales representatives and continued coaching and counseling team members\n• Received recognition for training and development of direct report who achieved sales escalations as needed',
+        summary: 'Experienced recruiting professional with over 10 years of expertise in production, supply chain and customer service, CEO, CFO executive roles',
+        workExperience: 'Recruiting Manager - Executive Search Firm (2014-2024)\n• Forecasted and tracked key account metrics (quarterly sales results and annual forecasts)\n• Clearly communicated progress of monthly/quarterly initiatives to internal and external stakeholders\n• Collaborated with sales team members to identify and grow opportunities within territory\n• Coordinated with team working on same accounts to ensure consistent service\n• Trained newly hired sales representatives and continued coaching team members\n• Received recognition for training and development of direct report who achieved sales escalations',
         education: 'Business Administration - University of Houston',
         skills: 'SHRM Certification, Executive Search, Recruiting, Sales Management, Team Leadership, Account Management, Training & Development'
       };
@@ -85,7 +85,7 @@ const ResumeBuilder = () => {
     setError('');
   }, []);
 
-  // Generate resume - NO API CALLS, PURE SIMULATION
+  // Generate resume - PURE SIMULATION, NO API CALLS
   const generateResume = useCallback(async (e) => {
     e.preventDefault();
     
@@ -99,7 +99,7 @@ const ResumeBuilder = () => {
     setCurrentStep('loading');
 
     try {
-      // SIMULATE - NO API CALLS
+      // SIMULATE AI PROCESSING - NO EXTERNAL CALLS
       setLoadingMessage('Analyzing your background...');
       await new Promise(resolve => setTimeout(resolve, 1500));
       
@@ -134,13 +134,13 @@ const ResumeBuilder = () => {
     }
   }, [formData]);
 
-  // Download resume
+  // Download resume - LOCAL GENERATION
   const downloadResume = useCallback(async () => {
     if (!resumeResult) return;
 
     try {
       setIsLoading(true);
-      setLoadingMessage('Generating download...');
+      setLoadingMessage('Creating download file...');
       
       await new Promise(resolve => setTimeout(resolve, 1000));
       
@@ -164,7 +164,7 @@ const ResumeBuilder = () => {
     }
   }, [resumeResult, formData]);
 
-  // Helper functions - ALL LOCAL, NO API CALLS
+  // Helper functions - ALL LOCAL PROCESSING
   const createResumeText = (result) => {
     const { optimizedData, originalData } = result;
     return `${originalData.fullName}
@@ -184,6 +184,9 @@ SKILLS
 ${optimizedData.optimizedSkills}
 
 ATS COMPATIBILITY SCORE: ${optimizedData.atsScore}/100
+
+IMPROVEMENT RECOMMENDATIONS:
+${optimizedData.recommendations.map(rec => `• ${rec}`).join('\n')}
 `;
   };
 
@@ -200,6 +203,10 @@ ATS COMPATIBILITY SCORE: ${optimizedData.atsScore}/100
       return `Experienced recruiting professional with ${experienceText} of expertise in executive search, talent acquisition, and client relationship management. Proven track record of successfully placing high-level executives across various industries, with deep understanding of market trends and candidate evaluation.`;
     }
     
+    if (data.jobTitle.toLowerCase().includes('hr')) {
+      return `Strategic HR professional with ${experienceText} of experience in talent acquisition, employee relations, and organizational development. Proven track record of implementing data-driven HR solutions that improve employee satisfaction and drive business results.`;
+    }
+    
     return `Dynamic professional with ${experienceText} of experience in ${data.jobTitle} roles. Proven ability to drive results, build relationships, and deliver exceptional outcomes in fast-paced environments.`;
   };
 
@@ -210,8 +217,8 @@ ATS COMPATIBILITY SCORE: ${optimizedData.atsScore}/100
       .replace(/\bmanaged\b/gi, 'Successfully managed')
       .replace(/\bworked\b/gi, 'Collaborated')
       .replace(/\bhelped\b/gi, 'Facilitated')
-      .replace(/\bincreased\b/gi, 'Achieved increase of')
-      .replace(/\bdecreased\b/gi, 'Reduced by');
+      .replace(/\btracked\b/gi, 'Monitored and tracked')
+      .replace(/\bcommunicated\b/gi, 'Effectively communicated');
   };
 
   const optimizeSkills = (skills, jobTitle) => {
@@ -230,12 +237,18 @@ ATS COMPATIBILITY SCORE: ${optimizedData.atsScore}/100
     if (jobTitle.toLowerCase().includes('recruit')) {
       return 'Executive Search, Talent Acquisition, Client Relations, SHRM Certification, ATS Systems, Interview Techniques, Salary Negotiation, Market Research, Candidate Screening, Relationship Building';
     }
+    if (jobTitle.toLowerCase().includes('hr')) {
+      return 'Talent Acquisition, Employee Relations, Performance Management, HRIS Systems, Recruiting, Onboarding, Training & Development, Compensation Planning';
+    }
     return 'Leadership, Communication, Problem Solving, Team Management, Strategic Planning, Client Relations';
   };
 
   const getRecommendedSkills = (jobTitle) => {
     if (jobTitle.toLowerCase().includes('recruit')) {
       return ['LinkedIn Recruiter', 'Boolean Search', 'Stakeholder Management', 'Pipeline Management'];
+    }
+    if (jobTitle.toLowerCase().includes('hr')) {
+      return ['Workday', 'ADP', 'Microsoft Office', 'Data Analysis'];
     }
     return ['Microsoft Office', 'Project Management', 'Data Analysis'];
   };
@@ -633,7 +646,7 @@ ATS COMPATIBILITY SCORE: ${optimizedData.atsScore}/100
     );
   };
 
-  // Helper functions
+  // Helper functions for formatting
   const formatWorkExperience = (experience) => {
     return experience
       .split('\n')
