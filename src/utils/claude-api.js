@@ -119,21 +119,18 @@ export const estimateAnalysisTime = (resumeLength, jobDescLength) => {
   return Math.round(baseTime * complexityMultiplier);
 };
 
-// Track user actions for analytics
+// Track user actions for analytics (NO STORAGE)
 export const trackUserAction = (action, metadata = {}) => {
   const event = {
     action,
     timestamp: new Date().toISOString(),
     metadata,
-    sessionId: getSessionId(),
+    sessionId: generateTempSessionId(),
     userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown'
   };
   
   // Log for development
   console.log('User Action:', event);
-  
-  // Send to analytics service (implement based on your analytics provider)
-  // Example implementations:
   
   // Google Analytics 4
   if (typeof gtag !== 'undefined') {
@@ -148,25 +145,11 @@ export const trackUserAction = (action, metadata = {}) => {
   if (typeof posthog !== 'undefined') {
     posthog.capture(action, metadata);
   }
-  
-  // Custom analytics endpoint
-  // fetch('/api/analytics/track', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify(event)
-  // }).catch(console.error);
 };
 
-// Generate or get session ID
-const getSessionId = () => {
-  if (typeof window === 'undefined') return 'server';
-  
-  let sessionId = sessionStorage.getItem('resume_session_id');
-  if (!sessionId) {
-    sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    sessionStorage.setItem('resume_session_id', sessionId);
-  }
-  return sessionId;
+// Generate temporary session ID (NO STORAGE)
+const generateTempSessionId = () => {
+  return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 };
 
 // Error handling utilities
@@ -236,7 +219,6 @@ export const measurePerformance = async (operation, operationName) => {
     
     console.log(`Performance: ${operationName} completed in ${Math.round(duration)}ms`);
     
-    // Track performance metrics
     trackUserAction('performance_metric', {
       operation: operationName,
       duration: Math.round(duration),
@@ -260,30 +242,7 @@ export const measurePerformance = async (operation, operationName) => {
   }
 };
 
-// Local storage utilities (for offline capabilities)
-export const saveToLocalStorage = (key, data) => {
-  try {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(key, JSON.stringify(data));
-    }
-  } catch (error) {
-    console.warn('Could not save to localStorage:', error);
-  }
-};
-
-export const getFromLocalStorage = (key) => {
-  try {
-    if (typeof window !== 'undefined') {
-      const item = localStorage.getItem(key);
-      return item ? JSON.parse(item) : null;
-    }
-  } catch (error) {
-    console.warn('Could not read from localStorage:', error);
-    return null;
-  }
-};
-
-// Resume content validation helpers
+// Validate resume content
 export const validatePDFFile = (file) => {
   const maxSize = 10 * 1024 * 1024; // 10MB
   const allowedTypes = ['application/pdf'];
@@ -311,11 +270,10 @@ export const generateOperationId = () => {
   return `op_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 };
 
-// Environment validation
+// Environment validation (NO STORAGE)
 export const validateEnvironment = () => {
   const requiredEnvVars = {
-    client: ['REACT_APP_API_BASE_URL'],
-    server: ['ANTHROPIC_API_KEY']
+    client: ['REACT_APP_API_BASE_URL']
   };
   
   if (typeof window !== 'undefined') {
@@ -341,8 +299,6 @@ export default {
   handleAPIError,
   retryWithBackoff,
   measurePerformance,
-  saveToLocalStorage,
-  getFromLocalStorage,
   validatePDFFile,
   generateOperationId,
   validateEnvironment
