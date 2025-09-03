@@ -40,7 +40,7 @@ const LandingPage = ({ toggleTheme, darkMode }) => {
           {/* Updated CTA Buttons - Resume Builder Primary */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
-              onClick={() => navigate('/resume-payment')}
+              onClick={() => navigate('/resume-builder')}
               className="bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg text-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
             >
               Create Professional Resume
