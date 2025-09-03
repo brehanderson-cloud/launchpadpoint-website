@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { Upload, FileText, Clipboard, Sparkles, CheckCircle, AlertCircle, TrendingUp, User, Briefcase, GraduationCap, Award, Download, Eye, Edit3, Zap, Target, Lightbulb, ArrowLeft, Save, Share } from 'lucide-react';
 
-const EnhancedResumeBuilder = () => {
+const ResumeBuilder = () => {
   const [parseMethod, setParseMethod] = useState('upload');
   const [isProcessing, setIsProcessing] = useState(false);
   const [parseProgress, setParseProgress] = useState(0);
