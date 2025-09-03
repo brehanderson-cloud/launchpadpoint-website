@@ -771,4 +771,4 @@ const EnhancedResumeBuilder = () => {
   );
 };
 
-export default EnhancedResumeBuilder;
+export default ResumeBuilder;
