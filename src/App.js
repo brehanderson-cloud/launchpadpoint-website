@@ -1,5 +1,5 @@
 import React, { useState, Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AccessibilityMenu from './components/AccessibilityMenu';
 import ProfileHeader from './components/ProfileHeader';
 
@@ -34,7 +34,7 @@ const ComingSoonPage = ({ feature, icon }) => (
           Back to Dashboard
         </button>
         <button
-          onClick={() => window.location.href = '/resume-builder'
+          onClick={() => window.location.href = '/resume-builder'}
           className="w-full bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
         >
           Get Professional Resume Service
