@@ -129,7 +129,7 @@ const LandingPage = ({ toggleTheme, darkMode }) => {
           </div>
           <div className="mt-8">
             <button 
-              onClick={() => navigate('/resume-payment')}
+              onClick={() => navigate('/resume-builder')}
               className="bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-12 rounded-lg text-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
             >
               Get Your Professional Resume
