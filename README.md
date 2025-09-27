@@ -306,7 +306,6 @@
                 </div>
                 <div class="dates">09/2021 - Present</div>
             </div>
-            
             <div class="job-section">
                 <div class="job-section-title">Strategic Talent Management & Advisory</div>
                 <ul class="bullet-points">
