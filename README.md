@@ -263,7 +263,6 @@
             <span>📍 Houston, TX</span>
         </div>
     </div>
-
     <div class="section">
         <h2 class="section-title">Professional Summary</h2>
         <div class="summary">
