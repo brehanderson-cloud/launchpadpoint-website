@@ -342,7 +342,6 @@
                 </div>
                 <div class="dates">08/2020 – 09/2021</div>
             </div>
-            
             <div class="job-section">
                 <div class="job-section-title">Strategic Business Development & Client Partnership</div>
                 <ul class="bullet-points">
@@ -352,7 +351,6 @@
                     <li>Assessed organizational workforce gaps and provided tailored employment solutions, including succession planning recommendations</li>
                 </ul>
             </div>
-
             <div class="job-section">
                 <div class="job-section-title">Advanced Sourcing & Candidate Management</div>
                 <ul class="bullet-points">
@@ -371,7 +369,6 @@
                 </div>
                 <div class="dates">09/2019 – 08/2020</div>
             </div>
-            
             <div class="job-section">
                 <div class="job-section-title">Corporate Recruiting Excellence</div>
                 <ul class="bullet-points">
@@ -381,7 +378,6 @@
                     <li>Maintained detailed recruitment analytics and reporting to drive strategic decision-making and process improvements</li>
                 </ul>
             </div>
-
             <div class="job-section">
                 <div class="job-section-title">Stakeholder Management & Compliance</div>
                 <ul class="bullet-points">
@@ -394,17 +390,14 @@
     </div>
     <div class="achievements">
         <div class="achievements-title">Key Achievements & Projects</div>
-        
         <div class="achievement-item">
             <strong>Organizational Transformation Leadership</strong>
             Spearheaded comprehensive job description overhaul for North America HR policies, ensuring consistency and compliance across 200+ positions. Led organizational restructuring initiative, contributing to new blueprint design for North America organizational structure. Developed career progression framework for production roles, creating clear advancement pathways.
         </div>
-
         <div class="achievement-item">
             <strong>Diversity & Inclusion Excellence</strong>
             Appointed and developed D&I Ambassadors across Texas and Florida operations, enhancing inclusive workplace culture. Implemented inclusive hiring practices that increased diverse candidate representation by 45%.
         </div>
-
         <div class="achievement-item">
             <strong>Employee Engagement Innovation</strong>
             Partnered with Buckner Children Family Services to design employee engagement initiatives, improving retention rates by 20%.
@@ -412,7 +405,6 @@
     </div>
     <div class="section">
         <h2 class="section-title">Education & Certifications</h2>
-        
         <div class="education">
             <div>
                 <div class="degree">Bachelor of Science, Sport Administration</div>
@@ -420,7 +412,6 @@
             </div>
             <div class="dates">December 2013</div>
         </div>
-
         <div class="education">
             <div>
                 <div class="degree">SHRM-CP Certification</div>
@@ -429,7 +420,6 @@
             <div class="dates">2025</div>
         </div>
     </div>
-
     <div class="section">
         <h2 class="section-title">Technical Proficiencies</h2>
         <div class="tech-skills">
