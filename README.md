@@ -93,41 +93,34 @@
             margin-bottom: 0.5rem;
             flex-wrap: wrap;
         }
-
         .company-title {
             font-size: 1.1rem;
             font-weight: bold;
             color: #1e293b;
         }
-
         .job-title {
             font-size: 1rem;
             color: #2563eb;
             font-weight: 600;
         }
-
         .dates {
             font-size: 0.9rem;
             color: #64748b;
             font-weight: 500;
         }
-
         .job-section {
             margin-bottom: 1rem;
         }
-
         .job-section-title {
             font-weight: bold;
             color: #374151;
             margin-bottom: 0.5rem;
             font-size: 0.95rem;
         }
-
         .bullet-points {
             list-style: none;
             padding-left: 0;
         }
-
         .bullet-points li {
             position: relative;
             padding-left: 1.2rem;
@@ -135,7 +128,6 @@
             font-size: 0.9rem;
             line-height: 1.5;
         }
-
         .bullet-points li::before {
             content: "•";
             color: #2563eb;
@@ -143,30 +135,25 @@
             position: absolute;
             left: 0;
         }
-
         .achievements {
             background-color: #f8fafc;
             padding: 1rem;
             border-left: 4px solid #2563eb;
             margin-bottom: 1.5rem;
         }
-
         .achievements-title {
             font-weight: bold;
             color: #1e293b;
             margin-bottom: 0.5rem;
         }
-
         .achievement-item {
             margin-bottom: 0.8rem;
         }
-
         .achievement-item strong {
             color: #2563eb;
             display: block;
             margin-bottom: 0.2rem;
         }
-
         .education {
             display: flex;
             justify-content: space-between;
@@ -174,66 +161,54 @@
             flex-wrap: wrap;
             margin-bottom: 1rem;
         }
-
         .degree {
             font-weight: bold;
             color: #1e293b;
         }
-
         .school {
             color: #64748b;
         }
-
         .tech-skills {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1rem;
             font-size: 0.9rem;
         }
-
         .tech-category strong {
             color: #2563eb;
             display: block;
             margin-bottom: 0.3rem;
         }
-
         @media print {
             body {
                 font-size: 11pt;
                 padding: 0.3in;
-            }
-            
+            }   
             .header h1 {
                 font-size: 22pt;
-            }
-            
+            }   
             .contact-info {
                 font-size: 10pt;
             }
-            
             .section {
                 margin-bottom: 12pt;
             }
-            
             .bullet-points li {
                 font-size: 10pt;
             }
         }
-
         @media (max-width: 768px) {
             .skills-grid {
                 grid-template-columns: 1fr;
             }
-            
             .job-header {
                 flex-direction: column;
                 align-items: flex-start;
            }
-            
             .contact-info {
                 flex-direction: column;
                 align-items: center;
-gap: 0.5rem;}
+  gap:0.5rem;              
  </style>
  }
    }
