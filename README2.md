@@ -22,13 +22,11 @@
             margin: 0 auto;
             padding: 2rem;
         }
-
         .header {
             text-align: center;
             margin-bottom: 3rem;
             color: white;
         }
-
         .header h1 {
             font-size: 3rem;
             font-weight: 700;
@@ -72,16 +70,13 @@
             align-items: center;
             gap: 0.5rem;
         }
-
         .industry-selector {
             background: #fef3c7;
             border-color: #f59e0b;
         }
-
         .industry-selector h3 {
             color: #92400e;
         }
-
         .textarea {
             border: 1px solid #d1d5db;
             border-radius: 0.5rem;
@@ -96,12 +91,10 @@
             resize: vertical;
             font-family: inherit;
         }
-
         .textarea:focus {
             border-color: #3b82f6;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
-
         .select {
             width: 100%;
             padding: 0.75rem;
@@ -111,14 +104,12 @@
             font-size: 0.9rem;
             margin-bottom: 1rem;
         }
-
         .industry-options {
             display: grid;
             gap: 0.5rem;
             max-height: 250px;
             overflow-y: auto;
         }
-
         .industry-option {
             padding: 0.75rem;
             background: white;
@@ -128,25 +119,21 @@
             transition: all 0.2s ease;
             font-size: 0.85rem;
         }
-
         .industry-option:hover {
             background: #f1f5f9;
             border-color: #3b82f6;
         }
-
         .industry-option.selected {
             background: #dbeafe;
             border-color: #3b82f6;
             color: #1e40af;
         }
-
         .controls {
             display: flex;
             gap: 1rem;
             justify-content: center;
             margin-bottom: 2rem;
         }
-
         .btn {
             padding: 1rem 2rem;
             border: none;
@@ -159,34 +146,28 @@
             align-items: center;
             gap: 0.5rem;
         }
-
         .btn-primary {
             background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             color: white;
             box-shadow: 0 4px 6px rgba(59, 130, 246, 0.25);
         }
-
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 15px rgba(59, 130, 246, 0.35);
         }
-
         .btn-secondary {
             background: #6b7280;
             color: white;
         }
-
         .btn-secondary:hover {
             background: #4b5563;
         }
-
         .output-section {
             background: white;
             border-radius: 1rem;
             padding: 2rem;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
-
         .output-header {
             display: flex;
             justify-content: space-between;
@@ -195,7 +176,6 @@
             flex-wrap: wrap;
             gap: 1rem;
         }
-
         .output-title {
             color: #1e293b;
             font-size: 1.5rem;
@@ -204,12 +184,10 @@
             align-items: center;
             gap: 0.5rem;
         }
-
         .format-selector {
             display: flex;
             gap: 0.5rem;
         }
-
         .format-btn {
             padding: 0.5rem 1rem;
             border: 1px solid #d1d5db;
@@ -219,13 +197,11 @@
             font-size: 0.85rem;
             transition: all 0.2s ease;
         }
-
         .format-btn.active {
             background: #3b82f6;
             color: white;
             border-color: #3b82f6;
         }
-
         .resume-preview {
             border: 1px solid #e2e8f0;
             border-radius: 0.5rem;
