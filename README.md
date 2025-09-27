@@ -250,6 +250,7 @@
         }
     </style>
 </head>
+</head>
 <body>
     <div class="header">
         <h1>HERBERT ESSIEN</h1>
