@@ -233,7 +233,7 @@
             .contact-info {
                 flex-direction: column;
                 align-items: center;
-gap: 0.5rem;
+gap: 0.5rem;}
  </style>
  }
    }
