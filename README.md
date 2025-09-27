@@ -249,7 +249,7 @@
             }
         }
     </style>
-</head>
+ </head>
 </head>
 <body>
     <div class="header">
