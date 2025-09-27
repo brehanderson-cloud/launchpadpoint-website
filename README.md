@@ -267,7 +267,6 @@
             Strategic HR professional with 8+ years of progressive talent acquisition and HR management experience, including executive-level recruitment and complex organizational initiatives. Proven track record of leading full-cycle recruitment for senior-level positions across manufacturing, distribution, and corporate environments. Expert in building diverse talent pipelines, advising senior leadership on talent strategies, and implementing data-driven recruitment solutions. SHRM-CP certified with demonstrated success in mentoring teams, managing high-complexity searches, and driving measurable improvements in hiring efficiency and candidate quality.
         </div>
     </div>
-
     <div class="section">
         <h2 class="section-title">Core Competencies</h2>
         <div class="skills-grid">
