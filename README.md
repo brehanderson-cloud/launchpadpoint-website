@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Herbert Essien - Senior Talent Acquisition Partner</title>    <style>
+    <title>Herbert Essien - Senior Talent Acquisition Partner</title>
+    <style>
         * {
             margin: 0;
             padding: 0;
@@ -210,7 +211,7 @@
                 gap: 0.5rem;
             }
         }
- </style>
+    </style>
 </head>
 <body>
     <div class="header">
@@ -223,13 +224,10 @@
             <span>📍 Houston, TX</span>
         </div>
     </div>
-</body>
-    </div>
- </body>
-     <div class="section">
+    <div class="section">
         <h2 class="section-title">Professional Summary</h2>
         <div class="summary">
-            Strategic HR professional with 8+ years of progressive talent acquisition and HR management experience, including executive-level recruitment and complex organizational initiatives. Proven track record of leading full-cycle recruitment for senior-level positions across manufacturing, distribution, and corporate environments. Expert in building diverse talent pipelines, advising senior leadership on talent strategies, and implementing data-driven recruitment solutions. SHRM-CP certified with demonstrated success in mentoring teams, managing high-complexity searches, and driving measurable improvements in hiring efficiency and candidate quality.
+            Strategic HR professional with 8+ years of progressive talent acquisition and HR management experience, including executive-level recruitment and complex organizational initiatives. Proven track record of delivering results in dynamic, fast-paced environments.
         </div>
     </div>
     <div class="section">
@@ -274,28 +272,28 @@
             <div class="job-section">
                 <div class="job-section-title">Strategic Talent Management & Advisory</div>
                 <ul class="bullet-points">
-                    <li>Lead operational workforce planning and talent calibration processes across multiple manufacturing sites and regional distribution centers, directly advising senior leadership on strategic talent initiatives</li>
-                    <li>Facilitate annual performance reviews and succession planning for executive and senior-level positions, ensuring alignment with organizational objectives</li>
-                    <li>Partner with Centers of Excellence to develop and implement talent acquisition strategies for hard-to-fill specialized roles in manufacturing and operations</li>
-                    <li>Mentor and coach hiring managers on advanced recruitment techniques, candidate assessment, and hiring best practices</li>
+                    <li>Lead operational workforce planning and talent calibration processes across multiple manufacturing sites and regional distribution centers, directly advising senior leadership.</li>
+                    <li>Facilitate annual performance reviews and succession planning for executive and senior-level positions, ensuring alignment with organizational objectives.</li>
+                    <li>Partner with Centers of Excellence to develop and implement talent acquisition strategies for hard-to-fill specialized roles in manufacturing and operations.</li>
+                    <li>Mentor and coach hiring managers on advanced recruitment techniques, candidate assessment, and hiring best practices.</li>
                 </ul>
             </div>
             <div class="job-section">
                 <div class="job-section-title">Complex Recruitment & Sourcing Excellence</div>
                 <ul class="bullet-points">
-                    <li>Execute full-cycle recruitment for senior management and specialized technical positions across Houston manufacturing facility, Florida operations, and US-based distribution network</li>
-                    <li>Design and implement customized sourcing strategies that successfully expanded diverse talent pipelines by 40%</li>
-                    <li>Collaborate with regional rewards team on compensation strategy and negotiation for executive-level hires</li>
-                    <li>Champion company values and leadership behaviors while ensuring inclusive hiring practices across all locations</li>
+                    <li>Execute full-cycle recruitment for senior management and specialized technical positions across Houston manufacturing facility, Florida operations, and US-based distribution.</li>
+                    <li>Design and implement customized sourcing strategies that successfully expanded diverse talent pipelines by 40%.</li>
+                    <li>Collaborate with regional rewards team on compensation strategy and negotiation for executive-level hires.</li>
+                    <li>Champion company values and leadership behaviors while ensuring inclusive hiring practices across all locations.</li>
                 </ul>
             </div>
             <div class="job-section">
                 <div class="job-section-title">Data Analysis & Process Improvement</div>
                 <ul class="bullet-points">
-                    <li>Analyze recruitment metrics and provide strategic recommendations that improved time-to-fill by 25% and enhanced candidate quality scores</li>
-                    <li>Lead standardization initiatives and continuous improvement projects, implementing AkzoNobel global HR processes locally</li>
-                    <li>Ensure compliance with local legal requirements and participate in internal/external audits</li>
-                    <li>Identify and resolve data inaccuracies in HR systems, improving reporting accuracy and decision-making capabilities</li>
+                    <li>Analyze recruitment metrics and provide strategic recommendations that improved time-to-fill by 25% and enhanced candidate quality scores.</li>
+                    <li>Lead standardization initiatives and continuous improvement projects, implementing AkzoNobel global HR processes locally.</li>
+                    <li>Ensure compliance with local legal requirements and participate in internal/external audits.</li>
+                    <li>Identify and resolve data inaccuracies in HR systems, improving reporting accuracy and decision-making capabilities.</li>
                 </ul>
             </div>
         </div>
@@ -310,19 +308,19 @@
             <div class="job-section">
                 <div class="job-section-title">Strategic Business Development & Client Partnership</div>
                 <ul class="bullet-points">
-                    <li>Developed and executed comprehensive recruitment strategies across multiple industry verticals, managing high-complexity client relationships</li>
-                    <li>Built strategic partnerships with C-level executives and key decision-makers, serving as trusted advisor on workforce solutions</li>
-                    <li>Conducted high-volume outreach and client engagement, consistently exceeding placement targets by 30%</li>
-                    <li>Assessed organizational workforce gaps and provided tailored employment solutions, including succession planning recommendations</li>
+                    <li>Developed and executed comprehensive recruitment strategies across multiple industry verticals, managing high-complexity client relationships.</li>
+                    <li>Built strategic partnerships with C-level executives and key decision-makers, serving as trusted advisor on workforce solutions.</li>
+                    <li>Conducted high-volume outreach and client engagement, consistently exceeding placement targets by 30%.</li>
+                    <li>Assessed organizational workforce gaps and provided tailored employment solutions, including succession planning recommendations.</li>
                 </ul>
             </div>
             <div class="job-section">
                 <div class="job-section-title">Advanced Sourcing & Candidate Management</div>
                 <ul class="bullet-points">
-                    <li>Executed sophisticated sourcing strategies using Boolean search techniques and talent mapping for executive and specialized roles</li>
-                    <li>Managed complete candidate lifecycle from identification through onboarding, ensuring exceptional candidate experience</li>
-                    <li>Negotiated complex compensation packages and terms, achieving optimal outcomes for both clients and candidates</li>
-                    <li>Provided ongoing coaching and retention support, resulting in 95% candidate retention rate</li>
+                    <li>Executed sophisticated sourcing strategies using Boolean search techniques and talent mapping for executive and specialized roles.</li>
+                    <li>Managed complete candidate lifecycle from identification through onboarding, ensuring exceptional candidate experience.</li>
+                    <li>Negotiated complex compensation packages and terms, achieving optimal outcomes for both clients and candidates.</li>
+                    <li>Provided ongoing coaching and retention support, resulting in 95% candidate retention rate.</li>
                 </ul>
             </div>
         </div>
@@ -337,18 +335,18 @@
             <div class="job-section">
                 <div class="job-section-title">Corporate Recruiting Excellence</div>
                 <ul class="bullet-points">
-                    <li>Led corporate recruiting initiatives for administrative and professional roles, partnering with hiring managers to define effective sourcing strategies</li>
-                    <li>Built comprehensive talent pipelines for specialized positions, reducing time-to-fill for critical roles by 35%</li>
-                    <li>Conducted thorough candidate assessments including behavioral interviews, skills evaluations, and comprehensive reference checks</li>
-                    <li>Maintained detailed recruitment analytics and reporting to drive strategic decision-making and process improvements</li>
+                    <li>Led corporate recruiting initiatives for administrative and professional roles, partnering with hiring managers to define effective sourcing strategies.</li>
+                    <li>Built comprehensive talent pipelines for specialized positions, reducing time-to-fill for critical roles by 35%.</li>
+                    <li>Conducted thorough candidate assessments including behavioral interviews, skills evaluations, and comprehensive reference checks.</li>
+                    <li>Maintained detailed recruitment analytics and reporting to drive strategic decision-making and process improvements.</li>
                 </ul>
             </div>
             <div class="job-section">
                 <div class="job-section-title">Stakeholder Management & Compliance</div>
                 <ul class="bullet-points">
-                    <li>Served as primary liaison between candidates, hiring managers, and HR leadership throughout recruitment process</li>
-                    <li>Ensured full compliance with federal, state, and local employment regulations, maintaining zero compliance violations</li>
-                    <li>Tracked and analyzed talent acquisition metrics, providing data-driven insights to optimize recruitment strategies</li>
+                    <li>Served as primary liaison between candidates, hiring managers, and HR leadership throughout recruitment process.</li>
+                    <li>Ensured full compliance with federal, state, and local employment regulations, maintaining zero compliance violations.</li>
+                    <li>Tracked and analyzed talent acquisition metrics, providing data-driven insights to optimize recruitment strategies.</li>
                 </ul>
             </div>
         </div>
@@ -357,11 +355,11 @@
         <div class="achievements-title">Key Achievements & Projects</div>
         <div class="achievement-item">
             <strong>Organizational Transformation Leadership</strong>
-            Spearheaded comprehensive job description overhaul for North America HR policies, ensuring consistency and compliance across 200+ positions. Led organizational restructuring initiative, contributing to new blueprint design for North America organizational structure. Developed career progression framework for production roles, creating clear advancement pathways.
+            Spearheaded comprehensive job description overhaul for North America HR policies, ensuring consistency and compliance across 200+ positions. Led organizational restructuring initiative, collaborating with leadership to drive business results.
         </div>
         <div class="achievement-item">
             <strong>Diversity & Inclusion Excellence</strong>
-            Appointed and developed D&I Ambassadors across Texas and Florida operations, enhancing inclusive workplace culture. Implemented inclusive hiring practices that increased diverse candidate representation by 45%.
+            Appointed and developed D&I Ambassadors across Texas and Florida operations, enhancing inclusive workplace culture. Implemented inclusive hiring practices that increased diverse candidate representation.
         </div>
         <div class="achievement-item">
             <strong>Employee Engagement Innovation</strong>
