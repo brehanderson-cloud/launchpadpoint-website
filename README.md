@@ -71,7 +71,6 @@
             padding-bottom: 0.3rem;
             margin-bottom: 1rem;
         }
-
         .summary {
             font-size: 1rem;
             text-align: justify;
