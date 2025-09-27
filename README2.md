@@ -342,7 +342,6 @@
                         spellcheck="false"
                     ></textarea>
                 </div>
-
                 <div class="input-group">
                     <h3>🎯 Target Job Description</h3>
                     <textarea 
@@ -352,7 +351,6 @@
                         spellcheck="false"
                     ></textarea>
                 </div>
-
                 <div class="input-group industry-selector">
                     <h3>🏭 Industry Focus</h3>
                     <select id="industrySelect" class="select">
@@ -378,13 +376,11 @@
                         <option value="construction">Construction</option>
                         <option value="energy">Energy</option>
                     </select>
-                    
                     <div class="industry-options" id="industryOptions">
                         <!-- Dynamically populated based on selection -->
                     </div>
                 </div>
             </div>
-
             <div class="controls">
                 <button class="btn btn-primary" onclick="optimizeResume()">
                     ✨ Optimize Resume
