@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Herbert Essien - Senior Talent Acquisition Partner</title>
-    <style>
+    <title>Herbert Essien - Senior Talent Acquisition Partner</title>    <style>
         * {
             margin: 0;
             padding: 0;
@@ -211,7 +210,7 @@
                 gap: 0.5rem;
             }
         }
-    </style>
+ </style>
 </head>
 <body>
     <div class="header">
