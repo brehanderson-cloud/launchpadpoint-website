@@ -298,7 +298,6 @@
     </div>
     <div class="section">
         <h2 class="section-title">Professional Experience</h2>
-        
         <div class="job">
             <div class="job-header">
                 <div>
@@ -326,7 +325,6 @@
                     <li>Champion company values and leadership behaviors while ensuring inclusive hiring practices across all locations</li>
                 </ul>
             </div>
-
             <div class="job-section">
                 <div class="job-section-title">Data Analysis & Process Improvement</div>
                 <ul class="bullet-points">
@@ -396,7 +394,6 @@
             </div>
         </div>
     </div>
-
     <div class="achievements">
         <div class="achievements-title">Key Achievements & Projects</div>
         
