@@ -296,7 +296,6 @@
             </div>
         </div>
     </div>
-
     <div class="section">
         <h2 class="section-title">Professional Experience</h2>
         
@@ -318,7 +317,6 @@
                     <li>Mentor and coach hiring managers on advanced recruitment techniques, candidate assessment, and hiring best practices</li>
                 </ul>
             </div>
-
             <div class="job-section">
                 <div class="job-section-title">Complex Recruitment & Sourcing Excellence</div>
                 <ul class="bullet-points">
@@ -369,7 +367,6 @@
                 </ul>
             </div>
         </div>
-
         <div class="job">
             <div class="job-header">
                 <div>
@@ -418,7 +415,6 @@
             Partnered with Buckner Children Family Services to design employee engagement initiatives, improving retention rates by 20%.
         </div>
     </div>
-
     <div class="section">
         <h2 class="section-title">Education & Certifications</h2>
         
