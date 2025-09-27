@@ -183,10 +183,10 @@
             body {
                 font-size: 11pt;
                 padding: 0.3in;
-            }   
+            }
             .header h1 {
                 font-size: 22pt;
-            }   
+            }
             .contact-info {
                 font-size: 10pt;
             }
@@ -204,12 +204,12 @@
             .job-header {
                 flex-direction: column;
                 align-items: flex-start;
-           }
+            }
             .contact-info {
                 flex-direction: column;
-                align-items: center;         
-                gap:0.5rem;     
-           }    
+                align-items: center;
+                gap: 0.5rem;
+            }
         }
     </style>
 </head>
@@ -224,7 +224,10 @@
             <span>📍 Houston, TX</span>
         </div>
     </div>
-    <div class="section">
+</body>
+    </div>
+ </body>
+     <div class="section">
         <h2 class="section-title">Professional Summary</h2>
         <div class="summary">
             Strategic HR professional with 8+ years of progressive talent acquisition and HR management experience, including executive-level recruitment and complex organizational initiatives. Proven track record of leading full-cycle recruitment for senior-level positions across manufacturing, distribution, and corporate environments. Expert in building diverse talent pipelines, advising senior leadership on talent strategies, and implementing data-driven recruitment solutions. SHRM-CP certified with demonstrated success in mentoring teams, managing high-complexity searches, and driving measurable improvements in hiring efficiency and candidate quality.
