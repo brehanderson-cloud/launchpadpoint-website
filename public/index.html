@@ -447,33 +447,6 @@
         let currentFormat = 'text';
         let optimizedResumeData = null;
         function optimizeResume() {
-            const resumeText = document.getElementById('resumeInput').value.trim();
-            const jobDescText = document.getElementById('jobDescInput').value.trim();
-            const selectedIndustry = document.getElementById('industrySelect').value;
-            if (!resumeText || !jobDescText) {
-                showStatus('Please fill in both the resume and job description fields.', 'error');
-                return;
-            }
-            showProgress();
-            showStatus('Analyzing job description and optimizing resume...', 'info');
-            // Simulate processing with progress updates
-            let progress = 0;
-            const progressInterval = setInterval(() => {
-                progress += Math.random() * 20;
-                if (progress > 90) progress = 90;
-                updateProgress(progress);
-            }, 200);
-            setTimeout(() => {
-                clearInterval(progressInterval);
-                updateProgress(100);
-                const industry = selectedIndustry || detectIndustry(jobDescText);
-                const optimizedResume = generateOptimizedResume(resumeText, jobDescText, industry);
-                optimizedResumeData = optimizedResume;
-                displayOptimizedResume(optimizedResume);
-                updateOptimizationStats(optimizedResume.stats);
-                hideProgress();
-                showStatus('Resume optimization completed successfully!', 'success');
-            }, 3000);
         }
             const resumeText = document.getElementById('resumeInput').value.trim();
             const jobDescText = document.getElementById('jobDescInput').value.trim();
