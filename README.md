@@ -208,7 +208,8 @@
             .contact-info {
                 flex-direction: column;
                 align-items: center;         
- </style>
+<gap:0.5rem;>     
+                </style>
  }
    }
  </head>
