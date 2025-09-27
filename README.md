@@ -211,8 +211,7 @@
                 gap:0.5rem;     
            }    
         }
-   </style>
-</head>
+    </style>
 </head>
 <body>
     <div class="header">
