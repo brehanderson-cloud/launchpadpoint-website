@@ -1,4 +1,4 @@
-  <import React, { useState } from "react";
+  import React, { useState } from "react";
         // Industry-specific keyword databases
         const industryKeywords = {
             technology: ['agile', 'scrum', 'API', 'cloud', 'DevOps', 'machine learning', 'AI', 'JavaScript', 'Python', 'software development', 'full-stack', 'microservices', 'containerization', 'CI/CD'],
@@ -535,3 +535,4 @@ Responsibilities:
             const controls = document.querySelector('.controls');
             controls.appendChild(demoButton);
         })
+export default App;
