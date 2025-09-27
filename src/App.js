@@ -12,8 +12,14 @@
             legal: ['legal research', 'case management', 'litigation', 'contract negotiation', 'compliance', 'regulatory', 'legal writing', 'court proceedings', 'legal analysis'],
             consulting: ['strategic planning', 'process improvement', 'change management', 'stakeholder management', 'project delivery', 'client relations', 'business analysis', 'recommendations']
         };
-        let currentFormat = 'text';
-        let optimizedResumeData = null;
+function formatAsHTML(content) {
+  // Returns a string of HTML, so use `dangerouslySetInnerHTML` in JSX
+  return content
+    .replace(/^(.+)$/gm, '<p>$1</p>')
+    .replace(/<p>([A-Z\s&]+)<\/p>/g, '<h2>$1</h2>')
+    .replace(/<p>•\s*(.+)<\/p>/g, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>)/g, '<ul>$1</ul>')
+    .replace(/<\/ul>\s*<ul>/g, '');
        function App() {
   const [resumeInput, setResumeInput] = useState("");
   const [jobDescInput, setJobDescInput] = useState("");
@@ -90,14 +96,12 @@
             // Extract actual name and contact info from original resume
             const lines = originalResume.split('\n').filter(line => line.trim());
             const name = lines[0] || 'Professional Candidate';   
-            // Find contact information
             const emailMatch = originalResume.match(/[\w\.-]+@[\w\.-]+\.\w+/);
             const phoneMatch = originalResume.match(/\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/);
             const linkedinMatch = originalResume.match(/linkedin\.com\/in\/[\w-]+/i);
             const email = emailMatch ? emailMatch[0] : 'email@example.com';
             const phone = phoneMatch ? phoneMatch[0] : '(555) 123-4567';
             const linkedin = linkedinMatch ? linkedinMatch[0] : 'linkedin.com/in/profile';
-            // Try to extract actual job title from resume
             const jobTitleFromResume = extractJobTitle(originalResume, industry);
             const optimizedContent = `${name}
 ${jobTitleFromResume}
@@ -117,7 +121,6 @@ ${generateTechnicalSkills(keywords, industry)}`;
             return optimizedContent;
         }
         function extractJobTitle(resume, industry) {
-            // Look for common job title patterns in the resume
             const titlePatterns = [
                 /(?:Senior|Lead|Principal|Chief)\s+[\w\s]+(?:Engineer|Manager|Developer|Analyst|Specialist|Director)/gi,
                 /[\w\s]+(?:Engineer|Manager|Developer|Analyst|Specialist|Director|Coordinator|Administrator)/gi
@@ -175,7 +178,6 @@ ${generateTechnicalSkills(keywords, industry)}`;
                 ).join('\n');
                 return optimized + '\n\nADDITIONAL CONTRIBUTIONS\n' + keywordBullets;
             }
-            // Generate sample experience if none exists
             return `Current Position | Company Name | Date Range
 • Implemented ${keywords[0]} strategies resulting in 25% improvement in operational efficiency
 • Led cross-functional teams in ${keywords[1]} initiatives across multiple departments
@@ -193,7 +195,6 @@ Previous Position | Previous Company | Date Range
             if (educationSection && educationSection[0].length > 20) {
                 return educationSection[0].replace(/EDUCATION\s*/i, '').trim();
             }   
-            // Look for degree patterns
             const degreeMatch = originalResume.match(/(?:Bachelor|Master|PhD|Associate)[\w\s,]+(?:University|College|Institute)/gi);
             if (degreeMatch) {
                 return degreeMatch[0];
