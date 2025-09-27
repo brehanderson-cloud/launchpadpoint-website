@@ -14,10 +14,10 @@
         };
         let currentFormat = 'text';
         let optimizedResumeData = null;
-        function optimizeResume() {
-            const resumeText = document.getElementById('resumeInput').value.trim();
-            const jobDescText = document.getElementById('jobDescInput').value.trim();
-            const selectedIndustry = document.getElementById('industrySelect').value;
+       function App() {
+  const [resumeInput, setResumeInput] = useState("");
+  const [jobDescInput, setJobDescInput] = useState("");
+  const [industrySelect, setIndustrySelect] = useState("");
             if (!resumeText || !jobDescText) {
                 showStatus('Please fill in both the resume and job description fields.', 'error');
                 return;
@@ -128,7 +128,6 @@ ${generateTechnicalSkills(keywords, industry)}`;
                     return matches[0].trim();
                 }
             }
-            // Fallback to industry-specific default titles
             const defaultTitles = {
                 technology: 'Senior Software Engineer',
                 healthcare: 'Healthcare Professional',
@@ -155,7 +154,6 @@ ${generateTechnicalSkills(keywords, industry)}`;
                 }
                 return enhanced;
             }
-            // Generate new summary if none exists
             const summaryTemplates = {
                 technology: `Results-driven technology professional with expertise in ${keywords.slice(0, 4).join(', ')}. Proven track record of delivering scalable solutions and driving digital transformation initiatives. Strong background in software development, system architecture, and team leadership.`,
                 healthcare: `Dedicated healthcare professional with comprehensive experience in ${keywords.slice(0, 4).join(', ')}. Committed to delivering exceptional patient care and improving healthcare outcomes through evidence-based practices and continuous improvement.`,
@@ -210,12 +208,13 @@ Previous Position | Previous Company | Date Range
                 hr: `Strategic HR professional with extensive experience in ${keywords.slice(0, 4).join(', ')}. Proven ability to build high-performing teams and drive organizational excellence.`,
                 default: `Accomplished professional with proven expertise in ${keywords.slice(0, 4).join(', ')}. Demonstrated success in driving results and exceeding organizational objectives.`
             };   
+          if (industryTechSkills[industry]) {
+      skills.push(...industryTechSkills[industry]);
+          }
             return summaryTemplates[industry] || summaryTemplates.default;
         }
         function generateCoreCompetencies(keywords, industry) {
-            // Select most relevant keywords and format them professionally
             const competencies = keywords.slice(0, 12).map(skill => {
-                // Capitalize first letter and make it more professional
                 return skill.charAt(0).toUpperCase() + skill.slice(1).replace(/[-_]/g, ' ');
             });   
             // Organize in columns for better readability
@@ -292,11 +291,9 @@ Previous Position | Previous Company | Date Range
         }
         function parseResume(resume) {
             const sections = {};
-            const text = resume.toLowerCase();
-            // Extract contact and header info
+            const text = resume.toLowerCase()
             const lines = resume.split('\n').filter(line => line.trim());
             sections.header = lines.slice(0, 3).join('\n');   
-            // Find sections using common headers
             const sectionHeaders = {
                 summary: /(?:professional\s+summary|summary|profile|objective)/i,
                 experience: /(?:professional\s+experience|work\s+experience|experience|employment)/i,
@@ -310,7 +307,6 @@ Previous Position | Previous Company | Date Range
                     sections[sectionName] = match[0].replace(pattern, '').trim();
                 }
             }
-            // If no formal sections found, try to extract content by patterns
             if (!sections.experience) {
                 // Look for job titles with companies and dates
                 const jobPattern = /[\w\s]+\s*\|\s*[\w\s]+\s*\|\s*[\d\-\s\/]+/g;
@@ -350,40 +346,49 @@ Previous Position | Previous Company | Date Range
                 .replace(/(<li>.*<\/li>)/g, '<ul>$1</ul>')
                 .replace(/<\/ul>\s*<ul>/g, '');
         }
-        function setFormat(format) {
-            currentFormat = format;   
-            document.querySelectorAll('.format-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(format + 'Btn').classList.add('active');
-            if (optimizedResumeData) {
-                displayOptimizedResume(optimizedResumeData);
-            }
-        }
-        function updateOptimizationStats(stats) {
-            document.getElementById('matchScore').textContent = stats.matchScore + '%';
-            document.getElementById('keywordsAdded').textContent = stats.keywordsAdded;
-            document.getElementById('sectionsOptimized').textContent = stats.sectionsOptimized;
-            document.getElementById('atsScore').textContent = stats.atsScore + '%';
-            document.getElementById('optimizationStats').style.display = 'grid';
+        function App() {
+  const [resumeInput, setResumeInput] = useState("");
+  const [jobDescInput, setJobDescInput] = useState("");
+  const [industrySelect, setIndustrySelect] = useState("");
+  const [industryOptions, setIndustryOptions] = useState([]);
+  const [statusMessage, setStatusMessage] = useState({ message: "", type: "" });
+  const [progress, setProgress] = useState(0);
+  const [progressVisible, setProgressVisible] = useState(false);
+  const [currentFormat, setCurrentFormat] = useState("text");
+  const [optimizedResumeData, setOptimizedResumeData] = useState(null);
+  const [optimizationStats, setOptimizationStats] = useState(null)
+    function setFormat(format) {
+             setCurrentFormat(format);
+  }
+        function updateOptimizationStats(stats)  {
+    setOptimizationStats(stats)
         }
         function showProgress() {
-            document.getElementById('progressBar').style.display = 'block';
+        setProgressVisible(true);
         }
         function hideProgress() {
-            document.getElementById('progressBar').style.display = 'none';
+             setProgressVisible(false);
         }
         function updateProgress(percent) {
-            document.getElementById('progressFill').style.width = percent + '%';
+              setProgress(percent);
         }
-        function copyToClipboard() {
-            const preview = document.getElementById('resumePreview');
-            const text = preview.textContent;   
-            navigator.clipboard.writeText(text).then(() => {
-                showStatus('Resume copied to clipboard!', 'success');
-            }).catch(() => {
-                showStatus('Failed to copy to clipboard. Please select and copy manually.', 'error');
+      function copyToClipboard() {
+    let text;
+    if (!optimizedResumeData) return;
+    if (currentFormat === "json") {
+      text = JSON.stringify(optimizedResumeData, null, 2);
+    } else if (currentFormat === "html") {
+      text = formatAsHTML(optimizedResumeData.content);
+    } else {
+      text = optimizedResumeData.content;
+    }
+    navigator.clipboard.writeText(text)
+      .then(() => showStatus('Resume copied to clipboard!', 'success'))
+      .catch(() => showStatus('Faile
             });
         }
-        function downloadResume() {
+// ---- Download resume ----
+          function downloadResume() {
             if (!optimizedResumeData) {
                 showStatus('Please optimize a resume first.', 'error');
                 return;
@@ -423,7 +428,12 @@ Previous Position | Previous Company | Date Range
                     </style>
                 </head>
                 <body>
-                    ${formatAsHTML(optimizedResumeData.content)}
+                ${currentFormat === 'html'
+          ? formatAsHTML(optimizedResumeData.content)
+          : `<pre>${currentFormat === 'json'
+            ? JSON.stringify(optimizedResumeData, null, 2)
+            : optimizedResumeData.content}</pre>`
+        }
                 </body>
                 </import React, { useState } from "react";>
             `);
@@ -441,23 +451,19 @@ Previous Position | Previous Company | Date Range
             window.location.href = mailtoUrl;
         }
         function clearAll() {
-            document.getElementById('resumeInput').value = '';
-            document.getElementById('jobDescInput').value = '';
-            document.getElementById('industrySelect').value = '';
-            document.getElementById('resumePreview').textContent = 'Your optimized resume will appear here after processing...';
-            document.getElementById('optimizationStats').style.display = 'none';
-            optimizedResumeData = null;
-            hideProgress();
-            showStatus('All fields cleared.', 'info');
-        }
-        function showStatus(message, type) {
-            const statusDiv = document.getElementById('statusMessage');
-            statusDiv.textContent = message;
-            statusDiv.className = `status-message status-${type}`;
-            statusDiv.style.display = 'block';   
-            setTimeout(() => {
-                statusDiv.style.display = 'none';
-            }, 5000);
+    setResumeInput('');
+    setJobDescInput('');
+    setIndustrySelect('');
+    setIndustryOptions([]);
+    setOptimizedResumeData(null);
+    setOptimizationStats(null);
+    hideProgressBar();
+    showStatus('All fields cleared.', 'info');
+         }
+        // ---- Status message handler ----
+  function showStatus(message, type) {
+    setStatusMessage({ message, type });
+    setTimeout(() => setStatusMessage({ message: "", type: "" }), 5000);
         }
         // Auto-resize textareas
         document.addEventListener('DOMContentLoaded', function() {
@@ -468,23 +474,8 @@ Previous Position | Previous Company | Date Range
                     this.style.height = Math.min(this.scrollHeight, 400) + 'px';
                 });
             });
-            // Industry selector change handler
-            document.getElementById('industrySelect').addEventListener('change', function() {
-                const industry = this.value;
-                const optionsDiv = document.getElementById('industryOptions'); 
-                if (industry && industryKeywords[industry]) {
-                    optionsDiv.innerHTML = `
-                        <h4 style="margin-bottom: 0.5rem; color: #374151;">Key Skills for ${industry.charAt(0).toUpperCase() + industry.slice(1)}:</h4>
-                        ${industryKeywords[industry].map(keyword => 
-                            `<div class="industry-option">${keyword}</div>`
-                        ).join('')}
-                    `;
-                } else {
-                    optionsDiv.innerHTML = '<div style="color: #64748b; font-style: italic;">Select an industry to see relevant keywords</div>';
-                }
-            });
         });
-        // Sample data for demo purposes
+        // Sample data loader
         function loadSampleData() {
             const sampleResume = `John Smith
 Senior Software Engineer
@@ -520,19 +511,169 @@ Responsibilities:
 • Mentor junior developers
 • Participate in code reviews
 • Implement best practices for security and performance`;
-            document.getElementById('resumeInput').value = sampleResume;
-            document.getElementById('jobDescInput').value = sampleJobDesc;
-            document.getElementById('industrySelect').value = 'technology';
-            showStatus('Sample data loaded. Click "Optimize Resume" to see the tool in action!', 'info');
-        }
-        // Add sample data button (for demo purposes)
-        document.addEventListener('DOMContentLoaded', function() {
-            const demoButton = document.createElement('button');
-            demoButton.textContent = '🎯 Load Sample Data';
-            demoButton.className = 'btn btn-secondary';
-            demoButton.onclick = loadSampleData;
-            demoButton.style.fontSize = '0.9rem';   
-            const controls = document.querySelector('.controls');
-            controls.appendChild(demoButton);
-        })
+            setResumeInput(sampleResume);
+    setJobDescInput(sampleJobDesc);
+    setIndustrySelect("technology");
+    setIndustryOptions([]);
+    showStatus('Sample data loaded. Click "Optimize Resume" to see the tool in action!', 'info');
+  }
+  // ---- Handler for textarea auto-resize (optional, can be done with CSS too) ----
+  // In React, you can use style={{height: ...}} or a small useEffect if you want this.
+  // ---- Handler for Industry change ----
+  function handleIndustryChange(e) {
+    const industry = e.target.value;
+    setIndustrySelect(industry);
+    setIndustryOptions(industry ? industryKeywords[industry] : []);
+  }
+  // ---- Render ----
+  return (
+    <div className="container">
+      <h1>🚀 Universal Resume Optimizer</h1>
+      <div className="main-section">
+        <div className="input-grid">
+          <div className="input-group">
+            <h3>📄 Your Current Resume</h3>
+            <textarea
+              value={resumeInput}
+              onChange={e => setResumeInput(e.target.value)}
+              placeholder="Paste your complete resume text here including contact info, experience, education, skills, etc..."
+              spellCheck={false}
+              className="textarea"
+            />
+          </div>
+          <div className="input-group">
+            <h3>🎯 Target Job Description</h3>
+            <textarea
+              value={jobDescInput}
+              onChange={e => setJobDescInput(e.target.value)}
+              placeholder="Paste the complete job description here including requirements, responsibilities, qualifications, etc..."
+              spellCheck={false}
+              className="textarea"
+            />
+          </div>
+          <div className="input-group industry-selector">
+            <h3>🏭 Industry Focus</h3>
+            <select
+              value={industrySelect}
+              onChange={handleIndustryChange}
+              className="select"
+            >
+              <option value="">Auto-detect from job description</option>
+              <option value="technology">Technology</option>
+              <option value="healthcare">Healthcare</option>
+              <option value="finance">Finance</option>
+              <option value="marketing">Marketing</option>
+              <option value="sales">Sales</option>
+              <option value="hr">Human Resources</option>
+              <option value="engineering">Engineering</option>
+              <option value="education">Education</option>
+              <option value="legal">Legal</option>
+              <option value="consulting">Consulting</option>
+            </select>
+            <div className="industry-options">
+              {industryOptions.length > 0 ? (
+                <>
+                  <h4 style={{ marginBottom: '0.5rem', color: '#374151' }}>
+                    Key Skills for {industrySelect.charAt(0).toUpperCase() + industrySelect.slice(1)}:
+                  </h4>
+                  {industryOptions.map((keyword, idx) => (
+                    <div key={idx} className="industry-option">{keyword}</div>
+                  ))}
+                </>
+              ) : (
+                <div style={{ color: "#64748b", fontStyle: "italic" }}>
+                  Select an industry to see relevant keywords
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="controls">
+          <button className="btn btn-primary" onClick={optimizeResume}>
+            ✨ Optimize Resume
+          </button>
+          <button className="btn btn-secondary" onClick={clearAll}>
+            🗑️ Clear All
+          </button>
+          <button className="btn btn-secondary" onClick={loadSampleData}>
+            🎯 Load Sample Data
+          </button>
+        </div>
+        {progressVisible && (
+          <div className="progress-bar">
+            <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+          </div>
+        )}
+        {optimizationStats && (
+          <div className="optimization-stats" style={{ display: 'grid' }}>
+            <div className="stat-card">
+              <div className="stat-number">{optimizationStats.matchScore}%</div>
+              <div className="stat-label">Keyword Match Score</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-number">{optimizationStats.keywordsAdded}</div>
+              <div className="stat-label">Keywords Added</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-number">{optimizationStats.sectionsOptimized}</div>
+              <div className="stat-label">Sections Optimized</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-number">{optimizationStats.atsScore}%</div>
+              <div className="stat-label">ATS Compatibility</div>
+            </div>
+          </div>
+        )}
+      </div>
+      <div className="output-section">
+        <div className="output-header">
+          <h3 className="output-title">📋 Optimized Resume</h3>
+          <div className="format-selector">
+            <button className={`format-btn ${currentFormat === 'text' ? 'active' : ''}`} onClick={() => handleSetFormat('text')} id="textBtn">Text</button>
+            <button className={`format-btn ${currentFormat === 'html' ? 'active' : ''}`} onClick={() => handleSetFormat('html')} id="htmlBtn">HTML</button>
+            <button className={`format-btn ${currentFormat === 'json' ? 'active' : ''}`} onClick={() => handleSetFormat('json')} id="jsonBtn">JSON</button>
+          </div>
+        </div>
+        <div id="resumePreview" className={`resume-preview ${currentFormat === 'html' ? 'html-format' : ''}`}>
+          {!optimizedResumeData ? (
+            <>Your optimized resume will appear here after processing...<br />
+              Click "Optimize Resume" to get started with AI-powered optimization that includes:
+              <br />• Industry-specific keyword integration
+              <br />• ATS-friendly formatting
+              <br />• Skills alignment with job requirements
+              <br />• Professional summary enhancement
+              <br />• Achievement quantification
+              <br />• Section reorganization for impact
+            </>
+          ) : currentFormat === 'json' ? (
+            <pre>{JSON.stringify(optimizedResumeData, null, 2)}</pre>
+          ) : currentFormat === 'html' ? (
+            <div dangerouslySetInnerHTML={{ __html: formatAsHTML(optimizedResumeData.content) }} />
+          ) : (
+            <pre>{optimizedResumeData.content}</pre>
+          )}
+        </div>
+        <div className="action-buttons">
+          <button className="btn btn-primary" onClick={copyToClipboard}>
+            📋 Copy to Clipboard
+          </button>
+          <button className="btn btn-secondary" onClick={downloadResume}>
+            💾 Download
+          </button>
+          <button className="btn btn-secondary" onClick={printResume}>
+            🖨️ Print
+          </button>
+          <button className="btn btn-secondary" onClick={emailResume}>
+            📧 Email
+          </button>
+        </div>
+        {statusMessage.message && (
+          <div id="statusMessage" className={`status-message status-${statusMessage.type}`}>
+            {statusMessage.message}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 export default App;
