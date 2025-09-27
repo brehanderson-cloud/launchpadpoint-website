@@ -76,7 +76,6 @@
             text-align: justify;
             line-height: 1.7;
         }
-
         .skills-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
