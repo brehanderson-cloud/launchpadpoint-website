@@ -10,7 +10,6 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             font-family: 'Georgia', 'Times New Roman', serif;
             line-height: 1.6;
@@ -20,14 +19,12 @@
             margin: 0 auto;
             padding: 0.5in;
         }
-
         .header {
             text-align: center;
             border-bottom: 3px solid #2563eb;
             padding-bottom: 1rem;
             margin-bottom: 2rem;
         }
-
         .header h1 {
             font-size: 2.5rem;
             font-weight: bold;
@@ -35,14 +32,12 @@
             margin-bottom: 0.5rem;
             letter-spacing: 1px;
         }
-
         .header .title {
             font-size: 1.2rem;
             font-weight: 600;
             color: #2563eb;
             margin-bottom: 1rem;
         }
-
         .contact-info {
             display: flex;
             justify-content: center;
@@ -50,17 +45,14 @@
             gap: 1rem;
             font-size: 0.95rem;
         }
-
         .contact-info span {
             display: flex;
             align-items: center;
             gap: 0.3rem;
         }
-
         .section {
             margin-bottom: 2rem;
         }
-
         .section-title {
             font-size: 1.1rem;
             font-weight: bold;
@@ -82,22 +74,18 @@
             gap: 0.5rem;
             font-size: 0.95rem;
         }
-
         .skill-category {
             margin-bottom: 0.8rem;
         }
-
         .skill-category strong {
             color: #2563eb;
             display: block;
             margin-bottom: 0.3rem;
         }
-
         .job {
             margin-bottom: 2rem;
             page-break-inside: avoid;
         }
-
         .job-header {
             display: flex;
             justify-content: space-between;
