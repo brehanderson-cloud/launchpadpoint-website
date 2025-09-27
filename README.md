@@ -334,7 +334,6 @@
                 </ul>
             </div>
         </div>
-
         <div class="job">
             <div class="job-header">
                 <div>
