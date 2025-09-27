@@ -207,8 +207,7 @@
            }
             .contact-info {
                 flex-direction: column;
-                align-items: center;
-<gap:0.5rem;>              
+                align-items: center;         
  </style>
  }
    }
