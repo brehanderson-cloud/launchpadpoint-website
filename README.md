@@ -208,11 +208,11 @@
             .contact-info {
                 flex-direction: column;
                 align-items: center;         
-<gap:0.5rem;>     
-                </style>
- }
-   }
- </head>
+                gap:0.5rem;     
+           }    
+        }
+   </style>
+</head>
 </head>
 <body>
     <div class="header">
