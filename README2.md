@@ -994,4 +994,4 @@ Responsibilities:
             demoButton.style.fontSize = '0.9rem';   
             const controls = document.querySelector('.controls');
             controls.appendChild(demoButton);
-        });
+        })
