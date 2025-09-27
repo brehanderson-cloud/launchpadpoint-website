@@ -331,7 +331,6 @@
             <h1>🚀 Universal Resume Optimizer</h1>
             <p>Optimize your resume for any industry with AI-powered keyword matching and formatting</p>
         </div>
-
         <div class="main-section">
             <div class="input-grid">
                 <div class="input-group">
