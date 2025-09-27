@@ -307,7 +307,5 @@
   </style>
 </head>
 <body>
-  <!-- Your HTML structure stays as is -->
-  <!-- Script cleaned of duplicates -->
 </body>
 </html>
