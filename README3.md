@@ -68,7 +68,6 @@
       <div id="resumePreview" class="resume-preview">
         Your optimized resume will appear here...
       </div>
-    </div>
   </div>
     function optimizeResume() {
       const resume = document.getElementById('resumeInput').value.trim();
