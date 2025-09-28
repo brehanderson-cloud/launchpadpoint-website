@@ -36,7 +36,6 @@
       <h1>🚀 Universal Resume Optimizer</h1>
       <p>Optimize your resume for any industry with AI-powered keyword matching and formatting</p>
     </div>
-
     <div class="main-section">
       <div class="input-grid">
         <div class="input-group">
@@ -61,13 +60,11 @@
           </select>
         </div>
       </div>
-
       <div class="controls">
         <button class="btn btn-primary" onclick="optimizeResume()">✨ Optimize Resume</button>
         <button class="btn btn-secondary" onclick="clearAll()">🗑️ Clear All</button>
       </div>
     </div>
-
     <div class="output-section">
       <h3>📋 Optimized Resume</h3>
       <div id="resumePreview" class="resume-preview">
@@ -75,7 +72,6 @@
       </div>
     </div>
   </div>
-
   <script>
     function optimizeResume() {
       const resume = document.getElementById('resumeInput').value.trim();
@@ -84,10 +80,9 @@
         alert("Please paste both resume and job description!");
         return;
       }
-      document.getElementById('resumePreview').textContent =
+document.getElementById('resumePreview').textContent =
         "Optimized Resume (demo)...\n\n" + resume;
     }
-
     function clearAll() {
       document.getElementById('resumeInput').value = "";
       document.getElementById('jobDescInput').value = "";
