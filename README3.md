@@ -72,7 +72,6 @@
       </div>
     </div>
   </div>
-  <script>
     function optimizeResume() {
       const resume = document.getElementById('resumeInput').value.trim();
       const jobDesc = document.getElementById('jobDescInput').value.trim();
@@ -89,6 +88,5 @@ document.getElementById('resumePreview').textContent =
       document.getElementById('resumePreview').textContent =
         "Your optimized resume will appear here...";
     }
-  </script>
 </body>
 </html>
