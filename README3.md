@@ -70,11 +70,7 @@
       </div>
   </div>
         "Optimized Resume (demo)...\n\n" + resume;
-    }
-    function clearAll() {
-document.getElementById('resumeInput').value = "";
-document.getElementById('jobDescInput').value = "";   document.getElementById('resumePreview').textContent =
-        "Your optimized resume will appear here...";
+    } = "Your optimized resume will appear here...";
     }
 </body>
 </html>
