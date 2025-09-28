@@ -69,20 +69,11 @@
         Your optimized resume will appear here...
       </div>
   </div>
-    function optimizeResume() {
-      const resume = document.getElementById('resumeInput').value.trim();
-      const jobDesc = document.getElementById('jobDescInput').value.trim();
-      if (!resume || !jobDesc) {
-        alert("Please paste both resume and job description!");
-        return;
-      }
-document.getElementById('resumePreview').textContent =
         "Optimized Resume (demo)...\n\n" + resume;
     }
     function clearAll() {
 document.getElementById('resumeInput').value = "";
-      document.getElementById('jobDescInput').value = "";
-      document.getElementById('resumePreview').textContent =
+document.getElementById('jobDescInput').value = "";   document.getElementById('resumePreview').textContent =
         "Your optimized resume will appear here...";
     }
 </body>
