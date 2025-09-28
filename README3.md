@@ -72,6 +72,7 @@
         "Optimized Resume (demo)...\n\n" + resume;
     } = "Your optimized resume will appear here...";
     }
+    </div>
     <div>
 </body>
 </html>
