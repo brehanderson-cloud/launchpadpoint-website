@@ -59,12 +59,10 @@
             <option value="marketing">Marketing</option>
           </select>
         </div>
-      </div>
       <div class="controls">
         <button class="btn btn-primary" onclick="optimizeResume()">✨ Optimize Resume</button>
         <button class="btn btn-secondary" onclick="clearAll()">🗑️ Clear All</button>
       </div>
-    </div>
     <div class="output-section">
       <h3>📋 Optimized Resume</h3>
       <div id="resumePreview" class="resume-preview">
@@ -83,7 +81,7 @@ document.getElementById('resumePreview').textContent =
         "Optimized Resume (demo)...\n\n" + resume;
     }
     function clearAll() {
-      document.getElementById('resumeInput').value = "";
+document.getElementById('resumeInput').value = "";
       document.getElementById('jobDescInput').value = "";
       document.getElementById('resumePreview').textContent =
         "Your optimized resume will appear here...";
