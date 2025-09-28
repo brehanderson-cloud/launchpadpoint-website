@@ -68,9 +68,10 @@
       <div id="resumePreview" class="resume-preview">
         Your optimized resume will appear here...
       </div>
-  </div>
+  <div>
         "Optimized Resume (demo)...\n\n" + resume;
     } = "Your optimized resume will appear here...";
     }
+    <div>
 </body>
 </html>
