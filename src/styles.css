@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================================
+   V9 BASE STYLES (Applied globally)
+   ========================================= */
+
+@layer base {
+  /* Apply Inter font and background color to the whole page */
+  html {
+    font-family: theme('fontFamily.sans');
+    background-color: theme('colors.bg.body');
+    color: theme('colors.primary.navy');
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Standardize headers */
+  h1, h2, h3, h4, h5 {
+    @apply font-extrabold tracking-tight text-primary-navy;
+  }
+  h1 { @apply text-4xl md:text-5xl; }
+  h2 { @apply text-2xl md:text-3xl; }
+
+  /* Base button styles to be extended with utility classes */
+  button {
+    @apply font-bold transition-all duration-200 ease-in-out;
+  }
+}
+
+/* =========================================
+   CUSTOM COMPONENTS (Optional)
+   Examples of extracting common V9 patterns
+   ========================================= */
+
+@layer components {
+  /* The standard main container */
+  .main-container {
+    @apply max-w-6xl mx-auto mt-10 mb-16 p-6 md:p-10 bg-bg-surface rounded-3xl shadow-card border border-white;
+  }
+
+  /* The standard primary button */
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-8 py-4 rounded-xl bg-primary-navy text-white hover:bg-opacity-90 hover:-translate-y-1 hover:shadow-lg disabled:opacity-70 disabled:transform-none;
+  }
+}
