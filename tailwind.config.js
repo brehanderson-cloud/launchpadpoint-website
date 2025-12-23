@@ -1,13 +1,12 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
-  // Tell Tailwind where to look for class names to generate CSS
+export default {
   content: [
     "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx,html}",
+    "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
-      // The V9 "Indigo/Clean" Color Palette
+      // V9 Indigo/Clean Color Palette
       colors: {
         primary: {
           navy: '#02182B',   // Main headers, nav
@@ -35,16 +34,9 @@ module.exports = {
           muted: '#64748b',
         }
       },
-      // Typography
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],    // Main UI font
-        serif: ['Georgia', 'serif'],      // For Resume Preview only
-      },
-      // Custom Spacing/Border Radius if needed based on V9 specs
-      borderRadius: {
-        'xl': '12px',
-        '2xl': '16px',
-        '3xl': '20px',
+        sans: ['Inter', 'sans-serif'],    // UI Font
+        serif: ['Georgia', 'serif'],      // Resume Preview Font
       },
       boxShadow: {
         'card': '0 10px 30px rgba(0,0,0,0.05)',
