@@ -8,32 +8,28 @@ let appContainer = null;
 // --- Main Initialization Function ---
 export function initV9App(rootElement) {
     appContainer = rootElement;
-    
-    // 1. Initial Render of the skeleton
     renderAppSkeleton();
-    
-    // 2. Show the initial step
     updateUIForStep(currentStep);
-
-    // 3. Attach global event listeners (for navigation)
     attachEventListeners();
 }
 
 // --- Rendering Logic ---
 function renderAppSkeleton() {
-    // Combine all HTML strings into one structure
+    // Inject the main layout framework
     appContainer.innerHTML = `
-        <div class="min-h-screen flex flex-col font-sans bg-bg-body text-primary-navy antialiased">
+        <div class="min-h-screen flex flex-col bg-bg-body">
             ${NavBar}
-            <div id="progress-bar-mount">
+            <div id="progress-bar-mount" class="sticky top-[72px] z-40">
                  ${ProgressBar(currentStep)}
             </div>
-            <main class="flex-grow container mx-auto max-w-6xl mt-10 mb-20 p-6 md:p-10 bg-white rounded-3xl shadow-card border border-white relative overflow-hidden">
-                 ${Step1Analyze}
-                 ${Step2Compare}
-                 ${Step3Optimize}
-                 ${Step4Practice}
-                 ${Step5Plan}
+            <main class="flex-grow container mx-auto max-w-6xl mt-8 mb-20 md:mt-12 md:mb-24 p-0 md:p-4">
+                 <div class="bg-white rounded-[2rem] shadow-panel border border-white/50 overflow-hidden relative">
+                    ${Step1Analyze}
+                    ${Step2Compare}
+                    ${Step3Optimize}
+                    ${Step4Practice}
+                    ${Step5Plan}
+                 </div>
             </main>
         </div>
     `;
@@ -45,62 +41,95 @@ function updateUIForStep(stepNum) {
 
     // 1. Update Progress Bar
     const progressMount = document.getElementById('progress-bar-mount');
-    if(progressMount) {
-        progressMount.innerHTML = ProgressBar(currentStep);
-    }
+    if(progressMount) progressMount.innerHTML = ProgressBar(currentStep);
 
-    // 2. Hide all step contents
-    document.querySelectorAll('.step-content').forEach(el => {
-        el.classList.add('hidden');
-        // Remove animation class to allow re-triggering
-        el.classList.remove('animate-fade-in');
-    });
+    // 2. Hide all steps
+    document.querySelectorAll('.step-content').forEach(el => el.classList.add('hidden'));
 
-    // 3. Show active step content
+    // 3. Show active step
     const activeContent = document.getElementById(`step${stepNum}-content`);
-    if(activeContent) {
-        activeContent.classList.remove('hidden');
-        // Trigger reflow for animation
-        void activeContent.offsetWidth;
-        activeContent.classList.add('animate-fade-in');
-    }
+    if(activeContent) activeContent.classList.remove('hidden');
     
-    // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-
+// --- Event Listeners ---
 function attachEventListeners() {
-    // Event delegation for navigation steps
-    document.addEventListener('click', (e) => {
-        // Handle Progress Bar Clicks
+    appContainer.addEventListener('click', (e) => {
+        // Navigation: Step Indicators
         const stepIndicator = e.target.closest('.step-indicator');
         if (stepIndicator) {
             const targetStep = parseInt(stepIndicator.dataset.step);
-            // Simple constraint: allow moving back, or one step forward
-            if(targetStep <= currentStep + 1) {
-                 updateUIForStep(targetStep);
-            }
+            if(targetStep <= currentStep + 1) updateUIForStep(targetStep);
         }
 
-        // Handle "Next Step" buttons located at bottom of pages
-        const nextBtn = e.target.closest('.next-step-trigger');
-        if(nextBtn && currentStep < 5) {
+        // Navigation: Next Buttons
+        if(e.target.closest('.next-step-trigger') && currentStep < 5) {
              updateUIForStep(currentStep + 1);
         }
 
-        // Mock functionality for Step 1 Analyze Button
+        // Step 1: Analyze Button Mock
         if(e.target.id === 'analyze-btn') {
              const btn = e.target;
-             btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Decoding Job DNA...';
+             btn.innerHTML = '<i class="fas fa-spinner fa-spin me-3"></i> Decoding Job DNA...';
              btn.disabled = true;
+             document.getElementById('inputs-container').classList.add('opacity-50');
              setTimeout(() => {
-                 btn.classList.add('hidden');
                  document.getElementById('inputs-container').classList.add('hidden');
                  document.getElementById('analysis-results').classList.remove('hidden');
-                 document.getElementById('next-step-btn').classList.remove('hidden');
-                 // Inject mock results here in future iteration
+                 // Trigger animation on results
+                 document.getElementById('analysis-results').classList.add('animate-fade-in');
              }, 1500);
+        }
+
+        // Step 2 & 4: Accordion Toggles
+        const gapHeader = e.target.closest('.gap-header');
+        if(gapHeader) {
+            gapHeader.parentElement.classList.toggle('expanded');
+        }
+
+        // Step 3: Resume Polish Mock
+        if(e.target.id === 'polish-btn') {
+            e.target.disabled = true;
+            e.target.innerHTML = '<i class="fas fa-check me-2"></i> Polished';
+            document.getElementById('polish-result').classList.remove('hidden');
+        }
+        // Step 3: Add to Resume Mock
+        if(e.target.id === 'add-to-resume-btn') {
+            e.target.disabled = true;
+            e.target.innerHTML = '<i class="fas fa-check-double me-2"></i> Added to Resume';
+            const bullet = document.getElementById('new-resume-bullet');
+            bullet.classList.remove('hidden');
+            // Remove highlight after 2s
+            setTimeout(() => bullet.classList.remove('bg-[#fef9c3]'), 2000);
+        }
+
+        // Step 5: Growth Dashboard Reveal
+        if(e.target.closest('#growth-mode-card')) {
+            document.getElementById('crossroads-selection').classList.add('hidden');
+            const dash = document.getElementById('growth-dashboard');
+            dash.classList.remove('hidden');
+        }
+
+        // Step 5: Dashboard Tabs
+        const dashTab = e.target.closest('.dash-tab-btn');
+        if(dashTab) {
+            document.querySelectorAll('.dash-tab-btn').forEach(t => t.classList.remove('active'));
+            dashTab.classList.add('active');
+            document.querySelectorAll('.dash-tab-content').forEach(c => c.classList.add('hidden'));
+            document.getElementById(`tab-content-${dashTab.dataset.tab}`).classList.remove('hidden');
+        }
+
+        // Step 5: Timeline Year Select
+        const yearNode = e.target.closest('.year-node');
+        if(yearNode) {
+            document.querySelectorAll('.year-node').forEach(n => n.classList.remove('active', 'opacity-100'));
+            yearNode.classList.add('active', 'opacity-100');
+            // Mock refresh animation on bucket
+            const bucket = document.getElementById('year-requirements-bucket');
+            bucket.classList.remove('animate-fade-in');
+            void bucket.offsetWidth; // trigger reflow
+            bucket.classList.add('animate-fade-in');
         }
     });
 }
